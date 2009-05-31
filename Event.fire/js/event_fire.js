@@ -12,7 +12,7 @@ var fireEvent = (function(){
 	}
 	
 	function createEvent(name, eventName, bubble, options){
-		var event = document.createEvent('UIEvents');
+		var event = document.createEvent(name);
         event.initEvent(eventName, bubble, true);
 		
 		return options ? Object.extend(event, options) : event;
@@ -30,14 +30,14 @@ var fireEvent = (function(){
 	}
 	
 	function createMouseEvent(eventName, bubble, options){
-		var options = Object.extend({
+		options = Object.extend({
 			view:			window,
 			detail:			1, 
 			screenX:		0,
 			screenY:		0, 
 			clientX:		0,
 			clientY:		0,       
-			ctrlKey:		false,
+			ctrlKey:		0,
 			altKey:			false, 
 			shiftKey:		false,
 			metaKey:		false, 
@@ -46,7 +46,7 @@ var fireEvent = (function(){
 		}, options);
 		
 	    if (document.createEvent){
-            var event = document.createEvent('MouseEvents');
+			var event = document.createEvent('MouseEvents');
         
             // Safari 2.x doesn't implement initMouseEvent()
             if (event.initMouseEvent){
@@ -74,12 +74,14 @@ var fireEvent = (function(){
 	                    event.fromElement = options.relatedTarget;
 	                }
 	            }
-	
+
 				return event;
             }
-		
+			
 			// else in Safari, the closest thing available in Safari 2.x is UIEvents
-			return createEvent('UIEvents', eventName, bubbles, options);
+			event.initEvent(eventName, bubble, true);
+
+			return Object.extend(event, options);	
         }
 		
 		if (document.createEventObject){
@@ -105,8 +107,8 @@ var fireEvent = (function(){
     }
 	
 	function createKeyEvent(eventName, bubble, options){
-		var options = Object.extend({
-			view: 		window,
+		options = Object.extend({
+			view: 		null,
 			ctrlKey: 	false,
 			altKey: 	false,
 			shiftKey: 	false,
@@ -129,15 +131,15 @@ var fireEvent = (function(){
 					options.charCode
 				);
 				return event;
-			} catch(e) {
-				try {
-					// if initKeyEvent() is not , to create generic event - will fail in Safari 2.x
-					return createEvent('Events', eventName, bubbles, options);
-				} catch(e){
-					// if generic event fails, create a UIEvent for Safari 2.x
-					return createEvent('UIEvents', eventName, bubbles, options);
-				}
-			}
+		   	} catch(e) {
+		   		try {
+		   			// if initKeyEvent() is not , to create generic event - will fail in Safari 2.x
+		   			return createEvent('Events', eventName, bubble, options);
+		   		} catch(e){
+		   			// if generic event fails, create a UIEvent for Safari 2.x
+		   			return createEvent('UIEvents', eventName, bubble, options);
+		   		}
+		   	}
 		}
 		
 		if (document.createEventObject){
