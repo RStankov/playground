@@ -162,8 +162,6 @@ var fireEvent = (function(){
 		isKeyEvent		= Enumerable.include.bind($w('keydown keyup keypress'));
 		
 	return function(element, eventName, options){
-		eventName = eventName.toLowerCase();
-
 		// get correct element
 		element = $(element);
 			
@@ -171,12 +169,9 @@ var fireEvent = (function(){
 	    	element = document.documentElement;
 
 		// get options, bubble, memo
-		var bubble = true, memo;
+		var memo, bubble = true;
 		
-		if (Object.isBoolean(options)){
-			bubble  = options;
-			options = {};
-		} else if (Object.isUndefined(options)) {
+		if (Object.isUndefined(options)) {
 			options = {};
 		} else {
 			if ('memo' in options){
@@ -193,27 +188,28 @@ var fireEvent = (function(){
 		// get event
 		var event;
 		
-		if (isCustomEvent(eventName))		event = createCustomEvent(eventName, bubble, options);
+		if (isCustomEvent(eventName)){		event = createCustomEvent(eventName, bubble); memo = options; }
 		else if (isMouseEvent(eventName))	event = createMouseEvent(eventName, bubble, options);
 		else if (isKeyEvent(eventName))		event = createKeyEvent(eventName, bubble, options);
-		else 								event = createOtherEvent(event, bubble, options);
-		
+		else 								event = createOtherEvent(eventName, bubble, options);
+	
 		if (!event)
 			return false;
 
 		event.eventName = eventName;
 		event.memo		= memo || {};
-		
-		// dispatch event
-		if (document.createEvent)
-            element.dispatchEvent(event);
-		else
-			element.fireEvent('on' + eventName, event);
 
+		// dispatch event
+		if (document.createEvent){
+            element.dispatchEvent(event);
+		} else {
+			element.fireEvent('on' + eventName, event);
+		}
+		
 		// return extended element
 		return Event.extend(event);
 	};
 })();
 
 Event.fire = fireEvent;
-Element.addMethod({ fire: fireEvent });
+Element.addMethods({ fire: fireEvent });

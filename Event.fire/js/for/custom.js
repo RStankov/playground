@@ -20,7 +20,7 @@ new Test.Unit.Runner({
     span.fire("test:somethingHappened");
     this.assert(!fired);
   },
-  
+
   // test firing an event and observing it on a containing element
   testCustomEventBubbling: function() {
     var span = $("span"), outer = $("outer"), fired = false, observer = function(event) {
@@ -40,7 +40,7 @@ new Test.Unit.Runner({
     span.fire("test:somethingHappened");
     this.assert(!fired);
   },
-  
+
   testCustomEventCanceling: function() {
     var span = $("span"), outer = $("outer"), inner = $("inner");
     var fired = false, stopped = false;
@@ -68,7 +68,7 @@ new Test.Unit.Runner({
     
     outer.stopObserving("test:somethingHappened", outerObserver);
   },
-  
+
   testEventObjectIsExtended: function() { 
     var span = $("span"), event, observedEvent, observer = function(e) { observedEvent = e };
     span.observe("test:somethingHappened", observer);
@@ -119,7 +119,7 @@ new Test.Unit.Runner({
     span.fire("test:somethingElseHappened");
     this.assertEqual(0, count);
   },
-  
+
   testStopObservingWithoutHandlerArgument: function() {
     var span = $("span"), count = 0, observer = function() { count++ };
     
@@ -154,7 +154,7 @@ new Test.Unit.Runner({
     this.assert(Object.isArray(registry.get('test:somethingHappened')));
     this.assertEqual(0, registry.get('test:somethingHappened').length);
   },
-  
+
   testObserveAndStopObservingAreChainable: function() {
     var span = $("span"), observer = Prototype.emptyFunction;
 
