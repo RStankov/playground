@@ -1,19 +1,19 @@
 // credits to YUI ( http://developer.yahoo.com/yui/ )
 var fireEvent = (function(){
 	// helpers for creating browser spesific event objects
-	function createEventIE(eventName, bubble, options){
+	function createEventIE(eventType, bubble, options){
 		var event			= document.createEventObject();
+		
 		event.bubble		= bubble;
 		event.cancelable	= true;
-		event.eventType		= 'on' + eventName;
-		
+		event.eventType		= 'on' + eventType;
+	
 		return options ? Object.extend(event, options) : event;
-
 	}
 	
 	function createEvent(name, eventName, bubble, options){
 		var event = document.createEvent(name);
-        event.initEvent(eventName, bubble, true);
+		event.initEvent(eventName, bubble, true);
 		
 		return options ? Object.extend(event, options) : event;
 	}
@@ -85,7 +85,7 @@ var fireEvent = (function(){
         }
 		
 		if (document.createEventObject){
-            // fix options, IE button property have problems
+            // fix options, IE button property
             switch(options.button){
                 case 0:
                     options.button = 1;
@@ -94,7 +94,7 @@ var fireEvent = (function(){
                     options.button = 4;
                     break;
                 case 2:
-                    //leave as is
+                    // do not change
                     break;
                 default:
                     options.button = 0;                    
@@ -117,7 +117,7 @@ var fireEvent = (function(){
 			charCode: 	0
 		}, options);
 
-        if (document.createEvent){
+		if (document.createEvent){
 			try {
 				// only Firefox supports initKeyEvent(), for now
 				var event = document.createEvent('KeyEvents');
@@ -131,27 +131,27 @@ var fireEvent = (function(){
 					options.charCode
 				);
 				return event;
-		   	} catch(e) {
-		   		try {
-		   			// if initKeyEvent() is not , to create generic event - will fail in Safari 2.x
-		   			return createEvent('Events', eventName, bubble, options);
-		   		} catch(e){
-		   			// if generic event fails, create a UIEvent for Safari 2.x
-		   			return createEvent('UIEvents', eventName, bubble, options);
-		   		}
-		   	}
+			} catch(e) {
+				try {
+					// if initKeyEvent() is not , to create generic event - will fail in Safari 2.x
+					return createEvent('Events', eventName, bubble, options);
+				} catch(e){
+					// if generic event fails, create a UIEvent for Safari 2.x
+					return createEvent('UIEvents', eventName, bubble, options);
+				}
+			}
 		}
 		
 		if (document.createEventObject){
 			// fix options for IE, because it doesn't support charCode
-			options.keyCode = options.charCode > 0 ? options.charCode : keyCode
+			options.keyCode = options.charCode > 0 ? options.charCode : options.keyCode
 			delete(options.charCode);
 			
 			return createEventIE(eventName, bubble, options);
-        }
+		}
 
 		return false;
-    }
+	}
 
 	function createOtherEvent(){
 		// todo
@@ -168,7 +168,7 @@ var fireEvent = (function(){
 		element = $(element);
 			
 		if (element == document && document.createEvent && !element.dispatchEvent)
-	    	element = document.documentElement;
+			element = document.documentElement;
 
 		// get options, bubble, memo
 		var memo, bubble = true;
@@ -194,7 +194,7 @@ var fireEvent = (function(){
 		else if (isMouseEvent(eventName))	event = createMouseEvent(eventName, bubble, options);
 		else if (isKeyEvent(eventName))		event = createKeyEvent(eventName, bubble, options);
 		else 								event = createOtherEvent(eventName, bubble, options);
-	
+
 		if (!event)
 			return false;
 
@@ -203,9 +203,9 @@ var fireEvent = (function(){
 
 		// dispatch event
 		if (document.createEvent){
-            element.dispatchEvent(event);
+			element.dispatchEvent(event);
 		} else {
-			element.fireEvent('on' + eventName, event);
+			element.fireEvent(event.eventType, event);
 		}
 		
 		// return extended element
