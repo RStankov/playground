@@ -214,3 +214,6 @@ var fireEvent = (function(){
 		return Event.extend(event);
 	};
 })();
+
+Event.fire = fireEvent;
+Element.addMethod({ fire: fireEvent });
