@@ -1,51 +1,33 @@
 // credits to YUI ( http://developer.yahoo.com/yui/ )
 var fireEvent = (function(){
-	// helpers for creating browser spesific event objects
-	function createEventIE(eventType, bubble, options){
-		var event			= document.createEventObject();
-		
-		event.bubble		= bubble;
-		event.cancelable	= true;
-		event.eventType		= 'on' + eventType;
-	
-		return options ? Object.extend(event, options) : event;
-	}
-	
-	function createEvent(name, eventName, bubble, options){
-		var event = document.createEvent(name);
-		event.initEvent(eventName, bubble, true);
-		
-		return options ? Object.extend(event, options) : event;
-	}
-	
-	// helpers for creating cross-browser events
-	function createCustomEvent(eventName, bubble){
-		if (document.createEvent)
+	if (document.createEvent){
+		function createEvent(name, eventName, bubble, options){
+			var event = document.createEvent(name);
+			event.initEvent(eventName, bubble, true);
+
+			return options ? Object.extend(event, options) : event;
+		}
+
+		function createCustomEvent(bubble){
 			return createEvent('HTMLEvents', 'dataavailable', bubble);
-		
-		if (document.createEventObject)
-			return createEventIE(bubble ? 'dataavailable' : 'filterchange', bubble);
-		
-		return false;
-	}
-	
-	function createMouseEvent(eventName, bubble, options){
-		options = Object.extend({
-			view:			window,
-			detail:			1, 
-			screenX:		0,
-			screenY:		0, 
-			clientX:		0,
-			clientY:		0,       
-			ctrlKey:		0,
-			altKey:			false, 
-			shiftKey:		false,
-			metaKey:		false, 
-			button:			0,
-			relatedTarget:	null
-		}, options);
-		
-	    if (document.createEvent){
+		}
+
+		function createMouseEvent(eventName, bubble, options){
+			options = Object.extend({
+				view:			window,
+				detail:			1, 
+				screenX:		0,
+				screenY:		0, 
+				clientX:		0,
+				clientY:		0,       
+				ctrlKey:		0,
+				altKey:			false, 
+				shiftKey:		false,
+				metaKey:		false, 
+				button:			0,
+				relatedTarget:	null
+			}, options);
+
 			var event = document.createEvent('MouseEvents');
         
             // Safari 2.x doesn't implement initMouseEvent()
@@ -81,43 +63,20 @@ var fireEvent = (function(){
 			// else in Safari, the closest thing available in Safari 2.x is UIEvents
 			event.initEvent(eventName, bubble, true);
 
-			return Object.extend(event, options);	
-        }
-		
-		if (document.createEventObject){
-            // fix options, IE button property
-            switch(options.button){
-                case 0:
-                    options.button = 1;
-                    break;
-                case 1:
-                    options.button = 4;
-                    break;
-                case 2:
-                    // do not change
-                    break;
-                default:
-                    options.button = 0;                    
-            }
-			
-			return createEventIE(eventName, bubble, options);
-        }
+			return Object.extend(event, options);
+	    }
 
-		return false;
-    }
-	
-	function createKeyEvent(eventName, bubble, options){
-		options = Object.extend({
-			view: 		null,
-			ctrlKey: 	false,
-			altKey: 	false,
-			shiftKey: 	false,
-			metaKey: 	false,
-			keyCode: 	0,
-			charCode: 	0
-		}, options);
+		function createKeyEvent(eventName, bubble, options){
+			options = Object.extend({
+				view: 		null,
+				ctrlKey: 	false,
+				altKey: 	false,
+				shiftKey: 	false,
+				metaKey: 	false,
+				keyCode: 	0,
+				charCode: 	0
+			}, options);
 
-		if (document.createEvent){
 			try {
 				// only Firefox supports initKeyEvent(), for now
 				var event = document.createEvent('KeyEvents');
@@ -142,22 +101,90 @@ var fireEvent = (function(){
 			}
 		}
 		
-		if (document.createEventObject){
-			// fix options for IE, because it doesn't support charCode
-			options.keyCode = options.charCode > 0 ? options.charCode : options.keyCode
-			delete(options.charCode);
-			
-			return createEventIE(eventName, bubble, options);
+		function createOtherEvent(){
+			return false;
+		}
+		
+		function dispatchEvent(element, event){
+			element.dispatchEvent(event);
+		}
+	} else /* if (document.createEventObject()) */ {
+		function createEvent(eventType, bubble, options){
+			var event			= document.createEventObject();
+
+			event.bubble		= bubble;
+			event.cancelable	= true;
+			event.eventType		= 'on' + eventType;
+
+			return options ? Object.extend(event, options) : event;
+		}
+		
+		// helpers for creating cross-browser events
+		function createCustomEvent(eventName, bubble){
+			return createEvent(bubble ? 'dataavailable' : 'filterchange', bubble);
 		}
 
-		return false;
-	}
+		function createMouseEvent(eventName, bubble, options){
+			options = Object.extend({
+				view:			window,
+				detail:			1, 
+				screenX:		0,
+				screenY:		0, 
+				clientX:		0,
+				clientY:		0,       
+				ctrlKey:		0,
+				altKey:			false, 
+				shiftKey:		false,
+				metaKey:		false, 
+				button:			0,
+				relatedTarget:	null
+			}, options);
 
-	function createOtherEvent(){
-		// todo
-		return false;
-	}
+	           // fix options, IE button property
+            switch(options.button){
+                case 0:
+                    options.button = 1;
+                    break;
+                case 1:
+                    options.button = 4;
+                    break;
+                case 2:
+                    // do not change
+                    break;
+                default:
+                    options.button = 0;                    
+            }
 
+			return createEvent(eventName, bubble, options);
+	    }
+
+		function createKeyEvent(eventName, bubble, options){
+			options = Object.extend({
+				view: 		null,
+				ctrlKey: 	false,
+				altKey: 	false,
+				shiftKey: 	false,
+				metaKey: 	false,
+				keyCode: 	0,
+				charCode: 	0
+			}, options);
+
+			
+			options.keyCode = options.charCode > 0 ? options.charCode : options.keyCode
+			delete(options.charCode);
+
+			return createEvent(eventName, bubble, options);
+		}
+		
+		function createOtherEvent(){
+			return false;
+		}
+		
+		function dispatchEvent(element, event){
+			element.fireEvent(event.eventType, event);
+		}
+	}
+	
 	// helpers for detecting event types
 	var isCustomEvent	= function(event){ return event.include(':'); },
 		isMouseEvent	= RegExp.prototype.test.bind(/^(click|dblclick|mouseover|mouseout|mousedown|mouseup|mousemove)$/),
@@ -201,12 +228,7 @@ var fireEvent = (function(){
 		event.eventName = eventName;
 		event.memo		= memo || {};
 
-		// dispatch event
-		if (document.createEvent){
-			element.dispatchEvent(event);
-		} else {
-			element.fireEvent(event.eventType, event);
-		}
+		dispatchEvent(element, event);
 		
 		// return extended element
 		return Event.extend(event);
