@@ -18,20 +18,10 @@ var fireEvent = (function(){
 			var event = document.createEvent('MouseEvents');
 			
             if (event.initMouseEvent){
-                event.initMouseEvent(eventName, bubble, true, 
-					options.view,
-					options.detail,
-					options.screenX,
-					options.screenY,
-					options.clientX,
-					options.clientY, 
-					options.ctrlKey, 
-					options.altKey,
-					options.shiftKey, 
-					options.metaKey, 
-					options.button, 
-					options.relatedTarget
-				);
+                event.initMouseEvent(eventName, bubble, true, options.view, 
+					options.detail, options.screenX, options.screenY, options.clientX, options.clientY, 
+					options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,  
+					options.button, options.relatedTarget);
 				return event;
             }
 			
@@ -45,15 +35,9 @@ var fireEvent = (function(){
 				e = document.createEvent('KeyEvents');
 				if (typeof e != 'undefined') return function(eventName, bubble, options){
 					var event = document.createEvent('KeyEvents');
-					event.initKeyEvent(eventName, bubble, true, 
-						options.view, 
-						options.ctrlKey, 
-						options.altKey, 
-						options.shiftKey, 
-						options.metaKey, 
-						options.keyCode,
-						options.charCode
-					);
+					event.initKeyEvent(eventName, bubble, true, options.view, 
+						options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,
+						options.keyCode, options.charCode);
 					return event;
 				};
 			} catch(e){}
