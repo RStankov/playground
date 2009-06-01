@@ -14,6 +14,7 @@ var fireEvent = (function(){
 		button:			0,
 		relatedTarget:	null
 	};
+	
 	var optionsForKeyEvent = {
 		view: 		null,
 		ctrlKey: 	false,
@@ -24,19 +25,20 @@ var fireEvent = (function(){
 		charCode: 	0
 	};
 	
+	var createEvent, createCustomEvent, createMouseEvent, createKeyEvent, createHtmlEvent, dispatchEvent;
 	if (document.createEvent){
-		function createEvent(name, eventName, bubble, options){
+		createEvent = function(name, eventName, bubble, options){
 			var event = document.createEvent(name);
 			event.initEvent(eventName, bubble, true);
 
 			return options ? Object.extend(event, options) : event;
 		}
 
-		function createCustomEvent(bubble){
+		createCustomEvent = function(bubble){
 			return createEvent('HTMLEvents', 'dataavailable', bubble);
 		}
 
-		function createMouseEvent(eventName, bubble, options){
+		createMouseEvent = function(eventName, bubble, options){
 			options = Object.extend(Object.extend({}, optionsForMouseEvent), options);
 
 			var event = document.createEvent('MouseEvents');
@@ -75,7 +77,7 @@ var fireEvent = (function(){
 			return createEvent('UIEvents', eventName, bubble, options);
 	    }
 
-		function createKeyEvent(eventName, bubble, options){
+		createKeyEvent = function(eventName, bubble, options){
 			options = Object.extend(Object.extend({}, optionsForKeyEvent), options);
 
 			try {
@@ -102,15 +104,15 @@ var fireEvent = (function(){
 			}
 		}
 		
-		function createHtmlEvent(){
+		createHtmlEvent = function(){
 			return false;
 		}
 		
-		function dispatchEvent(element, event){
+		dispatchEvent = function(element, event){
 			element.dispatchEvent(event);
 		}
 	} else /* if (document.createEventObject()) */ {
-		function createEvent(eventType, bubble, options){
+		createEvent = function(eventType, bubble, options){
 			var event			= document.createEventObject();
 
 			event.bubble		= bubble;
@@ -121,11 +123,11 @@ var fireEvent = (function(){
 		}
 		
 		// helpers for creating cross-browser events
-		function createCustomEvent(eventName, bubble){
+		createCustomEvent = function(eventName, bubble){
 			return createEvent(bubble ? 'dataavailable' : 'filterchange', bubble);
 		}
 
-		function createMouseEvent(eventName, bubble, options){
+		createMouseEvent = function(eventName, bubble, options){
 			options = Object.extend(Object.extend({}, optionsForMouseEvent), options);
 
 	           // fix options, IE button property
@@ -146,7 +148,7 @@ var fireEvent = (function(){
 			return createEvent(eventName, bubble, options);
 	    }
 
-		function createKeyEvent(eventName, bubble, options){
+		createKeyEvent = function(eventName, bubble, options){
 			options = Object.extend(Object.extend({}, optionsForKeyEvent), options);
 						
 			options.keyCode = options.charCode > 0 ? options.charCode : options.keyCode
@@ -155,11 +157,11 @@ var fireEvent = (function(){
 			return createEvent(eventName, bubble, options);
 		}
 		
-		function createHtmlEvent(){
+		createHtmlEvent = function(){
 			return false;
 		}
 		
-		function dispatchEvent(element, event){
+		dispatchEvent = function(element, event){
 			element.fireEvent(event.eventType, event);
 		}
 	}
