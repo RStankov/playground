@@ -122,8 +122,7 @@ var fireEvent = (function(){
 
 			return options ? Object.extend(event, options) : event;
 		}
-		
-		// helpers for creating cross-browser events
+
 		createCustomEvent = function(eventName, bubble){
 			return createEvent(bubble ? 'dataavailable' : 'filterchange', bubble);
 		}
@@ -131,19 +130,12 @@ var fireEvent = (function(){
 		createMouseEvent = function(eventName, bubble, options){
 			options = Object.extend(Object.extend({}, optionsForMouseEvent), options);
 
-	           // fix options, IE button property
+	         // fix options, IE button property
             switch(options.button){
-                case 0:
-                    options.button = 1;
-                    break;
-                case 1:
-                    options.button = 4;
-                    break;
-                case 2:
-                    // do not change
-                    break;
-                default:
-                    options.button = 0;                    
+                case 0:  options.button = 1; break;
+                case 1:  options.button = 4; break;
+                case 2:  /* no change */     break;
+                default: options.button = 0;                    
             }
 
 			return createEvent(eventName, bubble, options);
