@@ -1,7 +1,7 @@
 // credits to YUI ( http://developer.yahoo.com/yui/ )
 // credits to kangax ( Juriy Zaytsev http://thinkweb2.com/projects/prototype/ )
 var fireEvent = (function(){
-	var createEvent, createCustomEvent, createMouseEvent, createKeyEvent, createHtmlEvent, dispatchEvent;
+	var createEvent, createHtmlEvent, createCustomEvent, createMouseEvent, createKeyEvent, dispatchEvent;
 	if (document.createEvent){
 		createEvent = function(name, eventName, bubble, options){
 			var event = document.createEvent(name);
