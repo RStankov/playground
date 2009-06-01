@@ -72,9 +72,7 @@ var fireEvent = (function(){
             }
 			
 			// else in Safari, the closest thing available in Safari 2.x is UIEvents
-			event.initEvent(eventName, bubble, true);
-
-			return Object.extend(event, options);
+			return createEvent('UIEvents', eventName, bubble, options);
 	    }
 
 		function createKeyEvent(eventName, bubble, options){
@@ -104,7 +102,7 @@ var fireEvent = (function(){
 			}
 		}
 		
-		function createOtherEvent(){
+		function createHtmlEvent(){
 			return false;
 		}
 		
@@ -157,7 +155,7 @@ var fireEvent = (function(){
 			return createEvent(eventName, bubble, options);
 		}
 		
-		function createOtherEvent(){
+		function createHtmlEvent(){
 			return false;
 		}
 		
@@ -201,7 +199,7 @@ var fireEvent = (function(){
 		if (isCustomEvent(eventName)){		event = createCustomEvent(eventName, bubble); memo = options; }
 		else if (isMouseEvent(eventName))	event = createMouseEvent(eventName, bubble, options);
 		else if (isKeyEvent(eventName))		event = createKeyEvent(eventName, bubble, options);
-		else 								event = createOtherEvent(eventName, bubble, options);
+		else 								event = createHtmlEvent(eventName, bubble, options);
 
 		if (!event)
 			return false;
