@@ -160,8 +160,8 @@ var fireEvent = (function(){
 
 	// helpers for detecting event types
 	var isCustomEvent	= function(event){ return event.include(':'); },
-		isMouseEvent	= Enumerable.include.bind($w('click dblclick mouseover mouseout mousedown mouseup mousemove'));
-		isKeyEvent		= Enumerable.include.bind($w('keydown keyup keypress'));
+		isMouseEvent	= RegExp.prototype.test.bind(/^(click|dblclick|mouseover|mouseout|mousedown|mouseup|mousemove)$/),
+		isKeyEvent		= RegExp.prototype.test.bind(/^(keydown|keyup|keypress)$/);
 		
 	return function(element, eventName, options){
 		// get correct element
