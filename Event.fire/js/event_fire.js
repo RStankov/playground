@@ -1,5 +1,29 @@
 // credits to YUI ( http://developer.yahoo.com/yui/ )
 var fireEvent = (function(){
+	var optionsForMouseEvent = {
+		view:			window,
+		detail:			1, 
+		screenX:		0,
+		screenY:		0, 
+		clientX:		0,
+		clientY:		0,       
+		ctrlKey:		0,
+		altKey:			false, 
+		shiftKey:		false,
+		metaKey:		false, 
+		button:			0,
+		relatedTarget:	null
+	};
+	var optionsForKeyEvent = {
+		view: 		null,
+		ctrlKey: 	false,
+		altKey: 	false,
+		shiftKey: 	false,
+		metaKey: 	false,
+		keyCode: 	0,
+		charCode: 	0
+	};
+	
 	if (document.createEvent){
 		function createEvent(name, eventName, bubble, options){
 			var event = document.createEvent(name);
@@ -13,20 +37,7 @@ var fireEvent = (function(){
 		}
 
 		function createMouseEvent(eventName, bubble, options){
-			options = Object.extend({
-				view:			window,
-				detail:			1, 
-				screenX:		0,
-				screenY:		0, 
-				clientX:		0,
-				clientY:		0,       
-				ctrlKey:		0,
-				altKey:			false, 
-				shiftKey:		false,
-				metaKey:		false, 
-				button:			0,
-				relatedTarget:	null
-			}, options);
+			options = Object.extend(Object.extend({}, optionsForMouseEvent), options);
 
 			var event = document.createEvent('MouseEvents');
         
@@ -67,15 +78,7 @@ var fireEvent = (function(){
 	    }
 
 		function createKeyEvent(eventName, bubble, options){
-			options = Object.extend({
-				view: 		null,
-				ctrlKey: 	false,
-				altKey: 	false,
-				shiftKey: 	false,
-				metaKey: 	false,
-				keyCode: 	0,
-				charCode: 	0
-			}, options);
+			options = Object.extend(Object.extend({}, optionsForKeyEvent), options);
 
 			try {
 				// only Firefox supports initKeyEvent(), for now
@@ -125,20 +128,7 @@ var fireEvent = (function(){
 		}
 
 		function createMouseEvent(eventName, bubble, options){
-			options = Object.extend({
-				view:			window,
-				detail:			1, 
-				screenX:		0,
-				screenY:		0, 
-				clientX:		0,
-				clientY:		0,       
-				ctrlKey:		0,
-				altKey:			false, 
-				shiftKey:		false,
-				metaKey:		false, 
-				button:			0,
-				relatedTarget:	null
-			}, options);
+			options = Object.extend(Object.extend({}, optionsForMouseEvent), options);
 
 	           // fix options, IE button property
             switch(options.button){
@@ -159,17 +149,8 @@ var fireEvent = (function(){
 	    }
 
 		function createKeyEvent(eventName, bubble, options){
-			options = Object.extend({
-				view: 		null,
-				ctrlKey: 	false,
-				altKey: 	false,
-				shiftKey: 	false,
-				metaKey: 	false,
-				keyCode: 	0,
-				charCode: 	0
-			}, options);
-
-			
+			options = Object.extend(Object.extend({}, optionsForKeyEvent), options);
+						
 			options.keyCode = options.charCode > 0 ? options.charCode : options.keyCode
 			delete(options.charCode);
 
