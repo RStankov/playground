@@ -98,5 +98,36 @@ new Test.Unit.Runner({
 		document.body.stopObserving('keyup');
 		$('test-bubble2').stopObserving('keyup');
 		$('test-bubble2-inner').stopObserving('keyup');
+	},
+	testFocusEvent: function(){
+			var doc = 0, body = 0, main = 0, main = 0, inner = 0;
+
+			document.observe('focus', 					function(e){ if (e.element() == document) ++doc; });
+			document.body.observe('focus', 				function(e){ ++body;	});
+			$('test-html-event').observe('focus',		function(e){ ++main;	});
+			$('test-html-event-text').observe('focus',	function(e){ ++inner;	});
+
+			Event.fire(document, 'focus');
+			this.assertEqual(1, doc);
+
+			Event.fire(document.body, 'focus');
+			this.assertEqual(1, doc);
+			this.assertEqual(1, body);
+
+			Event.fire('test-html-event', 'focus');
+			this.assertEqual(1, doc);
+			this.assertEqual(2, body);
+			this.assertEqual(1, main);
+
+			Event.fire('test-html-event-text', 'focus');
+			this.assertEqual(1, doc);
+			this.assertEqual(3, body);
+			this.assertEqual(2, main);
+			this.assertEqual(1, inner);
+			
+			document.stopObserving('keyup');
+			document.body.stopObserving('keyup');
+			$('test-html-event').stopObserving('keyup');
+			$('test-html-event-text').stopObserving('keyup');
 	}
 })

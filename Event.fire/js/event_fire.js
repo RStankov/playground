@@ -104,8 +104,8 @@ var fireEvent = (function(){
 			}
 		}
 		
-		createHtmlEvent = function(){
-			return false;
+		createHtmlEvent = function(eventName, bubble){
+			return createEvent('HTMLEvents', eventName, bubble);
 		}
 		
 		dispatchEvent = function(element, event){
@@ -157,9 +157,7 @@ var fireEvent = (function(){
 			return createEvent(eventName, bubble, options);
 		}
 		
-		createHtmlEvent = function(){
-			return false;
-		}
+		createHtmlEvent = createEvent;
 		
 		dispatchEvent = function(element, event){
 			element.fireEvent(event.eventType, event);
