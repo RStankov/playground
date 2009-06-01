@@ -1,0 +1,13 @@
+code
+	- better options manipulation
+	- lazy loading
+	- setting relatedTarget in mouseEvent ( to check )
+	- maybe come down to only 2 or 3 create event methods
+	- clear
+
+tests:
+	- test all options (mouse)
+	- test all options (key)
+	- IE
+	- Opera
+	- Chrome
