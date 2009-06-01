@@ -122,28 +122,30 @@ var fireEvent = (function(){
 		};
 	}
 	
-	// default event options
-	var optionsForMouseEvent = {
-		view:			window,
-		detail:			1, 
-		screenX:		0,
-		screenY:		0, 
-		clientX:		0,
-		clientY:		0,       
-		ctrlKey:		0,
-		altKey:			false, 
-		shiftKey:		false,
-		metaKey:		false, 
-		button:			0,
-		relatedTarget:	null
-	}, optionsForKeyEvent = {
-		view: 		null,
-		ctrlKey: 	false,
-		altKey: 	false,
-		shiftKey: 	false,
-		metaKey: 	false,
-		keyCode: 	0,
-		charCode: 	0
+	var defaultOptions = {
+		event: {
+			bubble: 		true,
+//			cancelable:		true,
+			memo:			{},
+			view: 			document.defaultView,
+			ctrlKey: 		false,
+			altKey: 		false,
+			shiftKey: 		false,
+			metaKey: 		false
+		},
+		mouse: {
+			detail:			1, 
+			screenX:		0,
+			screenY:		0, 
+			clientX:		0,
+			clientY:		0, 
+			button:			0,
+			relatedTarget:	null
+		},
+		key: {
+			keyCode: 		0,
+			charCode: 		0
+		}
 	};
 	
 	// helpers for detecting event types
@@ -152,39 +154,25 @@ var fireEvent = (function(){
 		isKeyEvent		= RegExp.prototype.test.bind(/^(keydown|keyup|keypress)$/);
 		
 	return function(element, eventName, options){
-		// get correct element
+		options = Object.extend(Object.clone(defaultOptions.event), options || {});
 		element = $(element);
 			
 		if (element == document && document.createEvent && !element.dispatchEvent)
 			element = document.documentElement;
 
-		// get options, bubble, memo
-		var memo, bubble = true;
-		
-		if (Object.isUndefined(options)) {
-			options = {};
-		} else {
-			if ('memo' in options){
-				memo = options.memo;
-				delete(options.memo);
-			}
-			
-			if ('bubble' in options){
-				bubble = options.bubble;
-				delete(options.bubble);
-			}
-		}
-
-		// get event
-		var event;
-		
+		var event,
+			memo   = options.memo,
+			bubble = options.bubble;
+			 
+		delete(options.memo, options.bubble);
+				
 		if (isCustomEvent(eventName)){
 			event = createCustomEvent(eventName, bubble);
 			memo  = options;
 		} else if (isMouseEvent(eventName)){
-			event = createMouseEvent(eventName, bubble, Object.extend(Object.extend({}, optionsForMouseEvent), options));
+			event = createMouseEvent(eventName, bubble, Object.extend(Object.clone(defaultOptions.mouse), options));
 		} else if (isKeyEvent(eventName)){
-			event = createKeyEvent(eventName, bubble, Object.extend(Object.extend({}, optionsForKeyEvent), options));
+			event = createKeyEvent(eventName, bubble, Object.extend(Object.clone(defaultOptions.key), options));
 		} else {
 			event = createHtmlEvent(eventName, bubble, options);
 		}
