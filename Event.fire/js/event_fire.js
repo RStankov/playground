@@ -16,7 +16,7 @@ var fireEvent = (function(){
 
 		createMouseEvent = function(eventName, bubble, options){
 			var event = document.createEvent('MouseEvents');
-
+			
             if (event.initMouseEvent){
                 event.initMouseEvent(eventName, bubble, true, 
 					options.view,
@@ -32,22 +32,11 @@ var fireEvent = (function(){
 					options.button, 
 					options.relatedTarget
 				);
-            } else {
-				// Safari 2.x doesn't implement initMouseEvent(), the closest thing available is UIEvents
-				event = createEvent('UIEvents', eventName, bubble, options);
-			}
-			
-			// if there is relatedTarget options, but it isn't accepted to the event
-			// addit ot toElement / fromElement, because FireFox won't let you assign value to relatedTarget
-			if (options.relatedTarget && !event.relatedTarget){
-                if (evenName == 'mouseout'){
-                    event.toElement = options.relatedTarget;
-                } else if (evenName == 'mouseover'){
-                    event.fromElement = options.relatedTarget;
-                }
+				return event;
             }
-
-			return event;
+			
+			// Safari 2.x doesn't implement initMouseEvent(), the closest thing available is UIEvents
+			return createEvent('UIEvents', eventName, bubble, options);
 	    };
 
 		createKeyEvent = (function(){
@@ -105,7 +94,7 @@ var fireEvent = (function(){
                 case 1:  options.button = 4; break;
                 case 2:  /* no change */     break;
                 default: options.button = 0;                    
-            }
+            }	
 
 			return createEvent(eventName, bubble, options);
 	    };
