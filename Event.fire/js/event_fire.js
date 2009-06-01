@@ -1,4 +1,5 @@
 // credits to YUI ( http://developer.yahoo.com/yui/ )
+// credits to kangax ( Juriy Zaytsev http://thinkweb2.com/projects/prototype/ )
 var fireEvent = (function(){
 	var optionsForMouseEvent = {
 		view:			window,
