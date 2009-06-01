@@ -7,6 +7,7 @@ code
 	- maybe come down to only 2 or 3 create event methods
 	- clear code smells
 	- mouseenter / mouseleave ?
+	- use prototype spacing conventions ( use soft-tabs, 2 spaces )
 
 tests:
 	- test all options (mouse)
