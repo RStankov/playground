@@ -28,9 +28,9 @@ var fireEvent = (function(){
 	};
 	
 	var isCustomEvent	= function(event){ return event.include(':'); },
-		isMouseEvent	= RegExp.prototype.test.bind(/^(click|dblclick|mouseover|mouseout|mousedown|mouseup|mousemove)$/),
-		isKeyEvent		= RegExp.prototype.test.bind(/^(keydown|keyup|keypress)$/);
-		
+		mouseEvent  	= /^(click|dblclick|mouseover|mouseout|mousedown|mouseup|mousemove)$/,
+		keyEvent		= /^(keydown|keyup|keypress)$/;
+
 	var createEvent, dispatchEvent;
 	if (document.createEvent){
 		createEvent = (function(){
@@ -68,7 +68,7 @@ var fireEvent = (function(){
 					return createEvent('HTMLEvents', 'dataavailable', bubble);
 				}
 				
-				if (isMouseEvent(eventName)){
+				if (mouseEvent.test(eventName)){
 					options = Object.extend(Object.clone(defaultOptions.mouse), options);
 					var event = document.createEvent('MouseEvents');
 
@@ -84,7 +84,7 @@ var fireEvent = (function(){
 					return createEvent('UIEvents', eventName, bubble, options);
 				}
 				
-				if (isKeyEvent(eventName)){
+				if (keyEvent.test(eventName)){
 					return createKeyEvent(eventName, bubble, Object.extend(Object.clone(defaultOptions.key), options));
 				}
 				
@@ -102,7 +102,7 @@ var fireEvent = (function(){
 		createEvent = function(eventName, bubble, options){
 			if (isCustomEvent(eventName)){
 				eventName = bubble ? 'dataavailable' : 'filterchange';
-			} else if (isMouseEvent(eventName)){
+			} else if (mouseEvent.test(eventName)){
 				options = Object.extend(Object.clone(defaultOptions.mouse), options);
 				
 				// fix options, IE button property
@@ -112,7 +112,7 @@ var fireEvent = (function(){
 	                case 2:  /* no change */     break;
 	                default: options.button = 0;                    
 	            }
-			} else if (isKeyEvent(eventName)){
+			} else if (keyEvent.test(eventName)){
 				options = Object.extend(Object.clone(defaultOptions.key), options);
 				options.keyCode = options.charCode > 0 ? options.charCode : options.keyCode
 				delete(options.charCode);
