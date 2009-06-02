@@ -52,6 +52,9 @@ var fireEvent = (function(){
 		}());
 		
 		dispatchEvent = function(element, event){
+			if (element == document && !element.dispatchEvent)
+				element = document.documentElement;
+			
 			element.dispatchEvent(event);
 		};
 	} else /* if (document.createEventObject()) */ {
@@ -128,11 +131,7 @@ var fireEvent = (function(){
 		
 	return function(element, eventName, options){
 		options = Object.extend(Object.clone(defaultOptions.event), options || {});
-		element = $(element);
-			
-		if (element == document && document.createEvent && !element.dispatchEvent)
-			element = document.documentElement;
-
+	
 		var event,
 			memo   = options.memo,
 			bubble = options.bubble;
@@ -157,7 +156,7 @@ var fireEvent = (function(){
 		event.eventName = eventName;
 		event.memo		= memo || {};
 
-		dispatchEvent(element, event);
+		dispatchEvent($(element), event);
 		
 		// return extended element
 		return Event.extend(event);
