@@ -1,10 +1,6 @@
 code
-	- better options manipulation
-		- cancelable option
-		- bubble to in options do not throw it around as argument
 	- lazy loading
 	- setting relatedTarget in mouseEvent ( to check )
-	- maybe come down to only 2 or 3 create event methods
 	- clear code smells
 	- mouseenter / mouseleave ?
 	- use prototype spacing conventions ( use soft-tabs, 2 spaces )

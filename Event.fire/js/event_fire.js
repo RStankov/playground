@@ -4,7 +4,7 @@ var fireEvent = (function(){
 	var defaultOptions = {
 		event: {
 			bubble: 		true,
-//			cancelable:		true,
+			cancelable:		true,
 			memo:			{},
 			view: 			document.defaultView,
 			ctrlKey: 		false,
@@ -34,20 +34,24 @@ var fireEvent = (function(){
 	var createEvent, dispatchEvent;
 	if (document.createEvent){
 		createEvent = (function(){
-			var createEvent = function(name, eventName, bubble, options){
+			var createEvent = function(name, eventName, options){
 				var event = document.createEvent(name);
-				event.initEvent(eventName, bubble, true);
+				event.initEvent(eventName, options.bubble, options.cancelable);
+				
+				delete(options.bubble);
+				delete(options.cancelable);
 
-				return options ? Object.extend(event, options) : event;
+				return Object.extend(event, options);
 			};
 			
 			var createKeyEvent = (function(){
 				var e;
 				try { // only Firefox supports KeyEvents
 					e = document.createEvent('KeyEvents');
-					if (typeof e != 'undefined') return function(eventName, bubble, options){
+					if (typeof e != 'undefined') return function(eventName, 
+						options){
 						var event = document.createEvent('KeyEvents');
-						event.initKeyEvent(eventName, bubble, true, options.view, 
+						event.initKeyEvent(eventName, options.bubble, options.cancelable, options.view, 
 							options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,
 							options.keyCode, options.charCode);
 						return event;
@@ -63,9 +67,9 @@ var fireEvent = (function(){
 				return createEvent.curry('UIEvents');
 			}());
 			
-			return function(eventName, bubble, options){
+			return function(eventName, options){
 				if (isCustomEvent(eventName)){
-					return createEvent('HTMLEvents', 'dataavailable', bubble);
+					return createEvent('HTMLEvents', 'dataavailable', options);
 				}
 				
 				if (mouseEvent.test(eventName)){
@@ -73,7 +77,7 @@ var fireEvent = (function(){
 					var event = document.createEvent('MouseEvents');
 
 		            if (event.initMouseEvent){
-		                event.initMouseEvent(eventName, bubble, true, options.view, 
+		                event.initMouseEvent(eventName, options.bubble, options.cancelable, options.view, 
 							options.detail, options.screenX, options.screenY, options.clientX, options.clientY, 
 							options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,  
 							options.button, options.relatedTarget);
@@ -81,14 +85,14 @@ var fireEvent = (function(){
 		            }
 
 					// Safari 2.x doesn't implement initMouseEvent(), the closest thing available is UIEvents
-					return createEvent('UIEvents', eventName, bubble, options);
+					return createEvent('UIEvents', eventName, options);
 				}
 				
 				if (keyEvent.test(eventName)){
-					return createKeyEvent(eventName, bubble, Object.extend(Object.clone(defaultOptions.key), options));
+					return createKeyEvent(eventName, Object.extend(Object.clone(defaultOptions.key), options));
 				}
 				
-				return createEvent('HTMLEvents', eventName, bubble, options);
+				return createEvent('HTMLEvents', eventName, options);
 			};
 		})();
 		
@@ -99,9 +103,9 @@ var fireEvent = (function(){
 			element.dispatchEvent(event);
 		};
 	} else /* if (document.createEventObject()) */ {
-		createEvent = function(eventName, bubble, options){
+		createEvent = function(eventName, options){
 			if (isCustomEvent(eventName)){
-				eventName = bubble ? 'dataavailable' : 'filterchange';
+				eventName = options.bubble ? 'dataavailable' : 'filterchange';
 			} else if (mouseEvent.test(eventName)){
 				options = Object.extend(Object.clone(defaultOptions.mouse), options);
 				
@@ -131,17 +135,16 @@ var fireEvent = (function(){
 	return function(element, eventName, options){
 		options = Object.extend(Object.clone(defaultOptions.event), options || {});
 	
-		var memo   = options.memo,
-			bubble = options.bubble;
-			 
-		delete(options.memo, options.bubble);
+		var memo = options.memo;
+		delete(options.memo);
 	
+		// for backward compability
 		if (isCustomEvent(eventName)){
 			memo = options;
-			options = {};
+			options = {bubble: memo.bubble};
 		}
 		
-		var event = createEvent(eventName, bubble, options);
+		var event = createEvent(eventName, options);
 		
 		event.eventName = eventName;
 		event.memo		= memo || {};
