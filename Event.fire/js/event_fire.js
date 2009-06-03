@@ -3,7 +3,7 @@
 var fireEvent = (function(){
 	var defaultOptions = {
 		event: {
-			bubble: 		true,
+			bubbles: 		true,
 			cancelable:		true,
 			memo:			{},
 			view: 			document.defaultView,
@@ -36,9 +36,9 @@ var fireEvent = (function(){
 		createEvent = (function(){
 			var createEvent = function(name, eventName, options){
 				var event = document.createEvent(name);
-				event.initEvent(eventName, options.bubble, options.cancelable);
+				event.initEvent(eventName, options.bubbles, options.cancelable);
 				
-				delete(options.bubble);
+				delete(options.bubbles);
 				delete(options.cancelable);
 
 				return Object.extend(event, options);
@@ -51,7 +51,7 @@ var fireEvent = (function(){
 					if (typeof e != 'undefined') return function(eventName, 
 						options){
 						var event = document.createEvent('KeyEvents');
-						event.initKeyEvent(eventName, options.bubble, options.cancelable, options.view, 
+						event.initKeyEvent(eventName, options.bubbles, options.cancelable, options.view, 
 							options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,
 							options.keyCode, options.charCode);
 						return event;
@@ -77,7 +77,7 @@ var fireEvent = (function(){
 					var event = document.createEvent('MouseEvents');
 
 		            if (event.initMouseEvent){
-		                event.initMouseEvent(eventName, options.bubble, options.cancelable, options.view, 
+		                event.initMouseEvent(eventName, options.bubbles, options.cancelable, options.view, 
 							options.detail, options.screenX, options.screenY, options.clientX, options.clientY, 
 							options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,  
 							options.button, options.relatedTarget);
@@ -105,7 +105,7 @@ var fireEvent = (function(){
 	} else /* if (document.createEventObject()) */ {
 		createEvent = function(eventName, options){
 			if (isCustomEvent(eventName)){
-				eventName = options.bubble ? 'dataavailable' : 'filterchange';
+				eventName = options.bubbles ? 'dataavailable' : 'filterchange';
 			} else if (mouseEvent.test(eventName)){
 				options = Object.extend(Object.clone(defaultOptions.mouse), options);
 				
@@ -141,7 +141,7 @@ var fireEvent = (function(){
 		// for backward compability
 		if (isCustomEvent(eventName)){
 			memo = options;
-			options = {bubble: memo.bubble};
+			options = {bubbles: memo.bubbles};
 		}
 		
 		var event = createEvent(eventName, options);

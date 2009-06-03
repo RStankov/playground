@@ -32,8 +32,7 @@ new Test.Unit.Runner({
 		this.assertEqual(3, main);
 		this.assertEqual(2, inner);
 
-		// IE Have issues with bubble false
-		Event.fire('test-bubble-inner', 'click', {bubble: false});
+		Event.fire('test-bubble-inner', 'click', {bubbles: false});
 		this.assertEqual(1, doc);
 		this.assertEqual(4, body);
 		this.assertEqual(3, main);
@@ -87,12 +86,11 @@ new Test.Unit.Runner({
 		this.assertEqual(3, main);
 		this.assertEqual(2, inner);
 
-		// IE Have issues with bubble false
-		Event.fire('test-bubble2-inner', 'click', {bubble: false});
+		Event.fire('test-bubble2-inner', 'keyup', {bubbles: false});
 		this.assertEqual(1, doc);
 		this.assertEqual(4, body);
 		this.assertEqual(3, main);
-		this.assertEqual(2, inner);
+		this.assertEqual(3, inner);
 	
 		document.stopObserving('keyup');
 		document.body.stopObserving('keyup');
@@ -125,9 +123,9 @@ new Test.Unit.Runner({
 			this.assertEqual(2, main);
 			this.assertEqual(1, inner);
 			
-			document.stopObserving('keyup');
-			document.body.stopObserving('keyup');
-			$('test-html-event').stopObserving('keyup');
-			$('test-html-event-text').stopObserving('keyup');
+			document.stopObserving('focus');
+			document.body.stopObserving('focus');
+			$('test-html-event').stopObserving('focus');
+			$('test-html-event-text').stopObserving('focus');
 	}
 })
