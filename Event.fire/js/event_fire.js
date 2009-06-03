@@ -118,13 +118,16 @@ var fireEvent = (function(){
 	            }
 			} else if (keyEvent.test(eventName)){
 				options = Object.extend(Object.clone(defaultOptions.key), options);
-				options.keyCode = options.charCode > 0 ? options.charCode : options.keyCode
+				
+				if (options.charCode > 0)
+					options.keyCode = options.charCode;
+
 				delete(options.charCode);
 			}
 			
 			options.eventType = 'on' + eventName;
 			
-			return Object.extend(document.createEventObject(), options)
+			return Object.extend(document.createEventObject(), options);
 		};
 		
 		dispatchEvent = function(element, event){
