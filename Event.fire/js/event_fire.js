@@ -110,12 +110,12 @@ var fireEvent = (function(){
 				options = Object.extend(Object.clone(defaultOptions.mouse), options);
 				
 				// fix options, IE button property
-	            switch(options.button){
-	                case 0:  options.button = 1; break;
-	                case 1:  options.button = 4; break;
-	                case 2:  /* no change */     break;
-	                default: options.button = 0;                    
-	            }
+				switch(options.button){
+					case 0:  options.button = 1; break;
+					case 1:  options.button = 4; break;
+					case 2:  /* no change */     break;
+					default: options.button = 0;                    
+				}
 			} else if (keyEvent.test(eventName)){
 				options = Object.extend(Object.clone(defaultOptions.key), options);
 				
@@ -131,11 +131,27 @@ var fireEvent = (function(){
 		};
 		
 		dispatchEvent = function(element, event){
-			element.fireEvent(event.eventType, event);
+			// for some reason event.cancelBubble doesn't work
+			// and document.fireEvent doesn't support some events
+			// in both cases we could just take all events form 'prototype_event_registry'
+			if (!event.bubbles || (element == document && event.eventType in element)){
+				var registry = Element.retrieve(element, 'prototype_event_registry');
+				if (registry){
+					var handlers = registry.get(event.eventName);
+					if (handlers){
+						handlers.each(function(responder){
+							responder(event);
+						});
+					}
+				}
+			} else {
+				element.fireEvent(event.eventType, event);
+			} 
 		};
 	}
 		
 	return function(element, eventName, options){
+		
 		options = Object.extend(Object.clone(defaultOptions.event), options || {});
 	
 		var memo = options.memo;
@@ -153,7 +169,7 @@ var fireEvent = (function(){
 		event.memo		= memo || {};
 
 		dispatchEvent($(element), event);
-
+			
 		return Event.extend(event);
 	};
 })();

@@ -1,13 +1,14 @@
 code
-	- lazy loading
 	- setting relatedTarget in mouseEvent ( to check )
-	- clear code smells
 	- mouseenter / mouseleave ?
 	- use prototype spacing conventions ( use soft-tabs, 2 spaces )
 
 tests:
 	- test all options (mouse)
 	- test all options (key)
-	- IE
-	- Opera
 	- Chrome
+	
+issues on IE
+	- events like load, unload, abort, error, select, change, submit, reset, focus, blur, resize, scroll
+	- events for document
+	- options.bubbles = false

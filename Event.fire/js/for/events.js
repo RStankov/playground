@@ -1,16 +1,16 @@
 new Test.Unit.Runner({
-	testClickEventBuble: function(){
+	testClickEvent: function(){
 		var doc = 0, body = 0, main = 0, main = 0, inner = 0;
 
 		document.observe('click', 				function(e){ if (e.element() == document) ++doc; });
-		document.body.observe('click', 			function(e){ ++body;	});
+		$$('body').first().observe('click', 	function(e){ ++body;	});
 		$('test-bubble').observe('click',		function(e){ ++main;	});
 		$('test-bubble-inner').observe('click',	function(e){ ++inner;	});
-
+		
 		Event.fire(document, 'click');
 		this.assertEqual(1, doc);
 		
-		Event.fire(document.body, 'click');
+		Event.fire($$('body').first(), 'click');
 		this.assertEqual(1, doc);
 		this.assertEqual(1, body);
 		
@@ -53,18 +53,18 @@ new Test.Unit.Runner({
 		this.assertEqual(0, main);
 		this.assertEqual(1, inner);
 	},
-	testKeyUpEventBuble: function(){
+	testKeyUpEvent: function(){
 		var doc = 0, body = 0, main = 0, main = 0, inner = 0;
 
 		document.observe('keyup', 				function(e){ if (e.element() == document) ++doc; });
-		document.body.observe('keyup', 			function(e){ ++body;	});
+		$$('body').first().observe('keyup', 	function(e){ ++body;	});
 		$('test-bubble2').observe('keyup',		function(e){ ++main;	});
 		$('test-bubble2-inner').observe('keyup',function(e){ ++inner;	});
 
 		Event.fire(document, 'keyup');
 		this.assertEqual(1, doc);
 		
-		Event.fire(document.body, 'keyup');
+		Event.fire($$('body').first(), 'keyup');
 		this.assertEqual(1, doc);
 		this.assertEqual(1, body);
 		
@@ -97,35 +97,36 @@ new Test.Unit.Runner({
 		$('test-bubble2').stopObserving('keyup');
 		$('test-bubble2-inner').stopObserving('keyup');
 	},
-	testFocusEvent: function(){
+	// focus event in IE's don't bubble (hope Prototype will fix this in next versions)
+	testFocusInEvent: function(){
 			var doc = 0, body = 0, main = 0, main = 0, inner = 0;
 
-			document.observe('focus', 					function(e){ if (e.element() == document) ++doc; });
-			document.body.observe('focus', 				function(e){ ++body;	});
-			$('test-html-event').observe('focus',		function(e){ ++main;	});
-			$('test-html-event-text').observe('focus',	function(e){ ++inner;	});
+			document.observe('focusin', 					function(e){ if (e.element() == document) ++doc;});
+			$$('body').first().observe('focusin', 			function(e){ ++body;	});
+			$('test-html-event').observe('focusin',			function(e){ ++main;	});
+			$('test-html-event-text').observe('focusin',	function(e){ ++inner;	});
 
-			Event.fire(document, 'focus');
+			Event.fire(document, 'focusin');
 			this.assertEqual(1, doc);
 
-			Event.fire(document.body, 'focus');
+			Event.fire($$('body').first(), 'focusin');
 			this.assertEqual(1, doc);
 			this.assertEqual(1, body);
 
-			Event.fire('test-html-event', 'focus');
+			Event.fire('test-html-event', 'focusin');
 			this.assertEqual(1, doc);
 			this.assertEqual(2, body);
 			this.assertEqual(1, main);
 
-			Event.fire('test-html-event-text', 'focus');
+			Event.fire('test-html-event-text', 'focusin');
 			this.assertEqual(1, doc);
 			this.assertEqual(3, body);
 			this.assertEqual(2, main);
 			this.assertEqual(1, inner);
 			
-			document.stopObserving('focus');
-			document.body.stopObserving('focus');
-			$('test-html-event').stopObserving('focus');
-			$('test-html-event-text').stopObserving('focus');
+			document.stopObserving('focusin');
+			document.body.stopObserving('focusin');
+			$('test-html-event').stopObserving('focusin');
+			$('test-html-event-text').stopObserving('focusin');
 	}
 })
