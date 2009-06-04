@@ -150,17 +150,16 @@ var fireEvent = (function(){
 		};
 	}
 		
-	return function(element, eventName, options){
-		
-		options = Object.extend(Object.clone(defaultOptions.event), options || {});
-	
-		var memo = options.memo;
-		delete(options.memo);
+	return function(element, eventName){
+		var memo, options = Object.extend(Object.clone(defaultOptions.event), arguments[2] || {});
 	
 		// for backward compability
 		if (isCustomEvent(eventName)){
 			memo = options;
-			options = {bubbles: memo.bubbles};
+			options = {bubbles: Object.isUndefined(arguments[3]) ? true : arguments[3] };
+		} else {
+			memo = options.memo;
+			delete(options.memo);
 		}
 		
 		var event = createEvent(eventName, options);
