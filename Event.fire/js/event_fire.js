@@ -165,7 +165,7 @@ var fireEvent = (function(){
 		var event = createEvent(eventName, options);
 		
 		event.eventName = eventName;
-		event.memo		= memo || {};
+		event.memo		= memo;
 
 		dispatchEvent($(element), event);
 			
