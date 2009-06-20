@@ -1,0 +1,17 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<title>Draggable with no events</title>
+		<script type="text/javascript" src="js/prototype.js"></script>
+	</head>
+	<body>
+	  <div id="element" style="width: 20px; height: 20px; background-color: red;"></div>
+	  
+		<script type="text/javascript" src="js/sortable.js"></script>
+		<script type="text/javascript">
+		  $('element').observe('mousedown', CD3.startDragging.curry('element'));
+		</script>
+	</body>
+</html>
