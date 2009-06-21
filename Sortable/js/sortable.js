@@ -158,22 +158,12 @@ CD3.Dnd.Sortable = Class.create({
 		
 		if (!hover) return;
 		
-		var overlap = Position.overlap('vertical', hover), sibling;
-		if (overlap > 0.5){
-			sibling = hover.previous(this.options.item);
-			if (sibling == this.drag || sibling == this.ghost){
-				return;
-			}
+		var insert  = Position.overlap('vertical', hover) > 0.5 ? ['previous', 'before'] : ['next', 'after'],
+			sibling = hover[ insert[0] ](this.options.item);
 			
-			hover.insert({before: this.drag});
-		} else {
-			sibling = hover.next(this.options.item);
-			if (sibling == this.drag || sibling == this.ghost){
-				return;
-			}
-					
-			hover.insert({after: this.drag});			
-		}
+		if (sibling == this.drag || sibling == this.ghost) return;
+			 
+		Element._insertionTranslations[ insert[1] ](hover, this.drag);
 		
 		this.changed = true;
 		this.container.fire('cd3:sort:changed', {
