@@ -1,28 +1,31 @@
 /*
 
-events:
+options (draggable):
+	- filter
+	- moveX
+	- moveY
+	- scroll
+	
+options (sortable)
+	view CD3.Dnd.Sortable.defaultOptions variable
+
+events (dragable):
 	cd3:drag:start
 	cd3:drag:move
 	cd3:drag:finish
+	
+events (sortable)
 	cd3:sort:changed
 	cd3:sort:updated
-	
-Then staring draging something just fire custom events for that and recive them from CD3.Sortable
 
 */
+
 var CD3 = {};
 
 // drag and drop
 CD3.Dnd = {};
 
 // drag helpers
-/*
-	options:
-		- filter
-		- moveX
-		- moveY
-		- scroll
- */
 (function(){
 	var element, original, options, offset;
 
