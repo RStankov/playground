@@ -177,6 +177,16 @@ CD3.Dnd.Sortable = Class.create({
 			});
 		}
 		this.changed = this.drag = this.items = null;
+	},
+	serialize: function(name, list){
+		var id, rule = this.constructor.SERIALIZE_RULE;
+		
+		return list.select(this.options.item).inject([], function(memo, item){
+			if (id = (item.id && item.id.match(rule)[1])){
+				memo.push( name + '=' + id );
+			}
+			return memo;
+		}).join('&');
 	}
 });
 
@@ -188,10 +198,14 @@ CD3.Dnd.Sortable.defaultOptions = {
 	ghosting:	true
 };
 
+// Serialize rule
+CD3.Dnd.Sortable.SERIALIZE_RULE = /\w+_(\d+)/;
+
 // Sortable Ghost plugin
 CD3.Dnd.Sortable.Ghost = {
 	create: function(){
 		this.ghost = $(this.drag.cloneNode(true));
+		this.ghost.id = null;
 		this.ghost.setOpacity(0.5);
 		this.ghost.style.position = null;
 		
