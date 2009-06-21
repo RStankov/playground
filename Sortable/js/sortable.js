@@ -127,13 +127,17 @@ CD3.Dnd.Sortable = Class.create({
 		
 		container.delegate(options.handle, 'mousedown', CD3.Dnd.startDragging);
 		
-		container.observe('cd3:drag:start', this.onDragStart.bind(this));
-		container.observe('cd3:drag:move', this.onDrag.bind(this));
-		container.observe('cd3:drag:finish', this.onDragEnd.bind(this));
+		container.observe('cd3:drag:start', 	this.onDragStart.bind(this));
+		container.observe('cd3:drag:move',		this.onDrag.bind(this));
+		container.observe('cd3:drag:finish',	this.onDragEnd.bind(this));
 		 
-		container.observe('cd3:drag:start', this.createGhost.bind(this));
-		container.observe('cd3:sort:changed', this.insertGhost.bind(this));
-		container.observe('cd3:drag:finish', this.removeGhost.bind(this));
+		if (options.ghosting){
+			var ghost = this.constructor.Ghost;
+			
+			container.observe('cd3:drag:start',		ghost.create.bind(this));
+			container.observe('cd3:sort:changed',	ghost.insert.bind(this));
+			container.observe('cd3:drag:finish',	ghost.remove.bind(this));
+		}
 	},
 	onDragStart: function(e){
 		var handle  = e.memo.element,
@@ -170,21 +174,6 @@ CD3.Dnd.Sortable = Class.create({
 			});
 		}
 		this.changed = this.drag = this.items = null;
-	},
-	// Ghost Module
-	createGhost: function(){
-		this.ghost = $(this.drag.cloneNode(true));
-		this.ghost.setOpacity(0.5);
-		this.ghost.style.position = null;
-		
-		this.insertGhost();
-	},
-	insertGhost: function(){
-		this.drag.insert({ after: this.ghost });
-	},
-	removeGhost: function(){
-		this.ghost.remove();
-		this.ghost = false;
 	}
 });
 
@@ -192,5 +181,24 @@ CD3.Dnd.Sortable = Class.create({
 CD3.Dnd.Sortable.defaultOptions = {
 	list:		'ul',
 	item:		'li',
-	handle:		null
+	handle:		null,
+	ghosting:	true
+};
+
+// Sortable Ghost plugin
+CD3.Dnd.Sortable.Ghost = {
+	create: function(){
+		this.ghost = $(this.drag.cloneNode(true));
+		this.ghost.setOpacity(0.5);
+		this.ghost.style.position = null;
+		
+		this.drag.insert({ after: this.ghost });
+	},
+	insert: function(){
+		this.drag.insert({ after: this.ghost });
+	},
+	remove: function(){
+		this.ghost.remove();
+		this.ghost = false;
+	}
 };
