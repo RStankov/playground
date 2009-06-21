@@ -62,14 +62,12 @@ CD3.Dnd = {};
 		if (options.moveX != false) element.style.left = position.x + 'px';
 		if (options.moveY != false) element.style.top  = position.y + 'px';
 
-/*		
-		#TODO scrolling
 		if (options.scroll != false){
 			Position.prepare();
 			if (!Position.withinIncludingScrolloffsets(element, 0, 0))
 				element.scrollTo();
 		}
-*/		
+		
 		element.fire('cd3:drag:move' /* todo: data */);
 	}
 	
