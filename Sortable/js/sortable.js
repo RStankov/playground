@@ -3,7 +3,7 @@
 events:
 	cd3:drag:start
 	cd3:drag:move
-	cd3:drag:stop
+	cd3:drag:finish
 	cd3:sort:changed
 	cd3:sort:updated
 	
@@ -46,7 +46,7 @@ CD3.Dnd = {};
 			y: e.pointerY() - cumulativeOffset[1]
 		};
 		
-		element.makePositioned();
+		element.style.position = 'absolute'; // element.makePositioned();
 		
 		element.fire('cd3:drag:start', {
 			element: element
@@ -89,7 +89,7 @@ CD3.Dnd = {};
 		
 		e.stop();
 		
-		element.fire('cd3:drag:stop', {
+		element.fire('cd3:drag:finish', {
 			element: element
 		});
 		element.setStyle(original);
@@ -126,9 +126,14 @@ CD3.Dnd.Sortable = Class.create({
 		this.options	= options;
 		
 		container.delegate(options.handle, 'mousedown', CD3.Dnd.startDragging);
+		
 		container.observe('cd3:drag:start', this.onDragStart.bind(this));
 		container.observe('cd3:drag:move', this.onDrag.bind(this));
-		container.observe('cd3:drag:end', this.onDragEnd.bind(this));
+		container.observe('cd3:drag:finish', this.onDragEnd.bind(this));
+		 
+		container.observe('cd3:drag:start', this.createGhost.bind(this));
+		container.observe('cd3:sort:changed', this.insertGhost.bind(this));
+		container.observe('cd3:drag:finish', this.removeGhost.bind(this));
 	},
 	onDragStart: function(e){
 		var handle  = e.memo.element,
@@ -154,18 +159,32 @@ CD3.Dnd.Sortable = Class.create({
 		}
 		
 		this.changed = true;
-		this.container.observe('cd3:sort:changed', {
+		this.container.fire('cd3:sort:changed', {
 			sortable: this
 		});
 	},
 	onDragEnd: function(e){
 		if (this.changed){
-			container.observe('cd3:sort:updated', {
+			this.container.fire('cd3:sort:updated', {
 				sortable: this
 			});
 		}
+		this.changed = this.drag = this.items = null;
+	},
+	// Ghost Module
+	createGhost: function(){
+		this.ghost = $(this.drag.cloneNode(true));
+		this.ghost.setOpacity(0.5);
+		this.ghost.style.position = null;
 		
-		this.changed = this.drag = null = this.items;
+		this.insertGhost();
+	},
+	insertGhost: function(){
+		this.drag.insert({ after: this.ghost });
+	},
+	removeGhost: function(){
+		this.ghost.remove();
+		this.ghost = false;
 	}
 });
 
@@ -174,4 +193,4 @@ CD3.Dnd.Sortable.defaultOptions = {
 	list:		'ul',
 	item:		'li',
 	handle:		null
-}
+};
