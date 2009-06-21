@@ -68,13 +68,13 @@ CD3.Dnd = {};
 	    if (options.filter) 		position = options.filter(position);
 		if (options.moveX != false) element.style.left = position.x + 'px';
 		if (options.moveY != false) element.style.top  = position.y + 'px';
-
+/*
 		if (options.scroll != false){
 			Position.prepare();
 			if (!Position.withinIncludingScrolloffsets(element, 0, 0))
 				element.scrollTo();
 		}
-		
+*/		
 		element.fire('cd3:drag:move' /* todo: data */);
 	}
 	
@@ -110,15 +110,21 @@ CD3.Dnd.Sortable = Class.create({
 		container	= $(container);
 		options		= Object.extend(this.constructor.defaultOptions, options || {});
 		
+		if (!options.handle){
+			options.handle = options.sort;
+		}
+		
 		this.container	= container;
 		this.options	= options;
+		
+		container.delegate(options.handle, 'mousedown', CD3.Dnd.startDragging);
 	}
 });
 
 CD3.Dnd.Sortable.defaultOptions = {
 	container:	'ul',
 	sort:		'li',
-	handle:		'.drag',
+	handle:		null,
 	onChange:	null,
 	onUpdate: 	null
 	// other dnd options
