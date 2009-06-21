@@ -16,6 +16,14 @@ var CD3 = {};
 CD3.Dnd = {};
 
 // drag helpers
+/*
+	options:
+		- filter
+		- moveX
+		- moveY
+		- scroll
+
+ */
 (function(){
 	var element, original, options, offset;
 
@@ -94,7 +102,7 @@ CD3.Dnd = {};
 			options = {};
 		}
 		start(this, e, options);
-	}
+	};
 })();
 
 CD3.Sortable = Class.create({
