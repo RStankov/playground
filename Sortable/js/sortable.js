@@ -14,22 +14,29 @@ var CD3 = {};
 
 // drag and drop
 CD3.startDragging = (function(){
-	var element, oldZIndex, options, offset;
+	var element, original, options, offset;
 
 	function start(drag, e){
 		if (element) end(e);
 		
 		e.stop();
-		
-		element		 = $(drag).makePositioned();
-		oldZIndex 	 = element.style.zIndex;
-		options 	 = arguments[2] || {};
-			
+				
+		element		= $(drag);
+		options		= arguments[2] || {};
+		original	= {
+			position:	element.style.position,
+			zIndex:		element.style.zIndex,
+			top:		element.style.top,
+			left:		element.style.left
+		};
+	
 		var cumulativeOffset = element.cumulativeOffset(); 
 		offset = {
 			x: e.pointerX() - cumulativeOffset[0],
 			y: e.pointerY() - cumulativeOffset[1]
 		};
+		
+		element.makePositioned();
 		
 		element.fire('cd3:drag:start' /* todo: data */);
 				
@@ -48,7 +55,7 @@ CD3.startDragging = (function(){
 			y: e.pointerY() - cumulativeOffset[1] + (parseInt(element.getStyle('top'))  || 0) - offset.y
 		}
 		
-	    if (options.filter) 		position = options.filter(p);
+	    if (options.filter) 		position = options.filter(position);
 		if (options.moveX != false) element.style.left = position.x + 'px';
 		if (options.moveY != false) element.style.top  = position.y + 'px';
 
@@ -69,9 +76,9 @@ CD3.startDragging = (function(){
 		e.stop();
 		
 		element.fire('cd3:drag:stop' /* todo: data */);
-		element.style.zIndex = oldZIndex;
+		element.setStyle(original);
 		
-		element = oldZIndex = options = offset = null;
+		element = original = options = offset = null;
 		
 		document.stopObserving('mousemove', move);
 		document.stopObserving('mouseup', end);
