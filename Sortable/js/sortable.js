@@ -158,16 +158,27 @@ CD3.Dnd.Sortable = Class.create({
 		
 		if (!hover) return;
 		
-		var overlap = Position.overlap('vertical', hover);
+		var overlap = Position.overlap('vertical', hover), sibling;
 		if (overlap > 0.5){
+			sibling = hover.previous(this.options.item);
+			if (sibling == this.drag || sibling == this.ghost){
+				return;
+			}
+			
 			hover.insert({before: this.drag});
 		} else {
-			hover.insert({after: this.drag});
+			sibling = hover.next(this.options.item);
+			if (sibling == this.drag || sibling == this.ghost){
+				return;
+			}
+					
+			hover.insert({after: this.drag});			
 		}
 		
 		this.changed = true;
 		this.container.fire('cd3:sort:changed', {
-			sortable: this
+			sortable: this,
+			changed:  hover.up(this.options.list)
 		});
 	},
 	onDragEnd: function(e){
@@ -183,7 +194,7 @@ CD3.Dnd.Sortable = Class.create({
 		
 		return list.select(this.options.item).inject([], function(memo, item){
 			if (id = (item.id && item.id.match(rule)[1])){
-				memo.push( name + '=' + id );
+				memo.push( name + '[]=' + id );
 			}
 			return memo;
 		}).join('&');

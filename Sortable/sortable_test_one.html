@@ -74,6 +74,10 @@
 				);
 			});
 			
+			document.observe('cd3:sort:changed', function(e){
+				console.log(e.memo.sortable.serialize('items', e.memo.changed));
+			});
+			
 		</script>
 	</body>
 </html>
