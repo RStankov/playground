@@ -13,7 +13,10 @@ Then staring draging something just fire custom events for that and recive them 
 var CD3 = {};
 
 // drag and drop
-CD3.startDragging = (function(){
+CD3.Dnd = {};
+
+// drag helpers
+(function(){
 	var element, original, options, offset;
 
 	function start(drag, e){
@@ -84,7 +87,16 @@ CD3.startDragging = (function(){
 		document.stopObserving('mouseup', end);
 	}
 	
-	return start;
+	// expose
+	CD3.Dnd.drag = start;
+	
+	CD3.Dnd.startDragging = function(options, e){
+		if (arguments.length < 2){
+			e = options;
+			options = {};
+		}
+		start(this, e, options);
+	}
 })();
 
 CD3.Sortable = Class.create({
