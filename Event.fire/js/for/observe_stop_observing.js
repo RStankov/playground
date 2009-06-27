@@ -279,4 +279,20 @@ new Test.Unit.Runner({
      $('keyup').fire('keyup', {keyCode: 65, charCode: 0}); // 'a' char
      this.assert($('keyup_log').isPassed());
   },
+  
+  testUnloadEvent: function(){
+    var runned = 0;
+
+    window.onunload = function(){ ++runned; }
+    Event.observe(window, 'unload', function(event){
+      if (!event.target) {
+        this.fail('event.target should not be null!');
+      }
+      ++runned;
+    }.bind(this));
+
+    Event.fire(window, 'unload');
+    
+    this.assertEqual(2, runned);
+  }
 });
