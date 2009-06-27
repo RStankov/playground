@@ -157,5 +157,16 @@ new Test.Unit.Runner({
     
     $('right').fire('mousedown', { button: BUTTONS.right });
     this.assert($('right').isPassed());
+  },
+  
+  testContextMenuEvent: function(){
+    $('context').observe('contextmenu', function(e){
+        this.passed();
+        Event.stop(e);
+        log(e);
+    });
+    
+    $('context').fire('contextmenu');
+    this.assert($('context').isPassed());
   }
 });
