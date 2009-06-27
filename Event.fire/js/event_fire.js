@@ -1,6 +1,16 @@
 // credits to YUI ( http://developer.yahoo.com/yui/ )
 // credits to kangax ( Juriy Zaytsev http://thinkweb2.com/projects/prototype/ )
 var fireEvent = (function(){
+	// keep this here before moving fireEvent into Prototype's Event module
+	var _getDOMEventName = Prototype.K;
+
+	if (!Prototype.Browser.IE){
+		_getDOMEventName = function(eventName) {
+			var translations = { mouseenter: "mouseover", mouseleave: "mouseout" };
+			return eventName in translations ? translations[eventName] : eventName;
+		};
+	}
+  
 	var defaultOptions = {
 		event: {
 			bubbles: 		true,
@@ -158,6 +168,7 @@ var fireEvent = (function(){
 			memo = options;
 			options = {bubbles: Object.isUndefined(arguments[3]) ? true : arguments[3] };
 		} else {
+			eventName = _getDOMEventName(eventName);
 			memo = options.memo;
 			delete(options.memo);
 		}

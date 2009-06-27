@@ -14,7 +14,7 @@ Element.addMethods({
   clear: function(el, message) {
     el = $(el);
     el.className = '';
-    (el.down('span') || el).update('');
+    (el.down('span') || el).update(message || '');
   },
   
   isPassed: function(el){
@@ -278,6 +278,46 @@ new Test.Unit.Runner({
      
      $('keyup').fire('keyup', {keyCode: 65, charCode: 0}); // 'a' char
      this.assert($('keyup_log').isPassed());
+  },
+  
+  testMouseEnterMouseLeave: function(){
+    $('mouseenter').observe('mouseenter', function(event) {
+      if ($(event.relatedTarget).descendantOf($('mouseenter'))){
+        $('mouseenter').failed('<code id="mouseenter_child">mouseenter</code> failed');
+      } else {
+        $('mouseenter').passed('<code id="mouseenter_child">mouseenter</code> passed');
+      }
+    });
+    $('mouseenter').observe('mouseleave', function(event) {
+      if ($(event.relatedTarget).descendantOf($('mouseenter'))){
+        $('mouseenter').failed('<code id="mouseenter_child">mouseleave</code> failed');
+      } else {
+        $('mouseenter').passed('<code id="mouseenter_child">mouseleave</code> passed');
+      }
+    });
+    
+    // for browser who do not support natively mouseenter/mouseleave make extra checks
+    if (!('onmouseenter' in document.documentElement && 'onmouseleave' in document.documentElement)){
+      $('mouseenter').fire('mouseover', { relatedTarget: $('mouseenter_child') });
+      $('mouseenter').fire('mouseout', { relatedTarget: $('mouseenter_child') });
+      this.assert(! $('mouseenter').className );
+      
+      $('mouseenter').fire('mouseout', { relatedTarget: $('mouseenter_parent') });
+      this.assert($('mouseenter').isPassed());
+    }
+    
+    
+    $('mouseenter').clear('<code id="mouseenter_child">mouseenter/mouseleave</code> test');
+    
+    $('mouseenter').fire('mouseenter', { relatedTarget: $('mouseenter_parent') });
+    
+    this.assert($('mouseenter').isPassed());
+    
+    $('mouseenter').clear('<code id="mouseenter_child">mouseenter/mouseleave</code> test');
+
+    $('mouseenter').fire('mouseleave', { relatedTarget: $('mouseenter_parent') });
+      
+    this.assert($('mouseenter').isPassed());
   },
   
   testUnloadEvent: function(){
