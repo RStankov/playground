@@ -17,6 +17,7 @@
     .passed { color:green; border-color:olive }
     .failed { color:firebrick; border-color:firebrick }
     .button { padding:0.2em 0.4em; background:#ccc; border:1px solid #aaa }
+    #log_container { position: relative; }
     #log { position:absolute; left:35em; top:5em; width:20em; font-size:13px !important }
     h2 { font:normal 1.1em Verdana,Arial,sans-serif; font-style:italic; color:gray; margin-top:-1.2em }
     h2 *, h2 a:visited { color:#444 }
@@ -27,7 +28,13 @@
   </style>
 </head>
 <body>
-  <div id="log">log empty</div>
+  <h1>Prototype functional tests for the Event module</h1>
+  <div id="testlog"></div>
+  <div id="scripts"></div>
+  
+  <div id="log_container">
+    <div id="log">log empty</div>
+  </div>
   
   <p id="basic">A basic event test - <strong>click here</strong></p>
   <p id="basic_remove" class="subtest"><strong>click</strong> to stop observing the first test</p>
@@ -67,9 +74,7 @@
   
   <p id="prevent_default"><span>Test - Event.preventDefault()</span><input type="checkbox" name="checkbox" id="checkbox"></p>
   
-  <h1>Prototype functional tests for the Event module</h1>
-  <div id="testlog"></div>
-  <div id="scripts"></div>
+  
   <script type="text/javascript" src="js/for/observe_stop_observing.js"></script>
 </body>
 </html>
