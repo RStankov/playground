@@ -11,6 +11,12 @@ Element.addMethods({
     (el.down('span') || el).update(message || 'Test failed');
   },
   
+  clear: function(el, message) {
+    el = $(el);
+    el.className = '';
+    (el.down('span') || el).update('');
+  },
+  
   isPassed: function(el){
     return $(el).className == 'passed';
   }
@@ -113,5 +119,43 @@ new Test.Unit.Runner({
      $('basic3').fire('click');
      
      this.assert($('basic3').isPassed());
+  },
+
+  testLeftMouseClick: function(){
+    $w('left middle right').each(function(button){
+      Event.observe(button, 'mousedown', function(e){
+    	  if (Event['is' + this.id.capitalize() + 'Click'](e)){
+    	    this.passed('Squeak!')
+    	  } else {
+    	    this.failed('OH NO!');
+  	    }
+    	  log(e);
+      });
+    });
+    
+    var BUTTONS = {
+      left: 0,
+      middle: 1,
+      right: 2
+    };
+    
+    $w('left middle right').each(function(id){
+      var element = $(id);
+
+      for(var button in BUTTONS){
+        element.clear();
+        element.fire('mousedown', { button: BUTTONS[button] });
+        this.assertEqual(id == button, element.isPassed());
+      }
+    }.bind(this));
+    
+    $('left').fire('mousedown');
+    this.assert($('left').isPassed());
+    
+    $('middle').fire('mousedown', { button: BUTTONS.middle });
+    this.assert($('middle').isPassed());
+    
+    $('right').fire('mousedown', { button: BUTTONS.right });
+    this.assert($('right').isPassed());
   }
 });
