@@ -265,4 +265,18 @@ new Test.Unit.Runner({
     
     this.assert($('don_not_stop').isPassed());
   },
+
+  testKeyUp: function(){
+    $('keyup').observe('keyup', function(e){
+       this.assertEqual(65, e.keyCode);
+       this.assertEqual(0, e.charCode);
+      
+       el = $('keyup_log');
+       el.passed('Key captured: the length is ' + $('keyup').value.length);
+       log(e);
+     }.bind(this));
+     
+     $('keyup').fire('keyup', {keyCode: 65, charCode: 0}); // 'a' char
+     this.assert($('keyup_log').isPassed());
+  },
 });
