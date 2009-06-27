@@ -215,4 +215,54 @@ new Test.Unit.Runner({
     $('obj_inspect').fire('click');
     this.assert($('obj_inspect').isPassed());
   },
+
+  testBindAsEventListener: function(){
+    $('bind').observe('click', function(e, str, arr){
+      el = $('bind')
+      try {
+        if (arguments.length != 3) throw arguments.length + ' arguments: ' + $A(arguments).inspect()
+        if (str != 'foo') throw 'wrong string: ' + str
+        if (arr.constructor != Array) throw '3rd parameter is not an array'
+        el.passed();
+      }
+      catch (err) { el.failed(err.toString()) }
+      log(e);
+    }.bindAsEventListener(document.body, 'foo', [1,2,3]));
+    
+    $('bind').fire('click');
+    this.assert($('bind').isPassed());
+  },
+
+  testStopPropagation: function(){
+    $('stop').observe('click', function(e){
+      e.stop();
+      this.passed();
+      log(e);
+    });
+    $('container').observe('click', function(e){
+      $('stop').failed();
+      log(e);
+    });
+    
+    
+    this.assert(!$('stop').isPassed());
+    
+    $('stop').fire('click');
+    
+    this.assert($('stop').isPassed());
+  },
+
+  testNotStopingPropagation: function(){
+    $('container2').observe('click', function(e){
+      $('don_not_stop').passed();
+      log(e);
+    });
+    
+    
+    this.assert(!$('don_not_stop').isPassed());
+    
+    $('don_not_stop').fire('click');
+    
+    this.assert($('don_not_stop').isPassed());
+  },
 });
