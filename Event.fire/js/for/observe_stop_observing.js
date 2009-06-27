@@ -72,8 +72,11 @@ new Test.Unit.Runner({
   
   testInlineEvents: function(){
     // #inline_test onclick="Event.stop(event); $(this).passed();"
+    this.assert(!$('basic2').isPassed());
+    
     $('inline_test').fire('click');
-    this.assertEqual($('inline_test').className, 'passed');
+    
+    this.assert($('basic2').isPassed());
   },
   
   testScopeOfTheHandler: function(){
