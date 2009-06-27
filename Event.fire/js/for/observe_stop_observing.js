@@ -191,4 +191,16 @@ new Test.Unit.Runner({
     $('currentTarget').fire('click');
     this.assert($('currentTarget').isPassed());
   },
+
+  testEventFindElement: function(){
+    $('findElement').observe('click', function(e){
+      if(e.findElement('p') == this && e.findElement('body') == document.body &&
+         e.findElement('foo') == null) this.passed();
+      else this.failed();
+      log(e);
+    });
+  
+    $('findElement').fire('click');
+    this.assert($('findElement').isPassed());
+  },
 });
