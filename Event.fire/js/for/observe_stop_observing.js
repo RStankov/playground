@@ -24,11 +24,11 @@ Element.addMethods({
 
 new Test.Unit.Runner({
   testBasicClickCallback: function(){
-    var clickBasic = 0;
-	  var basicCallback = function(e){
+   var runned = 0;
+	 $('basic').observe('click', function(e){
       $('basic').passed();
       
-      clickBasic++;
+      runned++;
       
       if ($('basic_remove')){
         $('basic_remove').show();
@@ -36,9 +36,7 @@ new Test.Unit.Runner({
         this.fail();
         $('basic').failed();
       }
-    }.bind(this);
-
-    $('basic').observe('click', basicCallback)
+    }.bind(this));
     
     $('basic_remove').observe('click', function(e){
       el = $('basic');
@@ -50,15 +48,14 @@ new Test.Unit.Runner({
     
     $('basic').fire('click');
     
-    this.assertEqual(clickBasic, 1);
+    this.assertEqual(runned, 1);
     this.assert($('basic_remove').visible());
     
     $('basic_remove').fire('click');
     
     $('basic').fire('click');
     
-    this.assertEqual(clickBasic, 1);
-    
+    this.assertEqual(runned, 1);
     this.assertNull($('basic_remove'));
   },
   
