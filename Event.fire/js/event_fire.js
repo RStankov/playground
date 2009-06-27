@@ -159,16 +159,18 @@ var fireEvent = (function(){
     };
   }
   
-  return function(element, eventName){
-    var memo, options = Object.extend(Object.clone(defaultOptions.event), arguments[2] || {});
+  return function(element, eventName, options){
+    var memo;
     
-    // for backward compability
+    // for backward compability, custom events take (element, eventName[, memo[, bubbles]]) arguments
     if (isCustomEvent(eventName)){
       memo    = options;
       options = {bubbles: Object.isUndefined(arguments[3]) ? true : arguments[3] };
     } else {
       eventName = _getDOMEventName(eventName);
+      options   = Object.extend(Object.clone(defaultOptions.event), options);
       memo      = options.memo;
+      
       delete(options.memo);
     }
     
