@@ -203,4 +203,16 @@ new Test.Unit.Runner({
     $('findElement').fire('click');
     this.assert($('findElement').isPassed());
   },
+
+  testObjectInspect: function(){
+    $('obj_inspect').observe('click', function(e){
+      el = $('obj_inspect')
+      try { el.passed(Object.inspect(e)) }
+      catch (err) { el.failed('Failed! Error thrown') }
+      log(e);
+    });
+    
+    $('obj_inspect').fire('click');
+    this.assert($('obj_inspect').isPassed());
+  },
 });
