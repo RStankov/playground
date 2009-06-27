@@ -19,7 +19,7 @@ function log(obj) {
     line = prop + ": " + Object.inspect(obj[prop]);
     all.push(line.escapeHTML());
   }
-  $('log').update(all.join('<br />'));
+//  $('log').update(all.join('<br />'));
 }
 
 new Test.Unit.Runner({
@@ -71,5 +71,4 @@ new Test.Unit.Runner({
     $('inline_test').fire('click');
     this.assertEqual($('inline_test').className, 'passed');
   }
-  
 });
