@@ -22,16 +22,6 @@ Element.addMethods({
   }
 });
 
-function log(obj) {
-  var line, all = [];
-  for (prop in obj) {
-    if (typeof obj[prop] == 'function' || /^[A-Z]|[XY]$/.test(prop)) continue;
-    line = prop + ": " + Object.inspect(obj[prop]);
-    all.push(line.escapeHTML());
-  }
-//  $('log').update(all.join('<br />'));
-}
-
 new Test.Unit.Runner({
   testBasicClickCallback: function(){
     var clickBasic = 0;
@@ -46,8 +36,6 @@ new Test.Unit.Runner({
         this.fail();
         $('basic').failed();
       }
-      
-      log(e);
     }.bind(this);
 
     $('basic').observe('click', basicCallback)
@@ -58,8 +46,6 @@ new Test.Unit.Runner({
       el.stopObserving('click');
       
       $('basic_remove').remove();
-      
-      log(e);
     }).hide();
     
     $('basic').fire('click');
@@ -96,8 +82,6 @@ new Test.Unit.Runner({
       } else {
         this.passed();
       }
-      
-      log(e);
     });
     
     this.assert(!$('basic2').isPassed());
@@ -113,7 +97,6 @@ new Test.Unit.Runner({
        el = $('basic3');
        if (typeof evt != 'object') this.failed('Expected event object for first argument');
        else this.passed('Good first argument');
-       log(evt);
      });
      
      $('basic3').fire('click');
@@ -129,7 +112,6 @@ new Test.Unit.Runner({
     	  } else {
     	    this.failed('OH NO!');
   	    }
-    	  log(e);
       });
     });
     
@@ -163,7 +145,6 @@ new Test.Unit.Runner({
     $('context').observe('contextmenu', function(e){
         this.passed();
         Event.stop(e);
-        log(e);
     });
     
     $('context').fire('contextmenu');
@@ -174,7 +155,6 @@ new Test.Unit.Runner({
     $('target').observe('click', function(e) {
       if (e.element() == this && e.target == this) this.passed();
       else this.failed();
-      log(e);
     });
      
     $('target').fire('click');
@@ -185,7 +165,6 @@ new Test.Unit.Runner({
     $('currentTarget').observe('click', function(e){
       if(e.currentTarget !== this) this.failed();
       else this.passed();
-      log(e);
     });
     
     $('currentTarget').fire('click');
@@ -197,7 +176,6 @@ new Test.Unit.Runner({
       if(e.findElement('p') == this && e.findElement('body') == document.body &&
          e.findElement('foo') == null) this.passed();
       else this.failed();
-      log(e);
     });
   
     $('findElement').fire('click');
@@ -209,7 +187,6 @@ new Test.Unit.Runner({
       el = $('obj_inspect')
       try { el.passed(Object.inspect(e)) }
       catch (err) { el.failed('Failed! Error thrown') }
-      log(e);
     });
     
     $('obj_inspect').fire('click');
@@ -226,7 +203,6 @@ new Test.Unit.Runner({
         el.passed();
       }
       catch (err) { el.failed(err.toString()) }
-      log(e);
     }.bindAsEventListener(document.body, 'foo', [1,2,3]));
     
     $('bind').fire('click');
@@ -237,11 +213,9 @@ new Test.Unit.Runner({
     $('stop').observe('click', function(e){
       e.stop();
       this.passed();
-      log(e);
     });
     $('container').observe('click', function(e){
       $('stop').failed();
-      log(e);
     });
     
     
