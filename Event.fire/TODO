@@ -1,14 +1,21 @@
-code
+test options 
 	- setting relatedTarget in mouseEvent ( to check )
-	- mouseenter / mouseleave ?
-	- use prototype spacing conventions ( use soft-tabs, 2 spaces )
-
-tests:
 	- test all options (mouse)
 	- test all options (key)
-	- Chrome
 	
 issues on IE
 	- events like load, unload, abort, error, select, change, submit, reset, focus, blur, resize, scroll
-	- events for document
-	- options.bubbles = false
+	
+test in ( Compatibility http://www.prototypejs.org/download#stable ):
+	IE6
+	IE7
+	IE8
+	FF2
+	FF3
+	FF3.5 ?
+	Safary2
+	Safary3
+	Safary4
+	Opera9.25>=
+	Opera9.6
+	Chrome
