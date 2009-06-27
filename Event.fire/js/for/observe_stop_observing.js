@@ -168,5 +168,16 @@ new Test.Unit.Runner({
     
     $('context').fire('contextmenu');
     this.assert($('context').isPassed());
-  }
+  },
+  
+  testEventElementMethod: function(){
+    $('target').observe('click', function(e) {
+      if (e.element() == this && e.target == this) this.passed();
+      else this.failed();
+      log(e);
+    });
+     
+    $('target').fire('click');
+    this.assert($('target').isPassed());
+  },
 });
