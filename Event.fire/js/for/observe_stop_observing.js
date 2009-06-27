@@ -180,4 +180,15 @@ new Test.Unit.Runner({
     $('target').fire('click');
     this.assert($('target').isPassed());
   },
+
+  testCurrentTarget: function(){
+    $('currentTarget').observe('click', function(e){
+      if(e.currentTarget !== this) this.failed();
+      else this.passed();
+      log(e);
+    });
+    
+    $('currentTarget').fire('click');
+    this.assert($('currentTarget').isPassed());
+  },
 });
