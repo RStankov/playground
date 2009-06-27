@@ -251,13 +251,25 @@ new Test.Unit.Runner({
     
     this.assert($('stop').isPassed());
   },
+  
+  testPreventDefault: function(){
+      $('checkbox').checked = false;
+      $('checkbox').observe('click', function(e){
+        $('prevent_default').passed();
+        e.preventDefault();
+      });
+      
+      $('checkbox').fire('click');
+      
+      this.assert(!$('checkbox').checked);
+      this.assert($('prevent_default').isPassed());
+  },
 
   testNotStopingPropagation: function(){
     $('container2').observe('click', function(e){
       $('don_not_stop').passed();
       log(e);
     });
-    
     
     this.assert(!$('don_not_stop').isPassed());
     
