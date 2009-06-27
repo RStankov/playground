@@ -9,6 +9,10 @@ Element.addMethods({
     el = $(el);
     el.className = 'failed';
     (el.down('span') || el).update(message || 'Test failed');
+  },
+  
+  isPassed: function(el){
+    return $(el).className == 'passed';
   }
 });
 
@@ -70,5 +74,28 @@ new Test.Unit.Runner({
     // #inline_test onclick="Event.stop(event); $(this).passed();"
     $('inline_test').fire('click');
     this.assertEqual($('inline_test').className, 'passed');
+  },
+  
+  testScopeOfTheHandler: function(){
+    var runned = false;
+    
+    $('basic2').observe('click', function(e) {
+      runned = true;
+      
+      if(this === window){
+        $('basic2').failed('Window scope! (needs scope correction)');
+      } else {
+        this.passed();
+      }
+      
+      log(e);
+    });
+    
+    this.assert(!$('basic2').isPassed());
+    
+    $('basic2').fire('click');
+    
+    this.assert(runned);
+    this.assert($('basic2').isPassed());
   }
 });
