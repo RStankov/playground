@@ -72,11 +72,11 @@ new Test.Unit.Runner({
   
   testInlineEvents: function(){
     // #inline_test onclick="Event.stop(event); $(this).passed();"
-    this.assert(!$('basic2').isPassed());
+    this.assert(!$('inline_test').isPassed());
     
     $('inline_test').fire('click');
     
-    this.assert($('basic2').isPassed());
+    this.assert($('inline_test').isPassed());
   },
   
   testScopeOfTheHandler: function(){
@@ -100,5 +100,18 @@ new Test.Unit.Runner({
     
     this.assert(runned);
     this.assert($('basic2').isPassed());
+  },
+  
+  testEventObjectAsFirstArgument: function(){
+    $('basic3').observe('click', function(evt) {
+       el = $('basic3');
+       if (typeof evt != 'object') this.failed('Expected event object for first argument');
+       else this.passed('Good first argument');
+       log(evt);
+     });
+     
+     $('basic3').fire('click');
+     
+     this.assert($('basic3').isPassed());
   }
 });
