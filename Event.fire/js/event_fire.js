@@ -19,7 +19,6 @@ var fireEvent = (function(){
     event: {
       bubbles:    true,
       cancelable: true,
-      memo:       {},
       view:       document.defaultView,
       ctrlKey:    false,
       altKey:     false,
