@@ -104,14 +104,13 @@ new Test.Unit.Runner({
   testLeftMouseClick: function(){
     $w('left middle right').each(function(button){
       Event.observe(button, 'mousedown', function(e){
-    	  if (Event['is' + this.id.capitalize() + 'Click'](e)){
+    	  if (Event['is' + button.capitalize() + 'Click'](e)){
     	    this.passed('Squeak!')
     	  } else {
     	    this.failed('OH NO!');
   	    }
       });
     });
-    
     var BUTTONS = {
       left: 0,
       middle: 1,
@@ -124,7 +123,7 @@ new Test.Unit.Runner({
       for(var button in BUTTONS){
         element.clear();
         element.fire('mousedown', { button: BUTTONS[button] });
-        this.assertEqual(id == button, element.isPassed());
+        this.assertEqual(id == button, element.isPassed(), id + " on " + button);
       }
     }.bind(this));
     
@@ -239,7 +238,6 @@ new Test.Unit.Runner({
   testNotStopingPropagation: function(){
     $('container2').observe('click', function(e){
       $('don_not_stop').passed();
-      log(e);
     });
     
     this.assert(!$('don_not_stop').isPassed());
@@ -256,7 +254,6 @@ new Test.Unit.Runner({
       
        el = $('keyup_log');
        el.passed('Key captured: the length is ' + $('keyup').value.length);
-       log(e);
      }.bind(this));
      
      $('keyup').fire('keyup', {keyCode: 65, charCode: 0}); // 'a' char

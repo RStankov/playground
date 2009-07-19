@@ -1,18 +1,7 @@
 // credits to YUI ( http://developer.yahoo.com/yui/ )
 // credits to kangax ( Juriy Zaytsev http://thinkweb2.com/projects/prototype/ )
-var fireEvent = (function(){
-  // keep this here before moving fireEvent into Prototype's Event module
-  var _getDOMEventName = Prototype.K;
-
-  if (!Prototype.Browser.IE){
-    _getDOMEventName = function(eventName) {
-      var translations = { mouseenter: "mouseover", mouseleave: "mouseout" };
-      return eventName in translations ? translations[eventName] : eventName;
-    };
-  }
-  
-  var isCustomEvent = function(event){ return event.include(':'); },
-      mouseEvent    = /^(click|dblclick|mouseover|mouseout|mousedown|mouseup|mousemove)$/,
+var fire = (function(){
+  var mouseEvent    = /^(click|dblclick|mouseover|mouseout|mousedown|mouseup|mousemove)$/,
       keyEvent      = /^(keydown|keyup|keypress)$/;
       
   var defaultOptions = {
@@ -76,7 +65,7 @@ var fireEvent = (function(){
       }());
       
       return function(eventName, options){
-        if (isCustomEvent(eventName)){
+        if (eventName.include(':')){
           return createEvent('HTMLEvents', 'dataavailable', options);
         }
         
@@ -112,7 +101,7 @@ var fireEvent = (function(){
     };
   } else /* if (document.createEventObject()) */ {
     createEvent = function(eventName, options){
-      if (isCustomEvent(eventName)){
+      if (eventName.include(':')){
         eventName = options.bubbles ? 'dataavailable' : 'filterchange';
       } else if (mouseEvent.test(eventName)){
         options = Object.extend(Object.clone(defaultOptions.mouse), options);
@@ -140,7 +129,7 @@ var fireEvent = (function(){
     
     dispatchEvent = function(element, event){
       // for some reason event.cancelBubble doesn't work
-      // and document.fireEvent doesn't support some events
+      // and document.fireEvent doesn't support several events
       // in both cases we could just take all events form 'prototype_event_registry'
       if (!event.bubbles || (element == document && event.eventType in element)){
         var registry = Element.retrieve(element, 'prototype_event_registry');
@@ -161,8 +150,8 @@ var fireEvent = (function(){
   return function(element, eventName, options){
     var memo;
     
-    // for backward compability, custom events take (element, eventName[, memo[, bubbles]]) arguments
-    if (isCustomEvent(eventName)){
+    // custom events take (element, eventName[, memo[, bubbles]]) arguments
+    if (eventName.include(':')){
       memo    = options;
       options = {bubbles: Object.isUndefined(arguments[3]) ? true : arguments[3] };
     } else {
