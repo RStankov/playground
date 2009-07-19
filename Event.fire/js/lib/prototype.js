@@ -4416,10 +4416,14 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
   if (Prototype.Browser.IE) {
     function _relatedTarget(event) {
       var element;
-      switch (event.type) {
-        case 'mouseover': element = event.fromElement; break;
-        case 'mouseout':  element = event.toElement;   break;
-        default: return null;
+      if (event.relatedTarget){
+        element = event.relatedTarget;
+      } else { 
+        switch (event.type) {
+          case 'mouseover': element = event.fromElement; break;
+          case 'mouseout':  element = event.toElement;   break;
+          default: return null;
+        }
       }
       return Element.extend(element);
     }
@@ -4618,7 +4622,7 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
   }
 
   var fire = (function(){
-    var mouseEvent    = /^(click|dblclick|mouseover|mouseout|mousedown|mouseup|mousemove)$/,
+    var mouseEvent    = /^(click|dblclick|mouseover|mouseout|mousedown|mouseup|mousemove|mouseenter|mouseleave)$/,
         keyEvent      = /^(keydown|keyup|keypress)$/;
 
     var defaultOptions = {
@@ -4749,6 +4753,7 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
         // and document.fireEvent doesn't support several events
         // in both cases we could just take all events form 'prototype_event_registry'
         if (!event.bubbles || (element == document && event.eventType in element)){
+          if (Object.isFunction(element[event.eventType])) element[event.eventType]();
           var registry = Element.retrieve(element, 'prototype_event_registry');
           if (registry){
             var handlers = registry.get(event.eventName);

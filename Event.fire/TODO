@@ -1,13 +1,39 @@
-Tests
-	IE6
-	IE7
-	IE8
+Tests:
+V	IE6
+V	IE7
+V	IE8
 	FF2
-	FF3
-	FF3.5 
+V	FF3 - winXp
+V	FF3.5 - MacOS
 	Safary2
-	Safary3
-	Safary4
-	Opera9.25>=
-	Opera9.6
-	Chrome
+V	Safary3
+V	Safary4 - MacOS
+V	Opera9.25>=
+V	Opera9.6 - winXp
+V	Chrome - winXp
+
+Prototype changes:
+
+else if (Prototype.Browser.WebKit) {
+  _isButton = function(event, code) {
+    switch (code) {
+      case 0: return event.which == 1 && !event.metaKey;
+      case 1: return event.which == 2 && !event.metaKey;
+      case 2: return event.which == 3 && !event.metaKey;
+      default: return false;
+    }
+  };
+
+function _relatedTarget(event) {
+  var element;
+  if (event.relatedTarget){
+    element = event.relatedTarget;
+  } else { 
+    switch (event.type) {
+      case 'mouseover': element = event.fromElement; break;
+      case 'mouseout':  element = event.toElement;   break;
+      default: return null;
+    }
+  }
+  return Element.extend(element);
+}
