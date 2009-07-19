@@ -1,14 +1,15 @@
 Tests:
-V	IE6
-V	IE7
-V	IE8
-	FF2
-V	FF3 - winXp
+V	IE6 - winXp
+V	IE7 - winXp
+V	IE8 - winXp
+V	FF2 - winXp
+V	FF3  - winXp
 V	FF3.5 - MacOS
-	Safary2
-V	Safary3
+	Safary2 - MacOs,
+V	Safary3 - MacOs, winXp
 V	Safary4 - MacOS
-V	Opera9.25>=
+V Opera8.5 - winXp
+V	Opera9.25 - winXp
 V	Opera9.6 - winXp
 V	Chrome - winXp
 
@@ -36,4 +37,4 @@ function _relatedTarget(event) {
     }
   }
   return Element.extend(element);
-}
+}file:///C:/Documents%20and%20Settings/rstankov/Desktop/Event.fire/event.html

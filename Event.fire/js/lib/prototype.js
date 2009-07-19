@@ -4622,7 +4622,7 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
   }
 
   var fire = (function(){
-    var mouseEvent    = /^(click|dblclick|mouseover|mouseout|mousedown|mouseup|mousemove|mouseenter|mouseleave)$/,
+    var mouseEvent    = /^(click|dblclick|mouseover|mouseout|mousedown|mouseup|mousemove|mouseenter|mouseleave|contextmenu)$/,
         keyEvent      = /^(keydown|keyup|keypress)$/;
 
     var defaultOptions = {
