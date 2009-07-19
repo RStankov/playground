@@ -1,18 +1,10 @@
-test options 
-	- setting relatedTarget in mouseEvent ( to check )
-	- test all options (mouse)
-	- test all options (key)
-	
-issues on IE
-	- events like load, unload, abort, error, select, change, submit, reset, focus, blur, resize, scroll
-	
-test in ( Compatibility http://www.prototypejs.org/download#stable ):
+Tests
 	IE6
 	IE7
 	IE8
 	FF2
 	FF3
-	FF3.5 ?
+	FF3.5 
 	Safary2
 	Safary3
 	Safary4
