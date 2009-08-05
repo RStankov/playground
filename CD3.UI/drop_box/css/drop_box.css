@@ -1,0 +1,49 @@
+body {
+	font-family:					"Lucida Grande", "Helvetica Neue", Arial, sans-serif;
+	font-size:						10px;
+	line-height:					1em;
+}
+
+.overlay {
+	position:						fixed;
+	top:	 						0px;
+	width:	 						100%;
+}
+
+.frame {
+	margin:	 						0 auto;
+	overflow:						auto;
+	clear:	 						both;
+	border:	 						1px solid #BBBBBB;
+	-moz-box-shadow:   				0 2px 6px rgba(0, 0, 0, 0.5);
+	-webkit-box-shadow:				0 2px 6px rgba(0, 0, 0, 0.5);
+	-moz-border-radius:  			0 0 5px 5px;
+}
+
+header {                    		
+	margin-top:   					-15px;
+	display: 	  					block;
+	border-bottom:					1px solid #EEEEEE;
+	background:	  					#F5F5F5;
+}
+
+header h2 {
+	padding: 						10px 10px 0px 10px;
+}
+
+section {
+	display:   						block;
+	overflow:  						auto;
+	width:	   						100%;
+	border-top:						1px solid #E3E3E3;
+	background:						#FFF;
+}
+
+footer {                    		
+	display: 						block;
+	height:							18px;
+	padding:						3px;
+	border:							1px solid #E9E9E9;
+	background:						transparent url(../images/background_footer.png) repeat-x;
+	-moz-border-radius:  			0 0 5px 5px;
+}

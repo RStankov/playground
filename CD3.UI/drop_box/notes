@@ -1,0 +1,5 @@
+var data = {
+	title:	-> add
+	content: .......
+	footer: [save, cancel]
+}
