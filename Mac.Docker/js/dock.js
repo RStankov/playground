@@ -25,7 +25,7 @@ var Dock = Class.create({
 		var image = e.findElement('img');
 		if (image){	
 			var index 	= this.images.indexOf(image),
-				across	= (e.pointerX() - image.offsetLeft) / this.maxSize,
+				across	= (e.pointerX() - image.cumulativeOffset().left) / this.maxSize,
 				diff	= this.sizeDiff,
 				range	= this.range,
 				style	= this.imageSizeStyle.bind(this);
