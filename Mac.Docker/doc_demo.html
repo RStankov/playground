@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Mac Like Dock</title>
+		<style type="text/css">
+			ul {
+				list-style-image:none;
+				list-style-position:outside;
+				list-style-type:none;
+				text-align: center;
+			}
+			li {
+				float: left;
+			}
+			img {
+				border: none;
+			}
+		</style>
+		<script src="js/prototype.s2.min.js" type="text/javascript"></script>
+		<script src="js/dock.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="dock-bar">
+			<ul id="dock">
+				<li><a href="#"><img src="images/finder.png" alt="Finder" /></a></li>
+				<li><a href="#"><img src="images/dashboard.png" alt="Dashboard" /></a></li>
+				<li><a href="#"><img src="images/mail.png" alt="Mail" /></a></li>
+				<li><a href="#"><img src="images/coda.png" alt="Coda" /></a></li>
+				<li><a href="#"><img src="images/finder.png" alt="Finder" /></a></li>
+				<li><a href="#"><img src="images/dashboard.png" alt="Dashboard" /></a></li>
+				<li><a href="#"><img src="images/mail.png" alt="Mail" /></a></li>
+				<li><a href="#"><img src="images/coda.png" alt="Coda" /></a></li>
+			</ul>
+		</div>
+		<script>
+			(function(){				
+				new Dock('dock', {
+					min: 36,
+					max: 79,
+					range: 4
+				});
+				
+				$('dock-bar').setStyle("overflow:hidden;height:" + 96 + "px;");
+				$('dock').setStyle("margin-top:" + 79 + "px").morph("margin-top:0px", 2);
+			})();
+		</script>
+	</body>
+</html>
