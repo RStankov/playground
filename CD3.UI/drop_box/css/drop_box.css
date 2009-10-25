@@ -25,10 +25,25 @@ header {
 	display: 	  					block;
 	border-bottom:					1px solid #EEEEEE;
 	background:	  					#F5F5F5;
+	position:						relative;
 }
 
 header h2 {
 	padding: 						10px 10px 0px 10px;
+}
+
+header button {
+	position:						absolute;
+	right:							0px;
+	width:							20px;
+	height:							22px;
+	cursor:							pointer;
+	border:							0px;
+	background:						transparent url(../images/sprite.png) no-repeat; 
+}
+
+header button:hover {
+	background:						transparent url(../images/sprite.png) 0 -21px no-repeat; 
 }
 
 section {
@@ -37,6 +52,10 @@ section {
 	width:	   						100%;
 	border-top:						1px solid #E3E3E3;
 	background:						#FFF;
+}
+
+section.loading {
+	background:						transparent url(../images/loading.gif) no-repeat center center; 
 }
 
 footer {                    		
