@@ -106,12 +106,8 @@ CD3.Dnd = {};
 	// expose
 	CD3.Dnd.drag = start;
 	
-	CD3.Dnd.startDragging = function(options, e){
-		if (arguments.length < 2){
-			e = options;
-			options = {};
-		}
-		start(this, e, options);
+	CD3.Dnd.startDragging = function(e){
+		start(this, e);
 	};
 })();
 
