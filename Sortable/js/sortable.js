@@ -138,7 +138,7 @@ CD3.Dnd.Sortable = Class.create({
 			var ghost = this.constructor.Ghost;
 			
 			container.observe('cd3:drag:start',		ghost.create.bind(this));
-			container.observe('cd3:sort:changed',	ghost.insert.bind(this));
+			container.observe('cd3:sort:changed',	ghost.swap.bind(this));
 			container.observe('cd3:drag:finish',	ghost.remove.bind(this));
 		}
 	},
@@ -212,7 +212,7 @@ CD3.Dnd.Sortable.Ghost = {
 		
 		this.drag.insert({ after: this.ghost });
 	},
-	insert: function(){
+	swap: function(){
 		this.drag.insert({ after: this.ghost });
 	},
 	remove: function(){
