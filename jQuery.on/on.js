@@ -12,11 +12,11 @@
   }
 
   $.fn.on = function(eventNames, selectors, handler){
-    if (arguments.length == 3){
-      return this.delegate(selectors, eventNames, handler);
-    }
+    if (eventNames && selectors){
+      if (handler){
+        return this.delegate(selectors, eventNames, handler);
+      }
 
-    if (arguments.length == 2){
       return assignEvents.call(this, eventNames, selectors);
     }
 
