@@ -1,0 +1,15 @@
+$(document).on('click', handle);
+$(document).on('click', '[data-method]', handle);
+
+$(document).on('click', {
+  '[data-confirm]': handle1,
+  '[data-method]': handle2
+});
+
+$(document).on({
+  mouseover: handle1
+  click: {
+    '[data-confirm]': handle2,
+    '[data-method]': handle3
+  }
+});
