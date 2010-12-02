@@ -4,14 +4,30 @@
       return this.delegate(selector, eventName, handler);
     }
 
-    if (!$.isPlainObject(selector)){
-      return this.bind(eventName, selector);
+    if (arguments.length == 2){
+       if (!$.isPlainObject(selector)){
+          return this.bind(eventName, selector);
+        }
+
+        for(var rule in selector){
+          this.delegate(rule, eventName, selector[rule]);
+        }
+
+        return this;
     }
 
-    for(var rule in selector){
-      this.delegate(rule, eventName, selector[rule]);
-    }
+    if (arguments.length == 1){
+      for(var event in eventName){
+        if ($.isFunction(eventName[event])){
+          this.bind(event, eventName[event]);
+        } else {
+          for(var rule in eventName[event]){
+            this.delegate(rule, event, eventName[event][rule]);
+          }
+        }
+      }
 
-    return this;
+      return this;
+    }
   };
 })(jQuery);
