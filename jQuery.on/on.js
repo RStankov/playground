@@ -1,5 +1,5 @@
 (function($){
-  function assignEvents(eventName, rules){
+  function observe(eventName, rules){
     if ($.isFunction(rules)){
       return this.bind(eventName, rules);
     }
@@ -17,11 +17,11 @@
         return this.delegate(selectors, eventNames, handler);
       }
 
-      return assignEvents.call(this, eventNames, selectors);
+      return observe.call(this, eventNames, selectors);
     }
 
     for(var event in eventNames){
-      assignEvents.call(this, event, eventNames[event]);
+      observe.call(this, event, eventNames[event]);
     }
 
     return this;
