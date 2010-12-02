@@ -2,8 +2,15 @@ function pending(message){
     ok(false, message || "not implemented yet");
 }
 
-test("called with eventName(string), selector(string), handler(function)", function(){
-  pending();
+test("called with eventName(string), selector(string), handler(function)", 2, function(){
+  var element   = $("#example-1"),
+      returened = element.on("click", ".delete", function(){
+        ok(true, "this should be fired, by trigger click");
+      });
+
+  equal(element, returened, "jQuery#on should return jQuery instance");
+
+  element.find(".delete").trigger("click");
 });
 
 test("called with eventName(string), hanlder(function)", function(){
