@@ -11,17 +11,17 @@
     return this;
   }
 
-  $.fn.on = function(eventName, selector, handler){
+  $.fn.on = function(eventNames, selectors, handler){
     if (arguments.length == 3){
-      return this.delegate(selector, eventName, handler);
+      return this.delegate(selectors, eventNames, handler);
     }
 
     if (arguments.length == 2){
-      return assignEvents.call(this, eventName, selector);
+      return assignEvents.call(this, eventNames, selectors);
     }
 
-    for(var event in eventName){
-      assignEvents.call(this, event, eventName[event]);
+    for(var event in eventNames){
+      assignEvents.call(this, event, eventNames[event]);
     }
 
     return this;
