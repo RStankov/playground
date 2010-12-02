@@ -1,14 +1,14 @@
 (function($){
-  function observe(eventName, rules){
+  function observe(element, eventName, rules){
     if ($.isFunction(rules)){
-      return this.bind(eventName, rules);
+      return element.bind(eventName, rules);
     }
 
     for(var rule in rules){
-      this.delegate(rule, eventName, rules[rule]);
+      element.delegate(rule, eventName, rules[rule]);
     }
 
-    return this;
+    return element;
   }
 
   $.fn.on = function(eventNames, selectors, handler){
@@ -17,11 +17,11 @@
         return this.delegate(selectors, eventNames, handler);
       }
 
-      return observe.call(this, eventNames, selectors);
+      return observe(this, eventNames, selectors);
     }
 
     for(var event in eventNames){
-      observe.call(this, event, eventNames[event]);
+      observe(this, event, eventNames[event]);
     }
 
     return this;
