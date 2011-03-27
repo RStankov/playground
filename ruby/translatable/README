@@ -1,0 +1,65 @@
+ControlDepo::Translatable
+=======================
+
+Translatable ActiveRecord models
+
+Example
+=======
+
+# migration helper
+class CreatePosts < ActiveRecord::Migration
+  def self.up
+    create_table :posts do |t|
+      t.timestamps
+    end
+
+    create_translations_table(:posts) do |t|
+      t.string    :title
+      t.text      :text
+    end
+  end
+
+  def self.down
+    drop_table :posts
+    drop_table :post_translations
+  end
+end
+
+# model plugin
+class Post < ActiveRecord::Base
+	acts_as_translatable
+end
+
+# translation usage
+I18n.locale = :bg
+
+post.title # => bg title
+post.text  # => bg text
+
+I18n.locale = :en
+
+post.title # => en title
+post.text  # => en text
+
+post.translation(:bg).title # => bg title
+post.translation(:en).title # => en title
+
+post.translations.each do |translation|
+	translation.locale
+	translation.title
+	translation.text
+end
+
+# form helper
+<% form_for @post do |form| %>
+	<% form.fields_for_translations([:bg, :en]) do |translation, locale| %>
+		<fieldset>
+			<legend><%= locale %></legend>
+			<%= translation.label :title %><%= translation.text_field :title %><br />
+			<%= translation.label :text %><%= translation.text_field :text %><br />
+		</fieldset>
+	<% end %>
+	<%= form.submit "save" %>
+<% end %>
+
+Copyright (c) 2010 Radoslav Stankov, released under the MIT license

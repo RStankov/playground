@@ -1,0 +1,6 @@
+* to be able to save attributes not only with strings ("bg") but also with symbols(:bg)
+* save_translations method
+* :include_translations option
+* translations validations - valid locale, unique locale, foreign_key 
+* name scopes
+* test migration helper
