@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mustache</title>
+  </head>
+  <body>
+    <table border="1" width="100%">
+      <thead>
+        <tr>
+          <th>Template</th>
+          <th>Data</th>
+          <th>Output</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+<pre>
+  Hello {{name}}
+  You have just won ${{value}}!
+  {{#in_ca}}
+  Well, ${{taxed_value}}, after taxes.
+  {{/in_ca}}
+</pre>
+          </td>
+          <td>
+<pre>
+{
+  "name":         "Chris",
+  "value":        10000,
+  "taxed_value":  2121.22,
+  "in_ca":        true
+}
+</pre>
+          </td>
+          <td><pre></pre></td>
+        </tr>
+        <tr>
+          <td>
+<pre>
+ {{name}}
+ {{age}}
+ {{company}}
+ {{{company}}}
+</pre>
+          </td>
+          <td>
+<pre>
+{
+  "name": "Chris",
+  "company": "<b>GitHub</b>"
+}
+</pre>
+          </td>
+          <td><pre></pre></td>
+        </tr>
+        <tr>
+          <td>
+<pre>
+  {{#person}}
+  Shown.
+  {{/person}}
+  {{#nothin}}
+    Never shown!
+  {{/nothin}}
+</pre>
+          </td>
+          <td>
+<pre>
+{
+  "person": true
+}
+</pre>
+          </td>
+          <td><pre></pre></td>
+        </tr>
+        <tr>
+          <td>
+<pre>
+  {{#repo}}
+    <b>{{name}}</b>
+  {{/repo}}
+</pre>
+          </td>
+          <td>
+<pre>
+  {
+    "repo": [
+      { "name": "resque" },
+      { "name": "hub" },
+      { "name": "rip" }
+    ]
+  }
+</pre>
+          </td>
+          <td><pre></pre></td>
+        </tr>
+        <tr class="TODO">
+          <td>
+<pre>
+  {{#wrapped}}
+    {{name}} is awesome.
+  {{/wrapped}}
+</pre>
+          </td>
+          <td>
+<pre>
+  {
+    "name": "Willy",
+    "wrapped": function() {
+      return function(text) {
+        return "<b>" + render(text) + "</b>"
+      }
+    }
+  }
+</pre>
+          </td>
+          <td><pre></pre></td>
+        </tr>
+        <tr>
+          <td>
+<pre>
+  {{#person?}}
+    Hi {{name}}!
+  {{/person?}}
+</pre>
+          </td>
+          <td>
+<pre>
+  {
+    "person?": { "name": "Jon" }
+  }
+</pre>
+          </td>
+          <td><pre></pre></td>
+        </tr>
+        <tr class="TODO">
+          <td>
+<pre>
+  {{#repo}}
+    <b>{{name}}</b>
+  {{/repo}}
+  {{^repo}}
+    No repos :(
+  {{/repo}}
+</pre>
+          </td>
+          <td>
+<pre>
+  {
+    "repo": []
+  }
+</pre>
+          </td>
+          <td><pre></pre></td>
+        </tr>
+        <tr class="TODO">
+          <td>
+<pre>
+  Today{{! ignore me }}.
+</pre>
+          </td>
+          <td>
+<pre>
+</pre>
+          </td>
+          <td><pre></pre></td>
+        </tr>
+        <tr class="TODO">
+          <td>
+<pre>
+  base.mustache:
+  <h2>Names</h2>
+  {{#names}}
+    {{> user}}
+  {{/names}}
+
+  user.mustache:
+  <strong>{{name}}</strong>
+</pre>
+          </td>
+          <td>
+<pre>
+</pre>
+          </td>
+          <td><pre></pre></td>
+        </tr>
+        <tr class="TODO">
+          <td>
+<pre>
+  {{default_tags}}
+  {{=%% %%=}}
+  %% percent_style_tags %%
+  %%={{ }}=%%
+  {{ default_tags_again }}
+</pre>
+          </td>
+          <td>
+<pre>
+</pre>
+          </td>
+          <td><pre></pre></td>
+        </tr>
+        <tr>
+          <td>
+<pre>
+</pre>
+          </td>
+          <td>
+<pre>
+</pre>
+          </td>
+          <td><pre></pre></td>
+        </tr>
+      <tbody>
+    </table>
+
+    <script src="jquery.js"></script>
+    <script src="my_mustache.js"></script>
+    <script>
+      $("tbody > tr.TODO").each(function(){
+        $("pre", this)[2].innerHTML = "<center>[ TODO ]</center>"
+      });
+      $("tbody > tr:not(.TODO)").each(function(){
+        var cells     = $("pre", this),
+            template  = cells[0].innerHTML,
+            data      = $.parseJSON(cells[1].innerHTML),
+            view      = new Mustache(template);
+
+        cells[2].innerHTML = view.render(data);
+      });
+    </script>
+  </body>
+</html>

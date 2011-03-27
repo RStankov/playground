@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mustache</title>
+  </head>
+  <body>
+    <script src="my_mustache.js"></script>
+    <script type="text/template" id="template_1">
+      '' ' {{title}} spends {{calc}} {name}} {{test}} {{{test}}} ""' 
+      {{#in_ca}}
+        THIS IS IN
+      {{/in_ca}}
+      
+      {{#foo}}
+        SHOW THIS
+      {{/foo}}
+    
+    
+      {{#products}}
+        {{title}} - {{name}}
+      {{/products}}
+    </script>
+    <script>
+      var template = document.getElementById("template_1").innerHTML,
+          data     = {
+            title: "Joe",
+            calc:  function(){ return 1 + 2; },
+            test: "<strong>test</strong>",
+            foo: true,
+            products: [
+              {name: "one"},
+              {name: "two"}
+            ]
+          };
+          
+      var m = new Mustache(template);
+
+      console.log(m.render(data));
+    </script>
+  </body>
+</html>
