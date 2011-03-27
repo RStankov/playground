@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf8">
+		<title>Label Test</title>
+		<style>
+			h1 {
+				position: relative;
+				border: 1px solid black;
+				width: 500px;
+				margin: 40px;
+			}
+		
+			.label {
+				position: absolute;
+				top: 0px;
+				right: 00px;
+				width: 80px;
+				height: 80px;
+				font-family: arial;
+				overflow: hidden;
+			}
+		
+			.label span {
+				-webkit-transform: rotate(45deg) translate(-10px, 25px);
+				-webkit-box-shadow: inset 0px 0px 0px 1px #fff;
+				background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#AA0000), to(#CC0000), color-stop(.6,#DD0000));
+				text-shadow: 0px 1px 10px #000;
+				font-size: 14px;
+				border: 1px solid #CC0000;
+				display: block;
+				padding: 5px;
+				color: #fff;
+				font-weight: bold;
+				text-align: center;
+				width: 150px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>
+			Името на моята секция
+			<div class="label"><span>Скрита</span></div>
+		</h1>
+	</body>
+</html>

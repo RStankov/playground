@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>.....</title>
+		<style>
+			div {
+				position: absolute;
+				border: 1px solid gray;
+				-webkit-transition: all 0.4s ease-out;
+				cursor: pointer;
+			}
+
+
+			.button {
+				width: 16px;
+				height: 16px;
+				border-radius: 16px;
+				background: gray;
+				z-index: 2;
+			}
+
+			.shadow {
+				width: 16px;
+				height: 16px;
+				border-radius: 16px;
+				border: 1px dashed black;
+				z-index: 1;
+			}
+
+			.button:hover {
+				-webkit-transform: scale(1.5);
+			}
+
+			.active {
+				width: 300px;
+				height: 400px;
+				background: white;
+				border-radius: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="shadow" style="top: 100px; left: 200px;"></div>
+		<div class="button" style="top: 100px; left: 200px;"></div>
+		<div class="shadow" style="top: 120px; left: 180px;"></div>
+		<div class="button" style="top: 120px; left: 180px;"></div>
+		<div class="shadow" style="top: 140px; left: 160px;"></div>
+		<div class="button" style="top: 140px; left: 160px;"></div>
+		<div class="shadow" style="top: 160px; left: 140px;"></div>
+		<div class="button" style="top: 160px; left: 140px;"></div>
+		<div class="shadow" style="top: 180px; left: 120px;"></div>
+		<div class="button" style="top: 180px; left: 120px;"></div>
+		<script>
+			(function(){
+				function restore(element){
+					element.className = "button";
+					element.style.cssText = element.getAttribute("data-css-text");
+
+					return null;
+				}
+
+				function activate(element){
+					element.className = "active";
+					element.setAttribute("data-css-text", element.style.cssText);
+					element.style.cssText = "top: 100px; left:500px";
+
+					return element;
+				}
+
+				var selected = null;
+				document.addEventListener("click", function(e){
+					var element 	= e.target,
+						className	= element.className;
+
+					if (className == "button"){
+						selected && restore(selected);
+						selected = activate(element);
+					} else if (className == "active"){
+						selected = restore(element);
+					} else if (className == "shadow"){
+						var next = element.nextElementSibling;
+						if (selected == next){
+							selected = restore(next);
+						}
+					}
+				}, false);
+			})();
+		</script>
+	</body>
+</html>

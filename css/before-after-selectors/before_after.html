@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Before/After</title>
+    <style>
+      #content {
+        background: black;
+        border-radius: 10px;
+        color: white;
+        padding: 15px;
+        display: inline-block;
+        position: relative;
+        
+        top: 200px;
+        left: 200px;
+      }
+      #content:after {
+        content: '';
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid red;
+        position: absolute;
+        top: 18px;
+        right: -14px;
+/*        -webkit-transform: rotate(90deg); */
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">Tooltip</div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    <script>
+      function extend(object, extend){
+        for(var key in extend){
+          object[key] = extend[key];
+        }
+        return object;
+      }
+      
+      function getRule(selector){
+      	var sheet, rules;
+      	for (var x = document.styleSheets.length - 1; 0 <= x ; x--){
+      		sheet = document.styleSheets[x];
+      		rules = sheet.cssRules || sheet.rules;
+
+      		for (var i = rules.length - 1; 0 <= i; i--){
+      			if (rules[i].selectorText == selector){
+      				return rules[i].style;
+      			}
+      		}
+      	}
+      	
+      	// todo check for sheet == null
+
+      	var index = rules.length;
+      	if (sheet.insertRule){ // Normal browsers
+      		sheet.insertRule(selector + '{ }', index);
+      	} else { // IE: if (sheet.addRule){
+      		sheet.addRule(selector, ';', index);
+      	}
+
+      	return (sheet.cssRules || sheet.rules)[index].style;
+      }
+      
+      function setRule(selector, styles){
+        return extend(getRule(selector), styles || {});
+      }
+      
+      var content = $('#content');
+
+      var getDeg = (function(){
+        var pos = content.offset(),
+            x1  = pos.left - content.width()/2,
+            y1  = pos.top  + content.height()/2;
+             
+        return function(x2, y2){
+          var rad = Math.atan2(x1-x2, y1-y2),
+              deg = rad * 180 / Math.PI;
+
+          return - deg;
+        };
+      })();
+      
+      var getTop = (function(){
+        var min = -10, max = content.height() + 30, contentPosition = content.offset().top;
+        
+        return function(mousePosition){
+          return Math.max(min, Math.min(max, mousePosition - contentPosition));
+        };
+      })();
+      
+      var getLeft = (function(){
+        var min = -10, max = content.width() + 20, contentPosition = content.offset().left;
+        
+        return function(mousePosition){
+          return Math.max(min, Math.min(max, mousePosition - contentPosition));
+        };
+      })();
+      
+      $(document).mousemove(function(e){
+        var deg   = getDeg(e.clientX, e.clientY),
+            style = getRule('#content:after');
+            
+        style.webkitTransform = 'rotate(' + deg + 'deg)';
+        style.top = getTop(e.clientY) + 'px';
+        style.left = getLeft(e.clientX) + 'px';
+      });
+     </script>
+  </body>
+</html>
