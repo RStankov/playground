@@ -80,7 +80,7 @@ $(function() {
     return this;
   }
 
-  function withoutTransition(style, callback) {
+  function withoutTransition(style, duration, callback) {
     this.css(style);
     this.each(callback);
     return this;
