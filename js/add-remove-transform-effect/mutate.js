@@ -24,14 +24,21 @@ $(function() {
   });
 
   jDoc.delegate('[data-remove]', 'click', function() {
-    $(this).closest('[data-component="item"]').css('overflow', 'hidden').animate({
-      height: 0,
-      marginTop: 0,
-      marginBottom: 0,
-      paddingTop: 0,
-      paddingBottom: 0,
-      opacity: 0
-    }, 'fast', function() { $(this).remove(); });
+    $(this).closest('[data-component="item"]').mutateCss({
+      duration: 0.3,
+      before: {
+        overflow: 'hidden'
+      },
+      transition: {
+        height: 0,
+        marginTop: 0,
+        marginBottom: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
+        opacity: 0
+      },
+      after: 'remove'
+    });
   });
 
   jDoc.delegate('[data-show]', 'click', function() {
@@ -60,8 +67,8 @@ $(function() {
         'transition'       : { prop: 'transition', event: 'transitionEnd'}
       }[Modernizr.prefixed('transition')];
 
-  function withTransition(style, callback) {
-    this.css(transition.prop, 'all 0.5s');
+  function withTransition(style, duration, callback) {
+    this.css(transition.prop, 'all ' + duration + 's');
     this.css(style);
     this.bind(transition.event, function(){
       $(this).css(transition.prop, '');
@@ -79,9 +86,21 @@ $(function() {
 
 (function($) {
   $.fn.mutateCss = function(states){
-    this.css(states.before);
-    this.transitionTo(states.transition, function() {
-      $(this).css(states.after);
+    states.before && this.css(states.before);
+    this.transitionTo(states.transition, states.duration || 0.5, function() {
+      var after = states.after;
+      if (after){
+        switch($.type(after)){
+          case 'string':
+            $(this)[after]();
+            break;
+          case 'function':
+            after.call(this);
+            break;
+          default:
+            $(this).css(after);
+        }
+      }
     });
     return this;
   };
