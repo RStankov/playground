@@ -24,7 +24,14 @@ $(function() {
   });
 
   jDoc.delegate('[data-remove]', 'click', function() {
-    $(this).closest('[data-component="item"]').remove();
+    $(this).closest('[data-component="item"]').css('overflow', 'hidden').animate({
+      height: 0,
+      marginTop: 0,
+      marginBottom: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+      opacity: 0
+    }, 'fast', function() { $(this).remove(); });
   });
 
   jDoc.delegate('[data-show]', 'click', function() {
