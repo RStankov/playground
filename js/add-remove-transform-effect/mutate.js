@@ -10,8 +10,8 @@ $(function() {
       opacity: 0,
       height: 0
     });
-
-    element.animate({
+    
+    element.withTransition({
       opacity: 1,
       height: height
     }, function() {
@@ -49,6 +49,33 @@ $(function() {
        elementToShow.mutateTo(elementToHide, 'fast');
     });
 });
+
+(function($) {
+  $.fn.withTransition = Modernizr.csstransitions ? withTransition : withoutTransition;
+
+  var transition = {
+        'WebkitTransition' : { prop: '-webkit-transition', event: 'webkitTransitionEnd'},
+        'MozTransition'    : { prop: '-moz-transition', event: 'transitionend'},
+        'OTransition'      : { prop: '-o-transition', event: 'oTransitionEnd'},
+        'transition'       : { prop: 'transition', event: 'transitionEnd'}
+      }[Modernizr.prefixed('transition')];
+
+  function withTransition(style, callback) {
+    this.css(transition.prop, 'all 0.5s');
+    this.css(style);
+    this.bind(transition.event, function(){
+      $(this).css(transition.prop, '');
+      callback.call(this);
+    });
+    return this;
+  }
+
+  function withoutTransition(style, callback) {
+    this.css(style);
+    this.each(callback);
+    return this;
+  }
+})(jQuery);
 
 (function($) {
   $.fn.mutateTo = function(element, speed) {
