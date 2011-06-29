@@ -5,21 +5,21 @@ $(function() {
     var element = $('[data-component="container"]').append($('script[type="text/template"]').html()).find('[data-component="item"]:last');
     var height = element.height();
 
-    element.css({
-      overflow: 'hidden',
-      opacity: 0,
-      height: 0
-    });
-    
-    element.withTransition({
-      opacity: 1,
-      height: height
-    }, function() {
-      element.css({
+    element.mutateCss({
+      before: {
+        overflow: 'hidden',
+        opacity: 0,
+        height: 0
+      },
+      transition: {
+        opacity: 1,
+        height: height
+      },
+      after: {
         overflow: '',
         opacity: '',
         height: ''
-      });
+      }
     });
   });
 
@@ -51,7 +51,7 @@ $(function() {
 });
 
 (function($) {
-  $.fn.withTransition = Modernizr.csstransitions ? withTransition : withoutTransition;
+  $.fn.transitionTo = Modernizr.csstransitions ? withTransition : withoutTransition;
 
   var transition = {
         'WebkitTransition' : { prop: '-webkit-transition', event: 'webkitTransitionEnd'},
@@ -75,6 +75,16 @@ $(function() {
     this.each(callback);
     return this;
   }
+})(jQuery);
+
+(function($) {
+  $.fn.mutateCss = function(states){
+    this.css(states.before);
+    this.transitionTo(states.transition, function() {
+      $(this).css(states.after);
+    });
+    return this;
+  };
 })(jQuery);
 
 (function($) {
