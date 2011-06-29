@@ -46,7 +46,69 @@ $(function() {
         elementToShow = item.find('[data-component="' + show + '"]'),
         elementToHide = item.find('[data-component="' + hide + '"]');
 
-        elementToShow.show();
-        elementToHide.hide();
+       elementToShow.mutateTo(elementToHide, 'fast');
     });
 });
+
+(function($) {
+  $.fn.mutateTo = function(element, speed) {
+    mutate(this, $(element), speed || 'fast');
+    return this;
+  };
+
+  function createResetCallback(counter, callback) {
+    return function() {
+      counter -= 1;
+      if (counter == 0) {
+        callback();
+      }
+    };
+  }
+
+  var resetStyle = {
+    position: '',
+    top: '',
+    left: '',
+    overflow: '',
+    opacity: '',
+    width: '',
+    height: ''
+  };
+
+  function mutate(elementToShow, elementToHide, speed) {
+    var finishEffect = createResetCallback(2, function() {
+      elementToShow.css(resetStyle);
+      elementToHide.hide().css(resetStyle);
+    });
+
+    var startPosition = elementToHide.position(),
+        startHeight = elementToHide.outerHeight(),
+        startWidth = elementToHide.outerWidth();
+
+    elementToShow.css('opacity', 0.0).show();
+
+    var endHeight = elementToShow.outerHeight(),
+        endWidth = elementToShow.outerWidth();
+
+    elementToShow.css({
+      overflow: 'hidden',
+      position: 'absolute',
+      top: startPosition.top,
+      left: startPosition.left,
+      width: startWidth,
+      height: startHeight
+    });
+    elementToShow.animate({
+      opacity: 1.0,
+      width: endWidth,
+      height: endHeight
+    }, speed, finishEffect);
+
+    elementToHide.css('overflow', 'hidden');
+    elementToHide.animate({
+      opacity: 0.0,
+      width: endWidth,
+      height: endHeight
+    }, speed, finishEffect);
+  }
+})(jQuery);
