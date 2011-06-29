@@ -53,7 +53,7 @@ $(function() {
         elementToShow = item.find('[data-component="' + show + '"]'),
         elementToHide = item.find('[data-component="' + hide + '"]');
 
-       elementToShow.mutateTo(elementToHide, 'fast');
+       elementToShow.mutateTo(elementToHide);
     });
 });
 
@@ -68,12 +68,15 @@ $(function() {
       }[Modernizr.prefixed('transition')];
 
   function withTransition(style, duration, callback) {
-    this.css(transition.prop, 'all ' + duration + 's');
-    this.css(style);
-    this.bind(transition.event, function(){
-      $(this).css(transition.prop, '');
-      callback.call(this);
-    });
+    var self = this;
+    setTimeout(function() {
+      self.css(transition.prop, 'all ' + duration + 's');
+      self.css(style);
+      self.bind(transition.event, function(){
+        $(this).css(transition.prop, '');
+        callback.call(this);
+      });
+    }, 1);
     return this;
   }
 
@@ -107,8 +110,8 @@ $(function() {
 })(jQuery);
 
 (function($) {
-  $.fn.mutateTo = function(element, speed) {
-    mutate(this, $(element), speed || 'fast');
+  $.fn.mutateTo = function(element, duration) {
+    mutate(this, $(element), duration || 0.5);
     return this;
   };
 
@@ -128,10 +131,10 @@ $(function() {
     overflow: '',
     opacity: '',
     width: '',
-    height: ''
+    height: '',
   };
 
-  function mutate(elementToShow, elementToHide, speed) {
+  function mutate(elementToShow, elementToHide, duration) {
     var finishEffect = createResetCallback(2, function() {
       elementToShow.css(resetStyle);
       elementToHide.hide().css(resetStyle);
@@ -144,27 +147,38 @@ $(function() {
     elementToShow.css('opacity', 0.0).show();
 
     var endHeight = elementToShow.outerHeight(),
-        endWidth = elementToShow.outerWidth();
+        endWidth = elementToShow.outerWidth()
 
-    elementToShow.css({
-      overflow: 'hidden',
-      position: 'absolute',
-      top: startPosition.top,
-      left: startPosition.left,
-      width: startWidth,
-      height: startHeight
+    elementToShow.mutateCss({
+      duration: duration,
+      before: {
+        overflow: 'hidden',
+        position: 'absolute',
+        top: startPosition.top,
+        left: startPosition.left,
+        width: startWidth,
+        height: startHeight,
+      },
+      transition: {
+        opacity: 1.0,
+        width: endWidth,
+        height: endHeight,
+      },
+      after: finishEffect
     });
-    elementToShow.animate({
-      opacity: 1.0,
-      width: endWidth,
-      height: endHeight
-    }, speed, finishEffect);
 
-    elementToHide.css('overflow', 'hidden');
-    elementToHide.animate({
-      opacity: 0.0,
-      width: endWidth,
-      height: endHeight
-    }, speed, finishEffect);
+    elementToHide.mutateCss({
+      before: {
+        overflow: 'hidden',
+        width: startWidth,
+        height: startHeight
+      },
+      transition: {
+        opacity: 0.0,
+        width: endWidth,
+        height: endHeight
+      },
+      after: finishEffect
+    });
   }
 })(jQuery);
