@@ -3,48 +3,11 @@ $(function() {
 
   jDoc.delegate('[data-add]', 'click', function() {
     var element = $('[data-component="container"]').append($('script[type="text/template"]').html()).find('[data-component="item"]:last');
-    var height = element.height(),
-        marginTop = element.css('marginTop'),
-        marginBottom = element.css('marginBottom');
-
-    element.tfx('animate', {
-      before: {
-        overflow: 'hidden',
-        height: 0,
-        marginTop: 0,
-        marginBottom: 0,
-        opacity: 0
-      },
-      transition: {
-        height: height,
-        marginTop: marginTop,
-        marginBottom: marginBottom,
-        opacity: 1
-      },
-      after: {
-        overflow: '',
-        opacity: '',
-        height: ''
-      }
-    });
+    element.tfx('slideApear');
   });
 
   jDoc.delegate('[data-remove]', 'click', function() {
-    $(this).closest('[data-component="item"]').tfx('animate', {
-      duration: 0.3,
-      before: {
-        overflow: 'hidden'
-      },
-      transition: {
-        height: 0,
-        marginTop: 0,
-        marginBottom: 0,
-        paddingTop: 0,
-        paddingBottom: 0,
-        opacity: 0
-      },
-      after: 'remove'
-    });
+    $(this).closest('[data-component="item"]').tfx('slideRemove');
   });
 
   jDoc.delegate('[data-show]', 'click', function() {
@@ -65,7 +28,7 @@ $(function() {
 
 (function($) {
   var transition = (function() {
-    if (!Modernizr.csstransitions){
+    if (!Modernizr.csstransitions) {
       return function(element, style, duration, callback) {
         element.css(style);
         element.each(callback);
@@ -83,7 +46,7 @@ $(function() {
       setTimeout(function() {
         element.css(t.prop, 'all ' + duration + 's');
         element.css(style);
-        element.bind(t.event, function(){
+        element.bind(t.event, function() {
           element.css(t.prop, '');
           callback.call(this);
         });
@@ -103,8 +66,8 @@ $(function() {
           states.before && element.css(states.before);
           transition(element, states.transition, states.duration || Tfx.defaultDuration, function() {
             var after = states.after;
-            if (after){
-              switch($.type(after)){
+            if (after) {
+              switch($.type(after)) {
                 case 'string':
                   element[after]();
                   break;
@@ -121,7 +84,7 @@ $(function() {
 
   $.Tfx = Tfx;
 
-  $.fn.tfx = function(name){
+  $.fn.tfx = function(name) {
     var args = $.makeArray(arguments);
     args[0] = this;
     TfxEffects[name].apply(this, args);
@@ -149,7 +112,7 @@ $(function() {
     height: ''
   };
 
-  $.Tfx.registerEffect('overlayWith', function(elementToHide, elementToShow, duration){
+  $.Tfx.registerEffect('overlayWith', function(elementToHide, elementToShow, duration) {
     elementToShow = $(elementToShow);
 
     var finishEffect = createResetCallback(2, function() {
@@ -196,6 +159,51 @@ $(function() {
         height: endHeight
       },
       after: finishEffect
+    });
+  });
+
+  $.Tfx.registerEffect('slideApear', function(element) {
+    var height = element.height(),
+        marginTop = element.css('marginTop'),
+        marginBottom = element.css('marginBottom');
+
+    element.tfx('animate', {
+      before: {
+        overflow: 'hidden',
+        height: 0,
+        marginTop: 0,
+        marginBottom: 0,
+        opacity: 0
+      },
+      transition: {
+        height: height,
+        marginTop: marginTop,
+        marginBottom: marginBottom,
+        opacity: 1
+      },
+      after: {
+        overflow: '',
+        opacity: '',
+        height: ''
+      }
+    });
+  });
+  
+  $.Tfx.registerEffect('slideRemove', function(element) {
+    element.tfx('animate', {
+      duration: 0.3,
+      before: {
+        overflow: 'hidden'
+      },
+      transition: {
+        height: 0,
+        marginTop: 0,
+        marginBottom: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
+        opacity: 0
+      },
+      after: 'remove'
     });
   });
 })(jQuery);
