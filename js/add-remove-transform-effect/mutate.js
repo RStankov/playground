@@ -141,21 +141,18 @@ $(function() {
     });
 
     var startPosition = elementToHide.position(),
-        startHeight = elementToHide.outerHeight(),
-        startWidth = elementToHide.outerWidth();
+        startHeight = elementToHide.height(),
+        startWidth = elementToHide.width();
 
     elementToShow.css('opacity', 0.0).show();
 
-    var endHeight = elementToShow.outerHeight(),
-        endWidth = elementToShow.outerWidth();
+    var endHeight = elementToShow.height(),
+        endWidth = elementToShow.width();
 
     elementToShow.mutateCss({
       duration: duration,
       before: {
         overflow: 'hidden',
-        position: 'absolute',
-        top: startPosition.top,
-        left: startPosition.left,
         width: startWidth,
         height: startHeight
       },
@@ -169,6 +166,9 @@ $(function() {
 
     elementToHide.mutateCss({
       before: {
+        position: 'absolute',
+        top: startPosition.top,
+        left: startPosition.left,
         overflow: 'hidden',
         width: startWidth,
         height: startHeight
