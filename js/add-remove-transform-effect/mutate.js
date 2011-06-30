@@ -99,7 +99,7 @@ $(function() {
 
   Tfx.registerEffect('animate', function(element, states) {
     states.before && element.css(states.before);
-    element.tfx('transition', states.transition, states.duration || Tfx.defaultDuration, function() {
+    transition(element, states.transition, states.duration || Tfx.defaultDuration, function() {
       var after = states.after;
       if (after){
         switch($.type(after)){
