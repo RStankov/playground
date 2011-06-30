@@ -58,28 +58,35 @@ $(function() {
 });
 
 (function($) {
-  function withTransition(element, style, duration, callback) {
-    setTimeout(function() {
-      element.css(Tfx.prop, 'all ' + duration + 's');
-      element.css(style);
-      element.bind(Tfx.event, function(){
-        element.css(Tfx.prop, '');
-        callback.call(this);
-      });
-    }, 1);
-  }
+  var transition = (function() {
+    if (!Modernizr.csstransitions){
+      return function(element, style, duration, callback) {
+        element.css(style);
+        element.each(callback);
+      };
+    }
 
-  function withoutTransition(element, style, duration, callback) {
-    element.css(style);
-    element.each(callback);
-  }
+    var t = {
+      'WebkitTransition' : { prop: '-webkit-transition', event: 'webkitTransitionEnd'},
+      'MozTransition'    : { prop: '-moz-transition', event: 'transitionend'},
+      'OTransition'      : { prop: '-o-transition', event: 'oTransitionEnd'},
+      'transition'       : { prop: 'transition', event: 'transitionEnd'}
+    }[Modernizr.prefixed('transition')];
 
-  var Tfx = {
-    'WebkitTransition' : { prop: '-webkit-transition', event: 'webkitTransitionEnd'},
-    'MozTransition'    : { prop: '-moz-transition', event: 'transitionend'},
-    'OTransition'      : { prop: '-o-transition', event: 'oTransitionEnd'},
-    'transition'       : { prop: 'transition', event: 'transitionEnd'}
-  }[Modernizr.prefixed('transition')];
+    return function(element, style, duration, callback) {
+      setTimeout(function() {
+        element.css(t.prop, 'all ' + duration + 's');
+        element.css(style);
+        element.bind(t.event, function(){
+          element.css(t.prop, '');
+          callback.call(this);
+        });
+      }, 1);
+    };
+  })();
+  
+
+  var Tfx = {};
 
   Tfx.defaultDuration = 0.5;
 
@@ -87,8 +94,8 @@ $(function() {
   Tfx.registerEffect = function(name, effect) {
     this.effects[name] = effect;
   };
-  
-  Tfx.registerEffect('transition', Modernizr.csstransitions ? withTransition : withoutTransition);
+
+  Tfx.registerEffect('transition', transition);
 
   Tfx.registerEffect('animate', function(element, states) {
     states.before && element.css(states.before);
