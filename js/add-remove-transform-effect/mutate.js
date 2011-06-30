@@ -131,7 +131,7 @@ $(function() {
     overflow: '',
     opacity: '',
     width: '',
-    height: '',
+    height: ''
   };
 
   function mutate(elementToShow, elementToHide, duration) {
@@ -147,7 +147,7 @@ $(function() {
     elementToShow.css('opacity', 0.0).show();
 
     var endHeight = elementToShow.outerHeight(),
-        endWidth = elementToShow.outerWidth()
+        endWidth = elementToShow.outerWidth();
 
     elementToShow.mutateCss({
       duration: duration,
@@ -157,12 +157,12 @@ $(function() {
         top: startPosition.top,
         left: startPosition.left,
         width: startWidth,
-        height: startHeight,
+        height: startHeight
       },
       transition: {
         opacity: 1.0,
         width: endWidth,
-        height: endHeight,
+        height: endHeight
       },
       after: finishEffect
     });
