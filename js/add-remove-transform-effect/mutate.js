@@ -3,17 +3,23 @@ $(function() {
 
   jDoc.delegate('[data-add]', 'click', function() {
     var element = $('[data-component="container"]').append($('script[type="text/template"]').html()).find('[data-component="item"]:last');
-    var height = element.height();
+    var height = element.height(),
+        marginTop = element.css('marginTop'),
+        marginBottom = element.css('marginBottom');
 
     element.tfx('animate', {
       before: {
         overflow: 'hidden',
-        opacity: 0,
-        height: 0
+        height: 0,
+        marginTop: 0,
+        marginBottom: 0,
+        opacity: 0
       },
       transition: {
-        opacity: 1,
-        height: height
+        height: height,
+        marginTop: marginTop,
+        marginBottom: marginBottom,
+        opacity: 1
       },
       after: {
         overflow: '',
