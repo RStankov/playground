@@ -5,7 +5,7 @@ $(function() {
     var element = $('[data-component="container"]').append($('script[type="text/template"]').html()).find('[data-component="item"]:last');
     var height = element.height();
 
-    element.mutateCss({
+    element.cssTransition({
       before: {
         overflow: 'hidden',
         opacity: 0,
@@ -24,7 +24,7 @@ $(function() {
   });
 
   jDoc.delegate('[data-remove]', 'click', function() {
-    $(this).closest('[data-component="item"]').mutateCss({
+    $(this).closest('[data-component="item"]').cssTransition({
       duration: 0.3,
       before: {
         overflow: 'hidden'
@@ -88,7 +88,7 @@ $(function() {
 })(jQuery);
 
 (function($) {
-  $.fn.mutateCss = function(states){
+  $.fn.cssTransition = function(states){
     states.before && this.css(states.before);
     this.transitionTo(states.transition, states.duration || 0.5, function() {
       var after = states.after;
@@ -149,7 +149,7 @@ $(function() {
     var endHeight = elementToShow.height(),
         endWidth = elementToShow.width();
 
-    elementToShow.mutateCss({
+    elementToShow.cssTransition({
       duration: duration,
       before: {
         overflow: 'hidden',
@@ -164,7 +164,7 @@ $(function() {
       after: finishEffect
     });
 
-    elementToHide.mutateCss({
+    elementToHide.cssTransition({
       before: {
         position: 'absolute',
         top: startPosition.top,
