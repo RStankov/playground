@@ -84,15 +84,15 @@ $(function() {
       }, 1);
     };
   })();
-  
 
-  var Tfx = {};
 
-  Tfx.defaultDuration = 0.5;
-
-  Tfx.effects = {};
-  Tfx.registerEffect = function(name, effect) {
-    this.effects[name] = effect;
+  var Tfx = {
+    defaultDuration: 0.5,
+    transition: transition,
+    effects: {},
+    registerEffect: function(name, effect) {
+      this.effects[name] = effect;
+    }
   };
 
   Tfx.registerEffect('transition', transition);
