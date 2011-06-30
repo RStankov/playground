@@ -11,7 +11,7 @@ nav a { padding: 5px 8px 6px 8px; background: black; color: white; text-transfor
 .container strong { text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 5px; }
 .container label { font-size: 10px; text-transform: uppercase; display: block; margin-bottom: 10px; }
 .container textarea,
-.container input { display: block; margin-top: 5px; width: 98%; padding: 5px; border: 1px solid #ddd; }
+.container input { display: block; margin-top: 5px; width: 360px; padding: 5px; border: 1px solid #ddd; }
 .container textarea { height: 60px; overflow: auto; resize: vertical; }
 .container button, { margin: 0; padding: 5px 8px 6px 8px; background: black; color: white; text-transform: uppercase; border: 0; }
 .container .buttons { font-size: 10px; margin: 20px 0 -10px 0; text-align: right; }
