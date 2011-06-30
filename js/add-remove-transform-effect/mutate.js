@@ -5,7 +5,7 @@ $(function() {
     var element = $('[data-component="container"]').append($('script[type="text/template"]').html()).find('[data-component="item"]:last');
     var height = element.height();
 
-    element.cssTransition({
+    element.tfx('animate', {
       before: {
         overflow: 'hidden',
         opacity: 0,
@@ -24,7 +24,7 @@ $(function() {
   });
 
   jDoc.delegate('[data-remove]', 'click', function() {
-    $(this).closest('[data-component="item"]').cssTransition({
+    $(this).closest('[data-component="item"]').tfx('animate', {
       duration: 0.3,
       before: {
         overflow: 'hidden'
@@ -53,68 +53,72 @@ $(function() {
         elementToShow = item.find('[data-component="' + show + '"]'),
         elementToHide = item.find('[data-component="' + hide + '"]');
 
-       elementToShow.mutateTo(elementToHide);
+       elementToHide.tfx('overlayWith', elementToShow);
     });
 });
 
 (function($) {
-  $.fn.transitionTo = Modernizr.csstransitions ? withTransition : withoutTransition;
-
-  var transition = {
-        'WebkitTransition' : { prop: '-webkit-transition', event: 'webkitTransitionEnd'},
-        'MozTransition'    : { prop: '-moz-transition', event: 'transitionend'},
-        'OTransition'      : { prop: '-o-transition', event: 'oTransitionEnd'},
-        'transition'       : { prop: 'transition', event: 'transitionEnd'}
-      }[Modernizr.prefixed('transition')];
-
-  function withTransition(style, duration, callback) {
-    var self = this;
+  function withTransition(element, style, duration, callback) {
     setTimeout(function() {
-      self.css(transition.prop, 'all ' + duration + 's');
-      self.css(style);
-      self.bind(transition.event, function(){
-        $(this).css(transition.prop, '');
+      element.css(Tfx.prop, 'all ' + duration + 's');
+      element.css(style);
+      element.bind(Tfx.event, function(){
+        element.css(Tfx.prop, '');
         callback.call(this);
       });
     }, 1);
-    return this;
   }
 
-  function withoutTransition(style, duration, callback) {
-    this.css(style);
-    this.each(callback);
-    return this;
+  function withoutTransition(element, style, duration, callback) {
+    element.css(style);
+    element.each(callback);
   }
-})(jQuery);
 
-(function($) {
-  $.fn.cssTransition = function(states){
-    states.before && this.css(states.before);
-    this.transitionTo(states.transition, states.duration || 0.5, function() {
+  var Tfx = {
+    'WebkitTransition' : { prop: '-webkit-transition', event: 'webkitTransitionEnd'},
+    'MozTransition'    : { prop: '-moz-transition', event: 'transitionend'},
+    'OTransition'      : { prop: '-o-transition', event: 'oTransitionEnd'},
+    'transition'       : { prop: 'transition', event: 'transitionEnd'}
+  }[Modernizr.prefixed('transition')];
+
+  Tfx.defaultDuration = 0.5;
+
+  Tfx.effects = {};
+  Tfx.registerEffect = function(name, effect) {
+    this.effects[name] = effect;
+  };
+  
+  Tfx.registerEffect('transition', Modernizr.csstransitions ? withTransition : withoutTransition);
+
+  Tfx.registerEffect('animate', function(element, states) {
+    states.before && element.css(states.before);
+    element.tfx('transition', states.transition, states.duration || Tfx.defaultDuration, function() {
       var after = states.after;
       if (after){
         switch($.type(after)){
           case 'string':
-            $(this)[after]();
+            element[after]();
             break;
           case 'function':
             after.call(this);
             break;
           default:
-            $(this).css(after);
+            element.css(after);
         }
       }
     });
+  });
+
+  $.Tfx = Tfx;
+  $.fn.tfx = function(name){
+    var args = $.makeArray(arguments);
+    args[0] = this;
+    Tfx.effects[name].apply(this, args);
     return this;
   };
 })(jQuery);
 
 (function($) {
-  $.fn.mutateTo = function(element, duration) {
-    mutate(this, $(element), duration || 0.5);
-    return this;
-  };
-
   function createResetCallback(counter, callback) {
     return function() {
       counter -= 1;
@@ -134,7 +138,9 @@ $(function() {
     height: ''
   };
 
-  function mutate(elementToShow, elementToHide, duration) {
+  $.Tfx.registerEffect('overlayWith', function(elementToHide, elementToShow, duration){
+    elementToShow = $(elementToShow);
+
     var finishEffect = createResetCallback(2, function() {
       elementToShow.css(resetStyle);
       elementToHide.hide().css(resetStyle);
@@ -149,7 +155,7 @@ $(function() {
     var endHeight = elementToShow.height(),
         endWidth = elementToShow.width();
 
-    elementToShow.cssTransition({
+    elementToShow.tfx('animate', {
       duration: duration,
       before: {
         overflow: 'hidden',
@@ -164,7 +170,7 @@ $(function() {
       after: finishEffect
     });
 
-    elementToHide.cssTransition({
+    elementToHide.tfx('animate', {
       before: {
         position: 'absolute',
         top: startPosition.top,
@@ -180,5 +186,5 @@ $(function() {
       },
       after: finishEffect
     });
-  }
+  });
 })(jQuery);
