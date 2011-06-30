@@ -2,28 +2,29 @@ $(function() {
   var jDoc = $(document);
 
   jDoc.delegate('[data-add]', 'click', function() {
-    var element = $('[data-component="container"]').append($('script[type="text/template"]').html()).find('[data-component="item"]:last');
-    element.tfx('slideApear');
+    $($('script[type="text/template"]').html()).appendTo('[data-component="container"]').tfx('slideApear');
   });
 
   jDoc.delegate('[data-remove]', 'click', function() {
     $(this).closest('[data-component="item"]').tfx('slideRemove');
   });
 
-  jDoc.delegate('[data-show]', 'click', function() {
-    var element = $(this),
-        item = element.closest('[data-component="item"]'),
-        toggle = {
-          form: 'body',
-          body: 'form'
-        },
-        show = element.data('show'),
-        hide = toggle[show],
-        elementToShow = item.find('[data-component="' + show + '"]'),
-        elementToHide = item.find('[data-component="' + hide + '"]');
+  jDoc.delegate('[data-show="form"]', 'click', function() {
+    replace.call(this, 'body', 'form');
+  });
 
-       elementToHide.tfx('overlayWith', elementToShow);
-    });
+  jDoc.delegate('[data-show="body"]', 'click', function() {
+    replace.call(this, 'form', 'body');
+  });
+
+  function replace(from, to) {
+    var item = $(this).closest('[data-component="item"]');
+
+    from = item.find('[data-component="' + from + '"]');
+    to = item.find('[data-component="' + to + '"]');
+
+    from.tfx('overlayWith', to);
+  }
 });
 
 (function($) {
@@ -188,7 +189,7 @@ $(function() {
       }
     });
   });
-  
+
   $.Tfx.registerEffect('slideRemove', function(element) {
     element.tfx('animate', {
       duration: 0.3,
