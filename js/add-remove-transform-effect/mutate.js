@@ -87,40 +87,38 @@ $(function() {
 
 
   var Tfx = {
-    defaultDuration: 0.5,
-    transition: transition,
-    effects: {},
-    registerEffect: function(name, effect) {
-      this.effects[name] = effect;
-    }
-  };
-
-  Tfx.registerEffect('transition', transition);
-
-  Tfx.registerEffect('animate', function(element, states) {
-    states.before && element.css(states.before);
-    transition(element, states.transition, states.duration || Tfx.defaultDuration, function() {
-      var after = states.after;
-      if (after){
-        switch($.type(after)){
-          case 'string':
-            element[after]();
-            break;
-          case 'function':
-            after.call(this);
-            break;
-          default:
-            element.css(after);
+        defaultDuration: 0.5,
+        transition: transition,
+        registerEffect: function(name, effect) { TfxEffects[name] = effect; }
+      },
+      TfxEffects = {
+        transition: transition,
+        animate: function(element, states) {
+          states.before && element.css(states.before);
+          transition(element, states.transition, states.duration || Tfx.defaultDuration, function() {
+            var after = states.after;
+            if (after){
+              switch($.type(after)){
+                case 'string':
+                  element[after]();
+                  break;
+                case 'function':
+                  after.call(this);
+                  break;
+                default:
+                  element.css(after);
+              }
+            }
+          });
         }
-      }
-    });
-  });
+      };
 
   $.Tfx = Tfx;
+
   $.fn.tfx = function(name){
     var args = $.makeArray(arguments);
     args[0] = this;
-    Tfx.effects[name].apply(this, args);
+    TfxEffects[name].apply(this, args);
     return this;
   };
 })(jQuery);
