@@ -10,23 +10,22 @@ $(function() {
   }));
 
   jDoc.delegate('[data-show="form"]', 'click', withItem(function() {
-    replace.call(this, 'body', 'form');
+    var body = this.find('[data-component="body"]');
+        form = this.find('[data-component="form"]');
+
+    body.tfx('replaceWith', form);
   }));
 
   jDoc.delegate('[data-show="body"]', 'click', withItem(function() {
-    replace.call(this, 'form', 'body');
+    var body = this.find('[data-component="body"]');
+        form = this.find('[data-component="form"]');
+
+    form.tfx('replaceWith', body);
   }));
 
   function withItem(callback) {
     return function(e) {
       return callback.call($(this).closest('[data-component="item"]'), e);
     };
-  }
-
-  function replace(from, to) {
-    from = this.find('[data-component="' + from + '"]');
-    to = this.find('[data-component="' + to + '"]');
-
-    from.tfx('replaceWith', to);
   }
 });
