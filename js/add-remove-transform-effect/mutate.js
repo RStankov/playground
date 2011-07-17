@@ -2,11 +2,11 @@ $(function() {
   var jDoc = $(document);
 
   jDoc.delegate('[data-add]', 'click', function() {
-    $($('script[type="text/template"]').html()).appendTo('[data-component="container"]').tfx('slideApear');
+    $($('script[type="text/template"]').html()).tfx('insert', 'into', '[data-component="container"]');
   });
 
   jDoc.delegate('[data-remove]', 'click', function() {
-    $(this).closest('[data-component="item"]').tfx('slideRemove');
+    $(this).closest('[data-component="item"]').tfx('remove');
   });
 
   jDoc.delegate('[data-show="form"]', 'click', function() {
@@ -23,7 +23,7 @@ $(function() {
     from = item.find('[data-component="' + from + '"]');
     to = item.find('[data-component="' + to + '"]');
 
-    from.tfx('overlayWith', to);
+    from.tfx('replaceWith', to);
   }
 });
 
@@ -113,7 +113,7 @@ $(function() {
     height: ''
   };
 
-  $.Tfx.registerEffect('overlayWith', function(elementToHide, elementToShow, duration) {
+  $.Tfx.registerEffect('replaceWith', function(elementToHide, elementToShow, duration) {
     elementToShow = $(elementToShow);
 
     var finishEffect = createResetCallback(2, function() {
@@ -163,7 +163,16 @@ $(function() {
     });
   });
 
-  $.Tfx.registerEffect('slideApear', function(element) {
+  var insertMapping = {
+    top: 'prependTo',
+    into: 'appendTo',
+    before: 'insertAfter',
+    after: 'insertBefore'
+  };
+
+  $.Tfx.registerEffect('insert', function(element, position, parent) {
+    element[insertMapping[position]](parent);
+
     var height = element.height(),
         marginTop = element.css('marginTop'),
         marginBottom = element.css('marginBottom');
@@ -190,7 +199,7 @@ $(function() {
     });
   });
 
-  $.Tfx.registerEffect('slideRemove', function(element) {
+  $.Tfx.registerEffect('remove', function(element) {
     element.tfx('animate', {
       duration: 0.3,
       before: {
@@ -207,4 +216,6 @@ $(function() {
       after: 'remove'
     });
   });
+
+  $.Tfx.registerEffect('transform', function() { /* TODO */ });
 })(jQuery);
