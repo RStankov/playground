@@ -2,7 +2,9 @@ $(function() {
   var jDoc = $(document);
 
   jDoc.delegate('[data-add]', 'click', function() {
-    $($('script[type="text/template"]').html()).tfx('insert', 'into', '[data-component="container"]');
+    var itemHtml = $('script[type="text/template"]').html();
+
+    $(itemHtml).tfx('insert', 'into', '[data-component="container"]');
   });
 
   jDoc.delegate('[data-remove]', 'click', withItem(function() {
