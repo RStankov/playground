@@ -1,3 +1,5 @@
+source :rubygems
+
 gem 'rack'
 gem 'compass'
 gem 'coffee-script'
