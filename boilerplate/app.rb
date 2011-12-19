@@ -12,10 +12,10 @@ class SlimTemplate
 
   def call(env)
     template = find_template(env['REQUEST_URI'])
-    if template.nil?
-      [404, {'Content-Type' => 'text/html'}, 'File not found']
-    else
+    if template
       [200, {'Content-Type' => 'text/html'}, Tilt.new(template).render]
+    else
+      [404, {'Content-Type' => 'text/html'}, 'File not found']
     end
   end
 
