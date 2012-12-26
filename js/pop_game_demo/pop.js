@@ -333,5 +333,6 @@ POP.Particle = function(x, y,r, col) {
   };
 };
 
-window.addEventListener('load', POP.init, false);
 window.addEventListener('resize', POP.resize, false);
+
+POP.init();
