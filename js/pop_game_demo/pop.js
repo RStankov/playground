@@ -108,7 +108,7 @@ var POP = {
         var hit = this.collides(this.entities[i], {x: this.input.x, y: this.input.y, r: 7});
         if (hit) {
           for (var n = 0; n < 5; n +=1 ) {
-            this.entities.push(new POP.Particle( this.entities[i].x, this.entities[i].y, 2, 'rgba(255,255,255,'+Math.random()*1+')'));
+            this.entities.push(new POP.Particle(this.entities[i].x, this.entities[i].y, 2, Math.random() * 1));
           }
           this.score.hit += 1;
         }
@@ -201,107 +201,87 @@ POP.Input.prototype.set = function(data) {
 };
 
 POP.Touch = function(x, y) {
-  this.type = 'touch';    // we'll need this later
-  this.x = x;             // the x coordinate
-  this.y = y;             // the y coordinate
-  this.r = 5;             // the radius
-  this.opacity = 1;       // inital opacity. the dot will fade out
-  this.fade = 0.05;       // amount by which to fade on each game tick
-  // this.remove = false;    // flag for removing this entity. POP.update
-                          // will take care of this
+  this.x       = x;
+  this.y       = y;
+  this.opacity = 1;
+};
 
-  this.update = function() {
-    // reduct the opacity accordingly
+POP.Touch.prototype = {
+  type:   'touch',
+  remove: false,
+
+  r:      5,
+  fade:   0.5,
+
+  update: function() {
     this.opacity -= this.fade;
-    // if opacity if 0 or less, flag for removal
-    this.remove = (this.opacity < 0) ? true : false;
-  };
+    this.remove   = this.opacity < 0;
+  },
 
-  this.renderTo = function(draw) {
-    draw.circle(this.x, this.y, this.r, 'rgba(255,0,0,'+this.opacity+')');
-  };
+  renderTo: function(draw) {
+    draw.circle(this.x, this.y, this.r, 'rgba(255,0,0,' + this.opacity + ')');
+  }
 };
 
 POP.Bubble = function() {
-  this.type = 'bubble';
-  this.r = (Math.random() * 20) + 10;
-  this.speed = (Math.random() * 3) + 1;
+  this.r      = (Math.random() * 20) + 10;
+  this.speed  = (Math.random() * 3) + 1;
 
   this.x = (Math.random() * (POP.WIDTH) - this.r);
   this.y = POP.HEIGHT + (Math.random() * 100) + 100;
 
-  // the amount by which the bubble
-  // will move from side to side
-  this.waveSize = 5 + this.r;
-  // we need to remember the original
-  // x position for our sine wave calculation
+  this.waveSize  = 5 + this.r;
   this.xConstant = this.x;
+};
 
-  this.remove = false;
+POP.Bubble.prototype = {
+  type:   'bubble',
+  remove: false,
 
-  this.update = function() {
-    // a sine wave is commonly a function of time
+  update: function() {
     var time = new Date().getTime() * 0.002;
 
     this.y -= this.speed;
-    // the x coord to follow a sine wave
-    this.x = this.waveSize * Math.sin(time) + this.xConstant;
+    this.x  = this.waveSize * Math.sin(time) + this.xConstant;
 
-    // if offscreen flag for removal
     if (this.y < -10) {
-        POP.score.escaped += 1; // update score
-        this.remove = true;
+      POP.score.escaped += 1; // update score
+      this.remove = true;
     }
-  };
+  },
 
-  this.renderTo = function(draw) {
+  renderTo: function(draw) {
     draw.circle(this.x, this.y, this.r, 'rgba(255,255,255,1)');
-  };
+  }
 };
 
-POP.Particle = function(x, y,r, col) {
-  this.x = x;
-  this.y = y;
-  this.r = r;
-  this.col = col;
+POP.Particle = function(x, y, r, opacity) {
+  this.x   = x;
+  this.y   = y;
+  this.r   = r;
+  this.col = 'rgba(255,255,255,' + opacity + ')';
+  this.vx  = ~~(Math.random() * 4) * (Math.random() * 2 > 1 ? 1 : -1);
+  this.vy  = ~~(Math.random() * 7);
+};
 
-  // determines whether particle will
-  // travel to the right of left
-  // 50% chance of either happening
-  this.dir = (Math.random() * 2 > 1) ? 1 : -1;
+POP.Particle.prototype = {
+  remove: false,
 
-  // random values so particles do no
-  // travel at the same speeds
-  this.vx = ~~(Math.random() * 4) * this.dir;
-  this.vy = ~~(Math.random() * 7);
-
-  this.remove = false;
-
-  this.update = function() {
-    // update coordinates
+  update: function() {
     this.x += this.vx;
     this.y += this.vy;
 
-    // increase velocity so particle
-    // accelerates off screen
-    this.vx *= 0.99;
-    this.vy *= 0.99;
+    this.vx = this.vx * 0.99;
+    this.vy = this.vy * 0.99 - 0.25;
 
-    // adding this negative amount to the
-    // y velocity exerts an upward pull on
-    // the particle, as if drawn to the
-    // surface
-    this.vy -= 0.25;
-
-    // offscreen
     if (this.y < 0) {
-        this.remove = true;
+      this.remove = true;
     }
-  };
+  },
 
-  this.renderTo = function(draw) {
+  renderTo: function(draw) {
     draw.circle(this.x, this.y, this.r, this.col);
-  };
+  }
 };
 
 POP.init(document.getElementsByTagName('canvas')[0]);
