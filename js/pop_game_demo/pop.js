@@ -103,7 +103,7 @@ var POP = {
         if (checkCollision) {
           if (entity.collides(this.input)) {
             for (var n = 0; n < 5; n +=1 ) {
-              this.entities.push(new POP.Particle(entity.x, entity.y, 2, Math.random() * 1));
+              this.entities.push(new POP.Particle(entity.x, entity.y, 2));
             }
             this.score.hit += 1;
             entity.remove = true;
@@ -263,7 +263,7 @@ POP.Particle = function(x, y, r, opacity) {
   this.x   = x;
   this.y   = y;
   this.r   = r;
-  this.col = 'rgba(255,255,255,' + opacity + ')';
+  this.col = 'rgba(255,255,255,' + (Math.random() * 1) + ')';
   this.vx  = ~~(Math.random() * 4) * (Math.random() * 2 > 1 ? 1 : -1);
   this.vy  = ~~(Math.random() * 7);
 };
