@@ -31,14 +31,8 @@ var POP = {
   init: function(canvas) {
     this.canvas = canvas;
     this.draw   = new POP.Draw(this.canvas.getContext('2d'));
-    this.wave = {
-        x: -25,     // x coord of first circle
-        y: -40,     // y coord of first circle
-        r: 50,      // circle radius
-        time: 0,    // we'll use this in calculating the sine wave
-        offset: 0   // this will be the sine wave offset
-    };
-    this.wave.total = Math.ceil(POP.WIDTH / this.wave.r) + 1;
+
+    this.entities.push(new POP.Waves(POP.WIDTH));
 
     var input = this.input = new POP.Input(this);
 
@@ -128,24 +122,12 @@ var POP = {
       }
     }
 
-    // update wave offset
-    // feel free to play with these values for
-    // either slower or faster waves
-    this.wave.time = new Date().getTime() * 0.002;
-    this.wave.offset = Math.sin(this.wave.time * 0.8) * 5;
-
     this.score.accuracy = this.score.taps == 0 ? 0 : ~~((this.score.hit/this.score.taps) * 100);
   },
   render: function() {
       this.draw.rect(0, 0, POP.WIDTH, POP.HEIGHT, '#036');
 
-      var i,l;
-
-      for (i = 0, l = this.wave.total; i < l; i += 1) {
-        this.draw.circle(this.wave.x + this.wave.offset +  (i * this.wave.r), this.wave.y, this.wave.r, '#fff');
-      }
-
-      for (i = 0, l = this.entities.length; i < l; i += 1) {
+      for (var i = 0, l = this.entities.length; i < l; i += 1) {
         this.entities[i].renderTo(this.draw);
       }
 
@@ -201,6 +183,28 @@ POP.Input.prototype.set = function(data) {
   this.y = (data.pageY - this.game.offset.top) / this.game.scale;
   this.tapped = true;
 };
+
+POP.Waves = function(fieldWidth) {
+  this.total = Math.ceil(fieldWidth / this.r) + 1;
+  this.offset = 0;
+}
+
+POP.Waves.prototype = {
+  remove: false,
+  x:      -25,
+  y:      -40,
+  r:      50,
+
+  update: function() {
+    this.offset = Math.sin(new Date().getTime() * 0.0016) * 5;
+  },
+
+  renderTo: function(draw) {
+    for (var i = 0, l = this.total; i < l; i += 1) {
+      draw.circle(this.x + this.offset +  (i * this.r), this.y, this.r, '#fff');
+    }
+  }
+}
 
 POP.Touch = function(x, y) {
   this.x       = x;
