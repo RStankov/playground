@@ -40,15 +40,17 @@ var POP = {
     };
     this.wave.total = Math.ceil(POP.WIDTH / this.wave.r) + 1;
 
+    var input = this.input = new POP.Input(this);
+
     this.resize();
     this.loop();
 
     window.addEventListener('click', function(e) {
-        POP.Input.set(e);
+        input.set(e);
     }, false);
 
     window.addEventListener('touchstart', function(e) {
-        POP.Input.set(e.touches[0]);
+        input.set(e.touches[0]);
     }, false);
 
     var self = this;
@@ -92,10 +94,10 @@ var POP = {
       this.nextBubble = ( Math.random() * 100 ) + 100;
     }
 
-    if (POP.Input.tapped) {
+    if (this.input.tapped) {
       this.score.taps += 1;
-      this.entities.push(new POP.Touch(POP.Input.x, POP.Input.y));
-      POP.Input.tapped = false;
+      this.entities.push(new POP.Touch(this.input.x, this.input.y));
+      this.input.tapped = false;
       checkCollision = true;
     }
 
@@ -103,7 +105,7 @@ var POP = {
       this.entities[i].update();
 
       if (checkCollision && this.entities[i].type === 'bubble') {
-        var hit = this.collides(this.entities[i], {x: this.Input.x, y: this.Input.y, r: 7});
+        var hit = this.collides(this.entities[i], {x: this.input.x, y: this.input.y, r: 7});
         if (hit) {
           for (var n = 0; n < 5; n +=1 ) {
             this.entities.push(new POP.Particle( this.entities[i].x, this.entities[i].y, 2, 'rgba(255,255,255,'+Math.random()*1+')'));
@@ -185,15 +187,17 @@ POP.Draw.prototype = {
   }
 };
 
-POP.Input = {
-  x: 0,
-  y: 0,
-  tapped :false,
-  set: function(data) {
-    this.x = (data.pageX - POP.offset.left) / POP.scale;
-    this.y = (data.pageY - POP.offset.top) / POP.scale;
-    this.tapped = true;
-  }
+POP.Input = function(game) {
+  this.x      = 0;
+  this.y      = 0;
+  this.tapped = false;
+  this.game   = game;
+};
+
+POP.Input.prototype.set = function(data) {
+  this.x = (data.pageX - this.game.offset.left) / this.game.scale;
+  this.y = (data.pageY - this.game.offset.top) / this.game.scale;
+  this.tapped = true;
 };
 
 POP.Touch = function(x, y) {
