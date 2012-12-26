@@ -19,18 +19,12 @@ POP.Game =  function(canvas, width, height) {
   this.height = height;
   this.canvas = canvas;
 
-  this.score = {
-    taps:     0,
-    hit:      0,
-    escaped:  0,
-    accuracy: 0
-  };
-
-  this.draw  = new POP.Draw(this.canvas.getContext('2d'));
-  this.input = new POP.Input();
+  this.score    = new POP.Score();
+  this.draw     = new POP.Draw(this.canvas.getContext('2d'));
+  this.input    = new POP.Input();
+  this.entities = [new POP.Waves(this.width)];
 
   this.nextBubble = 100;
-  this.entities = [new POP.Waves(this.width)];
 
   this.resize();
   this.loop();
@@ -117,7 +111,7 @@ POP.Game.prototype = {
       }
     }
 
-    this.score.accuracy = this.score.taps == 0 ? 0 : ~~((this.score.hit/this.score.taps) * 100);
+    this.score.update();
   },
 
   render: function() {
@@ -127,9 +121,7 @@ POP.Game.prototype = {
       this.entities[i].renderTo(this.draw);
     }
 
-    this.draw.text('Hit: ' + this.score.hit, 20, 30, 14, '#fff');
-    this.draw.text('Escaped: ' + this.score.escaped, 20, 50, 14, '#fff');
-    this.draw.text('Accuracy: ' + this.score.accuracy + '%', 20, 70, 14, '#fff');
+    this.score.renderTo(this.draw);
   },
 
   loop: function() {
@@ -185,6 +177,25 @@ POP.Input.prototype = {
     this.offsetY = field.offsetTop;
   }
 };
+
+POP.Score = function() {
+  this.taps     = 0;
+  this.hit      = 0;
+  this.escaped  = 0;
+  this.accuracy = 0;
+};
+
+POP.Score.prototype = {
+  update: function() {
+    this.accuracy = this.taps == 0 ? 0 : ~~((this.hit/this.taps) * 100);
+  },
+
+  renderTo: function(draw) {
+    draw.text('Hit: ' + this.hit, 20, 30, 14, '#fff');
+    draw.text('Escaped: ' + this.escaped, 20, 50, 14, '#fff');
+    draw.text('Accuracy: ' + this.accuracy + '%', 20, 70, 14, '#fff');
+  }
+}
 
 POP.Waves = function(fieldWidth) {
   this.total = Math.ceil(fieldWidth / this.r) + 1;
