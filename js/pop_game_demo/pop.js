@@ -32,11 +32,11 @@ var POP = {
     return ua.indexOf('android') > -1 || ua.indexOf('iphone') > -1 || ua.indexOf('ipad') > -1;
   })(),
 
-  init: function() {
+  init: function(canvas) {
     this.RATIO          = this.WIDTH / this.HEIGHT;
     this.currentWidth   = this.WIDTH;
     this.currentHeight  = this.HEIGHT;
-    this.canvas         = document.getElementsByTagName('canvas')[0];
+    this.canvas         = canvas;
     this.canvas.width   = this.WIDTH;
     this.canvas.height  = this.HEIGHT;
     this.ctx            = this.canvas.getContext('2d');
@@ -329,4 +329,4 @@ POP.Particle = function(x, y,r, col) {
   };
 };
 
-POP.init();
+POP.init(document.getElementsByTagName('canvas')[0]);
