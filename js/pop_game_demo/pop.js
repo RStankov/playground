@@ -19,15 +19,19 @@ var POP = {
   currentHeight:  null,
   canvas:         null,
   ctx:            null,
-  ua:             null,
-  android:        null,
-  ios:            null,
+
   score: {
     taps:     0,
     hit:      0,
     escaped:  0,
     accuracy: 0
   },
+
+  isOnMobile: (function(){
+    var ua = navigator.userAgent.toLowerCase();
+    return ua.indexOf('android') > -1 || ua.indexOf('iphone') > -1 || ua.indexOf('ipad') > -1;
+  })(),
+
   init: function() {
     this.RATIO          = this.WIDTH / this.HEIGHT;
     this.currentWidth   = this.WIDTH;
@@ -36,9 +40,6 @@ var POP = {
     this.canvas.width   = this.WIDTH;
     this.canvas.height  = this.HEIGHT;
     this.ctx            = this.canvas.getContext('2d');
-    this.ua             = navigator.userAgent.toLowerCase();
-    this.android        = this.ua.indexOf('android') > -1 ? true : false;
-    this.ios            = ( this.ua.indexOf('iphone') > -1 || this.ua.indexOf('ipad') > -1  ) ? true : false;
     this.wave = {
         x: -25,     // x coord of first circle
         y: -40,     // y coord of first circle
@@ -75,7 +76,7 @@ var POP = {
     // this will create some extra space on the
     // page, allowing us to scroll pass
     // the address bar, and thus hide it.
-    if (this.android || this.ios) {
+    if (this.isOnMobile) {
         document.body.style.height = (window.innerHeight + 50) + 'px';
     }
 
