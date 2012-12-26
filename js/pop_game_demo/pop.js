@@ -104,17 +104,24 @@ var POP = {
     for (var i = 0; i < this.entities.length; i += 1) {
       this.entities[i].update();
 
-      if (checkCollision && this.entities[i].type === 'bubble') {
-        var hit = this.collides(this.entities[i], {x: this.input.x, y: this.input.y, r: 7});
-        if (hit) {
-          for (var n = 0; n < 5; n +=1 ) {
-            this.entities.push(new POP.Particle(this.entities[i].x, this.entities[i].y, 2, Math.random() * 1));
+      if (this.entities[i].type === 'bubble') {
+        if (checkCollision) {
+          var hit = this.collides(this.entities[i], {x: this.input.x, y: this.input.y, r: 7});
+          if (hit) {
+            for (var n = 0; n < 5; n +=1 ) {
+              this.entities.push(new POP.Particle(this.entities[i].x, this.entities[i].y, 2, Math.random() * 1));
+            }
+            this.score.hit += 1;
           }
-          this.score.hit += 1;
-        }
 
-        this.entities[i].remove = hit;
+          this.entities[i].remove = hit;
+        } else {
+          if (this.entities[i].remove) {
+            this.score.escaped += 1;
+          }
+        }
       }
+
 
       if (this.entities[i].remove) {
           this.entities.splice(i, 1);
@@ -245,7 +252,6 @@ POP.Bubble.prototype = {
     this.x  = this.waveSize * Math.sin(time) + this.xConstant;
 
     if (this.y < -10) {
-      POP.score.escaped += 1; // update score
       this.remove = true;
     }
   },
