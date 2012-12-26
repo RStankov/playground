@@ -35,6 +35,7 @@ POP.Game =  function(canvas, width, height) {
   this.nextBubble = 100;
 
   this.resize();
+  this.loop = this.loop.bind(this);
   this.loop();
 
   POP.addEventListeners({
@@ -138,7 +139,7 @@ POP.Game.prototype = {
   },
 
   loop: function() {
-    POP.requestAnimFrame.call(window, this.loop.bind(this));
+    POP.requestAnimFrame.call(window, this.loop);
     this.update();
     this.render();
   }
