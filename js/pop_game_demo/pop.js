@@ -8,8 +8,6 @@ window.requestAnimFrame = (function(){
 })();
 
 var POP = {
-  WIDTH:          320,
-  HEIGHT:         480,
   scale:          1,
   offset:         {top: 0, left: 0},
   entities:       [],
@@ -28,11 +26,13 @@ var POP = {
     return ua.indexOf('android') > -1 || ua.indexOf('iphone') > -1 || ua.indexOf('ipad') > -1;
   })(),
 
-  init: function(canvas) {
+  init: function(canvas, width, height) {
+    this.width  = width;
+    this.height = height;
     this.canvas = canvas;
     this.draw   = new POP.Draw(this.canvas.getContext('2d'));
 
-    this.entities.push(new POP.Waves(POP.WIDTH));
+    this.entities.push(new POP.Waves(this.width));
 
     var input = this.input = new POP.Input(this);
 
@@ -59,18 +59,18 @@ var POP = {
 
   resize: function() {
     var currentHeight = window.innerHeight,
-        currentWidth  = currentHeight * (POP.WIDTH / POP.HEIGHT);
+        currentWidth  = currentHeight * (this.width / this.height);
 
     if (this.isOnMobile) {
       document.body.style.height = (currentHeight + 50) + 'px';
     }
 
-    this.canvas.width        = POP.WIDTH;
-    this.canvas.height       = POP.HEIGHT;
+    this.canvas.width        = this.width;
+    this.canvas.height       = this.height;
     this.canvas.style.width  = currentWidth + 'px';
     this.canvas.style.height = currentHeight + 'px';
 
-    this.scale       = currentWidth / POP.WIDTH;
+    this.scale       = currentWidth / this.width;
     this.offset.top  = this.canvas.offsetTop;
     this.offset.left = this.canvas.offsetLeft;
 
@@ -83,7 +83,7 @@ var POP = {
     this.nextBubble -= 1;
 
     if (this.nextBubble < 0) {
-      this.entities.push(new POP.Bubble(POP.WIDTH, POP.HEIGHT));
+      this.entities.push(new POP.Bubble(this.width, this.height));
       this.nextBubble = ( Math.random() * 100 ) + 100;
     }
 
@@ -125,7 +125,7 @@ var POP = {
   },
 
   render: function() {
-      this.draw.rect(0, 0, POP.WIDTH, POP.HEIGHT, '#036');
+      this.draw.rect(0, 0, this.width, this.height, '#036');
 
       for (var i = 0, l = this.entities.length; i < l; i += 1) {
         this.entities[i].renderTo(this.draw);
@@ -288,4 +288,4 @@ POP.Particle.prototype = {
   }
 };
 
-POP.init(document.getElementsByTagName('canvas')[0]);
+POP.init(document.getElementsByTagName('canvas')[0], 320, 480);
