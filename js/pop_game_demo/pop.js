@@ -15,12 +15,10 @@ var POP = {
 };
 
 POP.Game =  function(canvas, width, height) {
-  this.scale  = 1;
-  this.offset = {top: 0, left: 0};
   this.width  = width;
   this.height = height;
   this.canvas = canvas;
-  this.draw   = new POP.Draw(this.canvas.getContext('2d'));
+
   this.score = {
     taps:     0,
     hit:      0,
@@ -28,14 +26,16 @@ POP.Game =  function(canvas, width, height) {
     accuracy: 0
   };
 
+  this.draw  = new POP.Draw(this.canvas.getContext('2d'));
+  this.input = new POP.Input();
+
   this.nextBubble = 100;
   this.entities = [new POP.Waves(this.width)];
-
-  var input = this.input = new POP.Input(this);
 
   this.resize();
   this.loop();
 
+  var input = this.input;
   window.addEventListener('click', function(e) {
       input.set(e);
   }, false);
@@ -68,9 +68,7 @@ POP.Game.prototype = {
     this.canvas.style.width  = currentWidth + 'px';
     this.canvas.style.height = currentHeight + 'px';
 
-    this.scale       = currentWidth / this.width;
-    this.offset.top  = this.canvas.offsetTop;
-    this.offset.left = this.canvas.offsetLeft;
+    this.input.setField(this.canvas);
 
     window.setTimeout(function() { window.scrollTo(0,1); }, 1);
   },
@@ -164,18 +162,28 @@ POP.Draw.prototype = {
   }
 };
 
-POP.Input = function(game) {
-  this.x      = 0;
-  this.y      = 0;
-  this.r      = 7;
-  this.tapped = false;
-  this.game   = game;
+POP.Input = function() {
+  this.x       = 0;
+  this.y       = 0;
+  this.r       = 7;
+  this.tapped  = false;
+  this.scale   = 1;
+  this.offsetX = 0;
+  this.offsetY = 0;
 };
 
-POP.Input.prototype.set = function(data) {
-  this.x = (data.pageX - this.game.offset.left) / this.game.scale;
-  this.y = (data.pageY - this.game.offset.top) / this.game.scale;
-  this.tapped = true;
+POP.Input.prototype = {
+  set: function(data) {
+    this.x = (data.pageX - this.offsetX) / this.scale;
+    this.y = (data.pageY - this.offsetY) / this.scale;
+    this.tapped = true;
+  },
+
+  setField: function(field) {
+    this.scale   = (parseInt(field.style.width, 10 || 0)) / field.width;
+    this.offsetX = field.offsetLeft;
+    this.offsetY = field.offsetTop;
+  }
 };
 
 POP.Waves = function(fieldWidth) {
