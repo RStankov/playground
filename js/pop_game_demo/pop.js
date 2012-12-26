@@ -1,67 +1,65 @@
-window.requestAnimFrame = (function(){
-  return  window.requestAnimationFrame       ||
-          window.webkitRequestAnimationFrame ||
-          window.mozRequestAnimationFrame    ||
-          window.oRequestAnimationFrame      ||
-          window.msRequestAnimationFrame     ||
-          function(callback) { window.setTimeout(callback, 1000 / 60); };
-})();
-
 var POP = {
-  scale:          1,
-  offset:         {top: 0, left: 0},
-  entities:       [],
-  nextBubble:     100,
-  canvas:         null,
-
-  score: {
-    taps:     0,
-    hit:      0,
-    escaped:  0,
-    accuracy: 0
-  },
-
   isOnMobile: (function(){
     var ua = navigator.userAgent.toLowerCase();
     return ua.indexOf('android') > -1 || ua.indexOf('iphone') > -1 || ua.indexOf('ipad') > -1;
   })(),
 
-  init: function(canvas, width, height) {
-    this.width  = width;
-    this.height = height;
-    this.canvas = canvas;
-    this.draw   = new POP.Draw(this.canvas.getContext('2d'));
+  requestAnimFrame: (function(){
+    return  window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            window.oRequestAnimationFrame      ||
+            window.msRequestAnimationFrame     ||
+            function(callback) { window.setTimeout(callback, 1000 / 60); };
+  })()
+};
 
-    this.entities.push(new POP.Waves(this.width));
+POP.Game =  function(canvas, width, height) {
+  this.scale  = 1;
+  this.offset = {top: 0, left: 0};
+  this.width  = width;
+  this.height = height;
+  this.canvas = canvas;
+  this.draw   = new POP.Draw(this.canvas.getContext('2d'));
+  this.score = {
+    taps:     0,
+    hit:      0,
+    escaped:  0,
+    accuracy: 0
+  };
 
-    var input = this.input = new POP.Input(this);
+  this.nextBubble = 100;
+  this.entities = [new POP.Waves(this.width)];
 
-    this.resize();
-    this.loop();
+  var input = this.input = new POP.Input(this);
 
-    window.addEventListener('click', function(e) {
-        input.set(e);
-    }, false);
+  this.resize();
+  this.loop();
 
-    window.addEventListener('touchstart', function(e) {
-        input.set(e.touches[0]);
-    }, false);
+  window.addEventListener('click', function(e) {
+      input.set(e);
+  }, false);
 
-    var self = this;
-    window.addEventListener('resize', function(e) {
-      self.resize()
-    }, false);
+  window.addEventListener('touchstart', function(e) {
+      input.set(e.touches[0]);
+  }, false);
 
-    ['click', 'touchstart', 'touchmove', 'touchend'].forEach(function(eventName) {
-      window.addEventListener(function(e){ e.preventDefault(); }, false);
-    });
-  },
+  var self = this;
+  window.addEventListener('resize', function(e) {
+    self.resize()
+  }, false);
 
+  ['click', 'touchstart', 'touchmove', 'touchend'].forEach(function(eventName) {
+    window.addEventListener(function(e){ e.preventDefault(); }, false);
+  });
+};
+
+POP.Game.prototype = {
   resize: function() {
     var currentHeight = window.innerHeight,
         currentWidth  = currentHeight * (this.width / this.height);
 
-    if (this.isOnMobile) {
+    if (POP.isOnMobile) {
       document.body.style.height = (currentHeight + 50) + 'px';
     }
 
@@ -125,20 +123,21 @@ var POP = {
   },
 
   render: function() {
-      this.draw.rect(0, 0, this.width, this.height, '#036');
+    this.draw.rect(0, 0, this.width, this.height, '#036');
 
-      for (var i = 0, l = this.entities.length; i < l; i += 1) {
-        this.entities[i].renderTo(this.draw);
-      }
+    for (var i = 0, l = this.entities.length; i < l; i += 1) {
+      this.entities[i].renderTo(this.draw);
+    }
 
-      this.draw.text('Hit: ' + this.score.hit, 20, 30, 14, '#fff');
-      this.draw.text('Escaped: ' + this.score.escaped, 20, 50, 14, '#fff');
-      this.draw.text('Accuracy: ' + this.score.accuracy + '%', 20, 70, 14, '#fff');
+    this.draw.text('Hit: ' + this.score.hit, 20, 30, 14, '#fff');
+    this.draw.text('Escaped: ' + this.score.escaped, 20, 50, 14, '#fff');
+    this.draw.text('Accuracy: ' + this.score.accuracy + '%', 20, 70, 14, '#fff');
   },
+
   loop: function() {
-      requestAnimFrame(this.loop.bind(this));
-      this.update();
-      this.render();
+    POP.requestAnimFrame.call(window, this.loop.bind(this));
+    this.update();
+    this.render();
   }
 };
 
@@ -288,4 +287,4 @@ POP.Particle.prototype = {
   }
 };
 
-POP.init(document.getElementsByTagName('canvas')[0], 320, 480);
+new POP.Game(document.getElementsByTagName('canvas')[0], 320, 480);
