@@ -14,11 +14,7 @@ var POP = {
   offset:         {top: 0, left: 0},
   entities:       [],
   nextBubble:     100,
-  RATIO:          null,
-  currentWidth:   null,
-  currentHeight:  null,
   canvas:         null,
-  ctx:            null,
 
   score: {
     taps:     0,
@@ -33,13 +29,8 @@ var POP = {
   })(),
 
   init: function(canvas) {
-    this.RATIO          = this.WIDTH / this.HEIGHT;
-    this.currentWidth   = this.WIDTH;
-    this.currentHeight  = this.HEIGHT;
-    this.canvas         = canvas;
-    this.canvas.width   = this.WIDTH;
-    this.canvas.height  = this.HEIGHT;
-    this.draw           = new POP.Draw(this.canvas.getContext('2d'));
+    this.canvas = canvas;
+    this.draw   = new POP.Draw(this.canvas.getContext('2d'));
     this.wave = {
         x: -25,     // x coord of first circle
         y: -40,     // y coord of first circle
@@ -47,7 +38,10 @@ var POP = {
         time: 0,    // we'll use this in calculating the sine wave
         offset: 0   // this will be the sine wave offset
     };
-    this.wave.total = Math.ceil(this.WIDTH / this.wave.r) + 1;
+    this.wave.total = Math.ceil(POP.WIDTH / this.wave.r) + 1;
+
+    this.resize();
+    this.loop();
 
     window.addEventListener('click', function(e) {
         POP.Input.set(e);
@@ -57,49 +51,34 @@ var POP = {
         POP.Input.set(e.touches[0]);
     }, false);
 
+    var self = this;
     window.addEventListener('resize', function(e) {
-      POP.resize()
+      self.resize()
     }, false);
 
     ['click', 'touchstart', 'touchmove', 'touchend'].forEach(function(eventName) {
       window.addEventListener(function(e){ e.preventDefault(); }, false);
     });
-
-    this.resize();
-    this.loop();
   },
 
   resize: function() {
-    this.currentHeight = window.innerHeight;
-    this.currentWidth = this.currentHeight * this.RATIO;
+    var currentHeight = window.innerHeight,
+        currentWidth  = currentHeight * (POP.WIDTH / POP.HEIGHT);
 
-    // this will create some extra space on the
-    // page, allowing us to scroll pass
-    // the address bar, and thus hide it.
     if (this.isOnMobile) {
-        document.body.style.height = (window.innerHeight + 50) + 'px';
+      document.body.style.height = (currentHeight + 50) + 'px';
     }
 
-    // set the new canvas style width & height
-    // note: our canvas is still 320x480 but
-    // we're essentially scaling it with CSS
-    this.canvas.style.width = this.currentWidth + 'px';
-    this.canvas.style.height = this.currentHeight + 'px';
+    this.canvas.width        = POP.WIDTH;
+    this.canvas.height       = POP.HEIGHT;
+    this.canvas.style.width  = currentWidth + 'px';
+    this.canvas.style.height = currentHeight + 'px';
 
-    // the amount by which the css resized canvas
-    // is different to the actual (480x320) size.
-    this.scale = this.currentWidth / this.WIDTH;
-    // position of canvas in relation to
-    // the screen
-    this.offset.top = this.canvas.offsetTop;
+    this.scale       = currentWidth / POP.WIDTH;
+    this.offset.top  = this.canvas.offsetTop;
     this.offset.left = this.canvas.offsetLeft;
 
-    // we use a timeout here as some mobile
-    // browsers won't scroll if there is not
-    // a small delay
-    window.setTimeout(function() {
-      window.scrollTo(0,1);
-    }, 1);
+    window.setTimeout(function() { window.scrollTo(0,1); }, 1);
   },
   // this is where all entities will be moved
   // and checked for collisions etc
