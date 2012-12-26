@@ -49,36 +49,21 @@ var POP = {
     POP.wave.total = Math.ceil(POP.WIDTH / POP.wave.r) + 1;
 
     window.addEventListener('click', function(e) {
-        e.preventDefault();
         POP.Input.set(e);
     }, false);
 
-    // listen for touches
     window.addEventListener('touchstart', function(e) {
-        e.preventDefault();
-        // the event object has an array
-        // called touches, we just want
-        // the first touch
         POP.Input.set(e.touches[0]);
     }, false);
-    window.addEventListener('touchmove', function(e) {
-        // we're not interested in this
-        // but prevent default behaviour
-        // so the screen doesn't scroll
-        // or zoom
-        e.preventDefault();
-    }, false);
-    window.addEventListener('touchend', function(e) {
-        // as above
-        e.preventDefault();
-    }, false);
 
-    // we're ready to resize
+    ['click', 'touchstart', 'touchmove', 'touchend'].forEach(function(eventName) {
+      window.addEventListener(function(e){ e.preventDefault(); }, false);
+    });
+
     POP.resize();
-
     POP.loop();
-
   },
+
   resize: function() {
     POP.currentHeight = window.innerHeight;
     // resize the width in proportion
