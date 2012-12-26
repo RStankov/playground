@@ -29,24 +29,24 @@ var POP = {
     accuracy: 0
   },
   init: function() {
-    POP.RATIO = POP.WIDTH / POP.HEIGHT;
-    POP.currentWidth = POP.WIDTH;
-    POP.currentHeight = POP.HEIGHT;
-    POP.canvas = document.getElementsByTagName('canvas')[0];
-    POP.canvas.width = POP.WIDTH;
-    POP.canvas.height = POP.HEIGHT;
-    POP.ctx = POP.canvas.getContext('2d');
-    POP.ua = navigator.userAgent.toLowerCase();
-    POP.android = POP.ua.indexOf('android') > -1 ? true : false;
-    POP.ios = ( POP.ua.indexOf('iphone') > -1 || POP.ua.indexOf('ipad') > -1  ) ? true : false;
-    POP.wave = {
-        x: -25, // x coord of first circle
-        y: -40, // y coord of first circle
-        r: 50, // circle radius
-        time: 0, // we'll use this in calculating the sine wave
-        offset: 0 // this will be the sine wave offset
+    this.RATIO          = this.WIDTH / this.HEIGHT;
+    this.currentWidth   = this.WIDTH;
+    this.currentHeight  = this.HEIGHT;
+    this.canvas         = document.getElementsByTagName('canvas')[0];
+    this.canvas.width   = this.WIDTH;
+    this.canvas.height  = this.HEIGHT;
+    this.ctx            = this.canvas.getContext('2d');
+    this.ua             = navigator.userAgent.toLowerCase();
+    this.android        = this.ua.indexOf('android') > -1 ? true : false;
+    this.ios            = ( this.ua.indexOf('iphone') > -1 || this.ua.indexOf('ipad') > -1  ) ? true : false;
+    this.wave = {
+        x: -25,     // x coord of first circle
+        y: -40,     // y coord of first circle
+        r: 50,      // circle radius
+        time: 0,    // we'll use this in calculating the sine wave
+        offset: 0   // this will be the sine wave offset
     };
-    POP.wave.total = Math.ceil(POP.WIDTH / POP.wave.r) + 1;
+    this.wave.total = Math.ceil(this.WIDTH / this.wave.r) + 1;
 
     window.addEventListener('click', function(e) {
         POP.Input.set(e);
@@ -56,40 +56,42 @@ var POP = {
         POP.Input.set(e.touches[0]);
     }, false);
 
+    window.addEventListener('resize', function(e) {
+      POP.resize()
+    }, false);
+
     ['click', 'touchstart', 'touchmove', 'touchend'].forEach(function(eventName) {
       window.addEventListener(function(e){ e.preventDefault(); }, false);
     });
 
-    POP.resize();
-    POP.loop();
+    this.resize();
+    this.loop();
   },
 
   resize: function() {
-    POP.currentHeight = window.innerHeight;
-    // resize the width in proportion
-    // to the new height
-    POP.currentWidth = POP.currentHeight * POP.RATIO;
+    this.currentHeight = window.innerHeight;
+    this.currentWidth = this.currentHeight * this.RATIO;
 
     // this will create some extra space on the
     // page, allowing us to scroll pass
     // the address bar, and thus hide it.
-    if (POP.android || POP.ios) {
+    if (this.android || this.ios) {
         document.body.style.height = (window.innerHeight + 50) + 'px';
     }
 
     // set the new canvas style width & height
     // note: our canvas is still 320x480 but
     // we're essentially scaling it with CSS
-    POP.canvas.style.width = POP.currentWidth + 'px';
-    POP.canvas.style.height = POP.currentHeight + 'px';
+    this.canvas.style.width = this.currentWidth + 'px';
+    this.canvas.style.height = this.currentHeight + 'px';
 
     // the amount by which the css resized canvas
     // is different to the actual (480x320) size.
-    POP.scale = POP.currentWidth / POP.WIDTH;
+    this.scale = this.currentWidth / this.WIDTH;
     // position of canvas in relation to
     // the screen
-    POP.offset.top = POP.canvas.offsetTop;
-    POP.offset.left = POP.canvas.offsetLeft;
+    this.offset.top = this.canvas.offsetTop;
+    this.offset.left = this.canvas.offsetLeft;
 
     // we use a timeout here as some mobile
     // browsers won't scroll if there is not
@@ -103,88 +105,83 @@ var POP = {
   update: function() {
     var checkCollision = false;
 
-    POP.nextBubble -= 1;
+    this.nextBubble -= 1;
 
-    if (POP.nextBubble < 0) {
-      POP.entities.push(new POP.Bubble());
-      POP.nextBubble = ( Math.random() * 100 ) + 100;
+    if (this.nextBubble < 0) {
+      this.entities.push(new POP.Bubble());
+      this.nextBubble = ( Math.random() * 100 ) + 100;
     }
 
     if (POP.Input.tapped) {
-      POP.score.taps += 1;
-      POP.entities.push(new POP.Touch(POP.Input.x, POP.Input.y));
+      this.score.taps += 1;
+      this.entities.push(new POP.Touch(POP.Input.x, POP.Input.y));
       POP.Input.tapped = false;
       checkCollision = true;
     }
 
-    for (var i = 0; i < POP.entities.length; i += 1) {
-      POP.entities[i].update();
+    for (var i = 0; i < this.entities.length; i += 1) {
+      this.entities[i].update();
 
-      if (POP.entities[i].type === 'bubble' && checkCollision) {
-        hit = POP.collides(POP.entities[i], {x: POP.Input.x, y: POP.Input.y, r: 7});
+      if (this.entities[i].type === 'bubble' && checkCollision) {
+        hit = this.collides(this.entities[i], {x: this.Input.x, y: this.Input.y, r: 7});
         if (hit) {
           for (var n = 0; n < 5; n +=1 ) {
-            POP.entities.push(new POP.Particle( POP.entities[i].x, POP.entities[i].y, 2, 'rgba(255,255,255,'+Math.random()*1+')'));
+            this.entities.push(new POP.Particle( this.entities[i].x, this.entities[i].y, 2, 'rgba(255,255,255,'+Math.random()*1+')'));
           }
-          POP.score.hit += 1;
+          this.score.hit += 1;
         }
 
-        POP.entities[i].remove = hit;
+        this.entities[i].remove = hit;
       }
 
-      if (POP.entities[i].remove) {
-          POP.entities.splice(i, 1);
+      if (this.entities[i].remove) {
+          this.entities.splice(i, 1);
       }
     }
 
     // update wave offset
     // feel free to play with these values for
     // either slower or faster waves
-    POP.wave.time = new Date().getTime() * 0.002;
-    POP.wave.offset = Math.sin(POP.wave.time * 0.8) * 5;
+    this.wave.time = new Date().getTime() * 0.002;
+    this.wave.offset = Math.sin(this.wave.time * 0.8) * 5;
 
     // calculate accuracy
-    POP.score.accuracy = (POP.score.hit / POP.score.taps) * 100;
-    POP.score.accuracy = isNaN(POP.score.accuracy) ?  0 : ~~(POP.score.accuracy); // a handy way to round floats
+    this.score.accuracy = (this.score.hit / this.score.taps) * 100;
+    this.score.accuracy = isNaN(this.score.accuracy) ?  0 : ~~(this.score.accuracy); // a handy way to round floats
   },
   render: function() {
 
       var i;
 
 
-      POP.Draw.rect(0, 0, POP.WIDTH, POP.HEIGHT, '#036');
+      POP.Draw.rect(0, 0, this.WIDTH, this.HEIGHT, '#036');
 
       // display snazzy wave effect
-      for (i = 0; i < POP.wave.total; i++) {
+      for (i = 0; i < this.wave.total; i++) {
 
           POP.Draw.circle(
-                      POP.wave.x + POP.wave.offset +  (i * POP.wave.r),
-                      POP.wave.y,
-                      POP.wave.r,
+                      this.wave.x + this.wave.offset +  (i * this.wave.r),
+                      this.wave.y,
+                      this.wave.r,
                       '#fff');
       }
 
           // cycle through all entities and render to canvas
-          for (i = 0; i < POP.entities.length; i += 1) {
-              POP.entities[i].render();
+          for (i = 0; i < this.entities.length; i += 1) {
+              this.entities[i].render();
       }
 
       // display scores
-      POP.Draw.text('Hit: ' + POP.score.hit, 20, 30, 14, '#fff');
-      POP.Draw.text('Escaped: ' + POP.score.escaped, 20, 50, 14, '#fff');
-      POP.Draw.text('Accuracy: ' + POP.score.accuracy + '%', 20, 70, 14, '#fff');
+      POP.Draw.text('Hit: ' + this.score.hit, 20, 30, 14, '#fff');
+      POP.Draw.text('Escaped: ' + this.score.escaped, 20, 50, 14, '#fff');
+      POP.Draw.text('Accuracy: ' + this.score.accuracy + '%', 20, 70, 14, '#fff');
 
   },
-  // the actual loop
-  // requests animation frame
-  // then proceeds to update
-  // and render
   loop: function() {
+      requestAnimFrame( this.loop.bind(this) );
 
-      requestAnimFrame( POP.loop );
-
-      POP.update();
-      POP.render();
+      this.update();
+      this.render();
   }
 };
 
@@ -332,7 +329,5 @@ POP.Particle = function(x, y,r, col) {
       POP.Draw.circle(this.x, this.y, this.r, this.col);
   };
 };
-
-window.addEventListener('resize', POP.resize, false);
 
 POP.init();
