@@ -102,8 +102,8 @@ var POP = {
     for (var i = 0; i < this.entities.length; i += 1) {
       this.entities[i].update();
 
-      if (this.entities[i].type === 'bubble' && checkCollision) {
-        hit = this.collides(this.entities[i], {x: this.Input.x, y: this.Input.y, r: 7});
+      if (checkCollision && this.entities[i].type === 'bubble') {
+        var hit = this.collides(this.entities[i], {x: this.Input.x, y: this.Input.y, r: 7});
         if (hit) {
           for (var n = 0; n < 5; n +=1 ) {
             this.entities.push(new POP.Particle( this.entities[i].x, this.entities[i].y, 2, 'rgba(255,255,255,'+Math.random()*1+')'));
