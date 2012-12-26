@@ -11,13 +11,21 @@ var POP = {
             window.oRequestAnimationFrame      ||
             window.msRequestAnimationFrame     ||
             function(callback) { window.setTimeout(callback, 1000 / 60); };
-  })()
+  })(),
+
+  addEventListeners: function(events) {
+    for(var eventName in events) {
+      if (events.hasOwnProperty(eventName)) {
+        window.addEventListener(eventName, events[eventName], false);
+      }
+    }
+  }
 };
 
 POP.Game =  function(canvas, width, height) {
+  this.canvas = canvas;
   this.width  = width;
   this.height = height;
-  this.canvas = canvas;
 
   this.score    = new POP.Score();
   this.draw     = new POP.Draw(this.canvas.getContext('2d'));
@@ -29,22 +37,27 @@ POP.Game =  function(canvas, width, height) {
   this.resize();
   this.loop();
 
-  var input = this.input;
-  window.addEventListener('click', function(e) {
-      input.set(e);
-  }, false);
+  POP.addEventListeners({
+    'resize': function() {
+      this.resize();
+    }.bind(this),
 
-  window.addEventListener('touchstart', function(e) {
-      input.set(e.touches[0]);
-  }, false);
+    'click': function(e) {
+      this.input.set(e);
+    }.bind(this),
 
-  var self = this;
-  window.addEventListener('resize', function(e) {
-    self.resize()
-  }, false);
+    'touchstart': function(e) {
+      e.preventDefault();
+      this.input.set(e.touches[0]);
+    }.bind(this),
 
-  ['click', 'touchstart', 'touchmove', 'touchend'].forEach(function(eventName) {
-    window.addEventListener(function(e){ e.preventDefault(); }, false);
+    'touchmove': function(e) {
+      e.preventDefault();
+    },
+
+    'touchend': function(e) {
+      e.preventDefault();
+    }
   });
 };
 
