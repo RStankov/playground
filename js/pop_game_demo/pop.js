@@ -1,10 +1,14 @@
 var POP = {
-  isOnMobile: (function(){
+  start: function() {
+    return new POP.Game(document.getElementsByTagName('canvas')[0], 320, 480);
+  },
+
+  isOnMobile: (function() {
     var ua = navigator.userAgent.toLowerCase();
     return ua.indexOf('android') > -1 || ua.indexOf('iphone') > -1 || ua.indexOf('ipad') > -1;
   })(),
 
-  requestAnimFrame: (function(){
+  requestAnimFrame: (function() {
     return  window.requestAnimationFrame       ||
             window.webkitRequestAnimationFrame ||
             window.mozRequestAnimationFrame    ||
@@ -28,13 +32,13 @@ POP.Game =  function(canvas, width, height) {
   this.height = height;
 
   this.score    = new POP.Score();
-  this.draw     = new POP.Draw(this.canvas.getContext('2d'));
+  this.draw     = new POP.Draw(this.canvas);
   this.input    = new POP.Input();
   this.entities = [new POP.Waves(this.width)];
 
   this.nextBubble = 100;
-
   this.resize();
+
   this.loop = this.loop.bind(this);
   this.loop();
 
@@ -82,15 +86,13 @@ POP.Game.prototype = {
   },
 
   update: function() {
-    var checkCollision = false;
-
     this.nextBubble -= 1;
-
     if (this.nextBubble < 0) {
       this.entities.push(new POP.Bubble(this.width, this.height));
-      this.nextBubble = ( Math.random() * 100 ) + 100;
+      this.nextBubble = Math.random() * 100 + 100;
     }
 
+    var checkCollision = false;
     if (this.input.tapped) {
       this.score.taps += 1;
       this.entities.push(new POP.Touch(this.input.x, this.input.y));
@@ -119,10 +121,7 @@ POP.Game.prototype = {
         }
       }
 
-
-      if (entity.remove) {
-          this.entities.splice(i, 1);
-      }
+      entity.remove && this.entities.splice(i, 1);
     }
 
     this.score.update();
@@ -145,8 +144,8 @@ POP.Game.prototype = {
   }
 };
 
-POP.Draw = function(ctx) {
-  this.ctx = ctx;
+POP.Draw = function(canvas) {
+  this.ctx = canvas.getContext('2d');
 };
 
 POP.Draw.prototype = {
@@ -154,6 +153,7 @@ POP.Draw.prototype = {
     this.ctx.fillStyle = color;
     this.ctx.fillRect(x, y, w, h);
   },
+
   circle: function(x, y, r, col) {
     this.ctx.fillStyle = col;
     this.ctx.beginPath();
@@ -161,6 +161,7 @@ POP.Draw.prototype = {
     this.ctx.closePath();
     this.ctx.fill();
   },
+
   text: function(string, x, y, size, col) {
     this.ctx.font = 'bold ' + size + 'px Monospace';
     this.ctx.fillStyle = col;
@@ -169,19 +170,21 @@ POP.Draw.prototype = {
 };
 
 POP.Input = function() {
-  this.x       = 0;
-  this.y       = 0;
-  this.r       = 7;
-  this.tapped  = false;
+  this.x = 0;
+  this.y = 0;
+  this.r = 7;
+
   this.scale   = 1;
   this.offsetX = 0;
   this.offsetY = 0;
+
+  this.tapped  = false;
 };
 
 POP.Input.prototype = {
   set: function(data) {
-    this.x = (data.pageX - this.offsetX) / this.scale;
-    this.y = (data.pageY - this.offsetY) / this.scale;
+    this.x      = (data.pageX - this.offsetX) / this.scale;
+    this.y      = (data.pageY - this.offsetY) / this.scale;
     this.tapped = true;
   },
 
@@ -212,7 +215,7 @@ POP.Score.prototype = {
 }
 
 POP.Waves = function(fieldWidth) {
-  this.total = Math.ceil(fieldWidth / this.r) + 1;
+  this.total   = Math.ceil(fieldWidth / this.r) + 1;
   this.offset = 0;
 }
 
@@ -227,7 +230,7 @@ POP.Waves.prototype = {
 
   renderTo: function(draw) {
     for (var i = 0, l = this.total; i < l; i += 1) {
-      draw.circle(this.x + this.offset +  (i * this.r), this.y, this.r, '#fff');
+      draw.circle(this.x + this.offset +  i * this.r, this.y, this.r, '#fff');
     }
   }
 }
@@ -258,7 +261,7 @@ POP.Bubble = function(fieldWidth, fieldHeight) {
   this.r      = (Math.random() * 20) + 10;
   this.speed  = (Math.random() * 3) + 1;
 
-  this.x = (Math.random() * (fieldWidth) - this.r);
+  this.x = Math.random() * fieldWidth - this.r;
   this.y = fieldHeight + (Math.random() * 100) + 100;
 
   this.waveSize  = 5 + this.r;
@@ -320,4 +323,3 @@ POP.Particle.prototype = {
   }
 };
 
-new POP.Game(document.getElementsByTagName('canvas')[0], 320, 480);
