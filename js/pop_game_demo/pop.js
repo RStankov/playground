@@ -76,8 +76,7 @@ var POP = {
 
     window.setTimeout(function() { window.scrollTo(0,1); }, 1);
   },
-  // this is where all entities will be moved
-  // and checked for collisions etc
+
   update: function() {
     var checkCollision = false;
 
@@ -96,34 +95,35 @@ var POP = {
     }
 
     for (var i = 0; i < this.entities.length; i += 1) {
-      this.entities[i].update();
+      var entity = this.entities[i];
 
-      if (this.entities[i].type === 'bubble') {
+      entity.update();
+
+      if (entity.collides) {
         if (checkCollision) {
-          var hit = this.collides(this.entities[i], {x: this.input.x, y: this.input.y, r: 7});
-          if (hit) {
+          if (entity.collides(this.input)) {
             for (var n = 0; n < 5; n +=1 ) {
-              this.entities.push(new POP.Particle(this.entities[i].x, this.entities[i].y, 2, Math.random() * 1));
+              this.entities.push(new POP.Particle(entity.x, entity.y, 2, Math.random() * 1));
             }
             this.score.hit += 1;
+            entity.remove = true;
           }
-
-          this.entities[i].remove = hit;
         } else {
-          if (this.entities[i].remove) {
+          if (entity.remove) {
             this.score.escaped += 1;
           }
         }
       }
 
 
-      if (this.entities[i].remove) {
+      if (entity.remove) {
           this.entities.splice(i, 1);
       }
     }
 
     this.score.accuracy = this.score.taps == 0 ? 0 : ~~((this.score.hit/this.score.taps) * 100);
   },
+
   render: function() {
       this.draw.rect(0, 0, POP.WIDTH, POP.HEIGHT, '#036');
 
@@ -139,12 +139,6 @@ var POP = {
       requestAnimFrame(this.loop.bind(this));
       this.update();
       this.render();
-  },
-  collides: function(a, b) {
-    var distance_squared = ( ((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y)));
-    var radii_squared = (a.r + b.r) * (a.r + b.r);
-
-    return distance_squared < radii_squared;
   }
 };
 
@@ -174,6 +168,7 @@ POP.Draw.prototype = {
 POP.Input = function(game) {
   this.x      = 0;
   this.y      = 0;
+  this.r      = 7;
   this.tapped = false;
   this.game   = game;
 };
@@ -190,10 +185,9 @@ POP.Waves = function(fieldWidth) {
 }
 
 POP.Waves.prototype = {
-  remove: false,
-  x:      -25,
-  y:      -40,
-  r:      50,
+  x: -25,
+  y: -40,
+  r: 50,
 
   update: function() {
     this.offset = Math.sin(new Date().getTime() * 0.0016) * 5;
@@ -213,7 +207,6 @@ POP.Touch = function(x, y) {
 };
 
 POP.Touch.prototype = {
-  type:   'touch',
   remove: false,
 
   r:      5,
@@ -241,7 +234,6 @@ POP.Bubble = function(fieldWidth, fieldHeight) {
 };
 
 POP.Bubble.prototype = {
-  type:   'bubble',
   remove: false,
 
   update: function() {
@@ -253,6 +245,13 @@ POP.Bubble.prototype = {
     if (this.y < -10) {
       this.remove = true;
     }
+  },
+
+  collides: function(target) {
+    var distanceSquared = Math.pow(this.x - target.x, 2) + Math.pow(this.y - target.y, 2),
+        radiiSquared    = Math.pow(this.r + target.r, 2);
+
+    return distanceSquared < radiiSquared;
   },
 
   renderTo: function(draw) {
