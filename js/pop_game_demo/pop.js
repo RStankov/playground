@@ -39,7 +39,7 @@ var POP = {
     this.canvas         = canvas;
     this.canvas.width   = this.WIDTH;
     this.canvas.height  = this.HEIGHT;
-    this.ctx            = this.canvas.getContext('2d');
+    this.draw           = new POP.Draw(this.canvas.getContext('2d'));
     this.wave = {
         x: -25,     // x coord of first circle
         y: -40,     // y coord of first circle
@@ -155,12 +155,12 @@ var POP = {
       var i;
 
 
-      POP.Draw.rect(0, 0, this.WIDTH, this.HEIGHT, '#036');
+      POP.draw.rect(0, 0, this.WIDTH, this.HEIGHT, '#036');
 
       // display snazzy wave effect
       for (i = 0; i < this.wave.total; i++) {
 
-          POP.Draw.circle(
+          POP.draw.circle(
                       this.wave.x + this.wave.offset +  (i * this.wave.r),
                       this.wave.y,
                       this.wave.r,
@@ -173,9 +173,9 @@ var POP = {
       }
 
       // display scores
-      POP.Draw.text('Hit: ' + this.score.hit, 20, 30, 14, '#fff');
-      POP.Draw.text('Escaped: ' + this.score.escaped, 20, 50, 14, '#fff');
-      POP.Draw.text('Accuracy: ' + this.score.accuracy + '%', 20, 70, 14, '#fff');
+      POP.draw.text('Hit: ' + this.score.hit, 20, 30, 14, '#fff');
+      POP.draw.text('Escaped: ' + this.score.escaped, 20, 50, 14, '#fff');
+      POP.draw.text('Accuracy: ' + this.score.accuracy + '%', 20, 70, 14, '#fff');
 
   },
   loop: function() {
@@ -192,25 +192,29 @@ var POP = {
   }
 };
 
-POP.Draw = {
+POP.Draw = function(ctx) {
+  this.ctx = ctx;
+};
+
+POP.Draw.prototype = {
   clear: function() {
-    POP.ctx.clearRect(0, 0, POP.WIDTH, POP.HEIGHT);
+    this.ctx.clearRect(0, 0, POP.WIDTH, POP.HEIGHT);
   },
   rect: function(x, y, w, h, col) {
-    POP.ctx.fillStyle = col;
-    POP.ctx.fillRect(x, y, w, h);
+    this.ctx.fillStyle = col;
+    this.ctx.fillRect(x, y, w, h);
   },
   circle: function(x, y, r, col) {
-    POP.ctx.fillStyle = col;
-    POP.ctx.beginPath();
-    POP.ctx.arc(x + 5, y + 5, r, 0,  Math.PI * 2, true);
-    POP.ctx.closePath();
-    POP.ctx.fill();
+    this.ctx.fillStyle = col;
+    this.ctx.beginPath();
+    this.ctx.arc(x + 5, y + 5, r, 0,  Math.PI * 2, true);
+    this.ctx.closePath();
+    this.ctx.fill();
   },
   text: function(string, x, y, size, col) {
-    POP.ctx.font = 'bold '+size+'px Monospace';
-    POP.ctx.fillStyle = col;
-    POP.ctx.fillText(string, x, y);
+    this.ctx.font = 'bold ' + size + 'px Monospace';
+    this.ctx.fillStyle = col;
+    this.ctx.fillText(string, x, y);
   }
 };
 
@@ -243,7 +247,7 @@ POP.Touch = function(x, y) {
   };
 
   this.render = function() {
-    POP.Draw.circle(this.x, this.y, this.r, 'rgba(255,0,0,'+this.opacity+')');
+    POP.draw.circle(this.x, this.y, this.r, 'rgba(255,0,0,'+this.opacity+')');
   };
 };
 
@@ -280,7 +284,7 @@ POP.Bubble = function() {
   };
 
   this.render = function() {
-      POP.Draw.circle(this.x, this.y, this.r, 'rgba(255,255,255,1)');
+      POP.draw.circle(this.x, this.y, this.r, 'rgba(255,255,255,1)');
   };
 };
 
@@ -325,7 +329,7 @@ POP.Particle = function(x, y,r, col) {
   };
 
   this.render = function() {
-      POP.Draw.circle(this.x, this.y, this.r, this.col);
+      POP.draw.circle(this.x, this.y, this.r, this.col);
   };
 };
 
