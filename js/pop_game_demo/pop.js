@@ -90,7 +90,7 @@ var POP = {
     this.nextBubble -= 1;
 
     if (this.nextBubble < 0) {
-      this.entities.push(new POP.Bubble());
+      this.entities.push(new POP.Bubble(POP.WIDTH, POP.HEIGHT));
       this.nextBubble = ( Math.random() * 100 ) + 100;
     }
 
@@ -139,7 +139,7 @@ var POP = {
     this.score.accuracy = isNaN(this.score.accuracy) ?  0 : ~~(this.score.accuracy); // a handy way to round floats
   },
   render: function() {
-      this.draw.rect(0, 0, this.WIDTH, this.HEIGHT, '#036');
+      this.draw.rect(0, 0, POP.WIDTH, POP.HEIGHT, '#036');
 
       var i,l;
 
@@ -227,12 +227,12 @@ POP.Touch.prototype = {
   }
 };
 
-POP.Bubble = function() {
+POP.Bubble = function(fieldWidth, fieldHeight) {
   this.r      = (Math.random() * 20) + 10;
   this.speed  = (Math.random() * 3) + 1;
 
-  this.x = (Math.random() * (POP.WIDTH) - this.r);
-  this.y = POP.HEIGHT + (Math.random() * 100) + 100;
+  this.x = (Math.random() * (fieldWidth) - this.r);
+  this.y = fieldHeight + (Math.random() * 100) + 100;
 
   this.waveSize  = 5 + this.r;
   this.xConstant = this.x;
