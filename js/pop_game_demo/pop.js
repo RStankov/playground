@@ -134,9 +134,7 @@ var POP = {
     this.wave.time = new Date().getTime() * 0.002;
     this.wave.offset = Math.sin(this.wave.time * 0.8) * 5;
 
-    // calculate accuracy
-    this.score.accuracy = (this.score.hit / this.score.taps) * 100;
-    this.score.accuracy = isNaN(this.score.accuracy) ?  0 : ~~(this.score.accuracy); // a handy way to round floats
+    this.score.accuracy = this.score.taps == 0 ? 0 : ~~((this.score.hit/this.score.taps) * 100);
   },
   render: function() {
       this.draw.rect(0, 0, POP.WIDTH, POP.HEIGHT, '#036');
