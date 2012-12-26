@@ -151,36 +151,24 @@ var POP = {
     this.score.accuracy = isNaN(this.score.accuracy) ?  0 : ~~(this.score.accuracy); // a handy way to round floats
   },
   render: function() {
+      this.draw.rect(0, 0, this.WIDTH, this.HEIGHT, '#036');
 
-      var i;
+      var i,l;
 
-
-      POP.draw.rect(0, 0, this.WIDTH, this.HEIGHT, '#036');
-
-      // display snazzy wave effect
-      for (i = 0; i < this.wave.total; i++) {
-
-          POP.draw.circle(
-                      this.wave.x + this.wave.offset +  (i * this.wave.r),
-                      this.wave.y,
-                      this.wave.r,
-                      '#fff');
+      for (i = 0, l = this.wave.total; i < l; i += 1) {
+        this.draw.circle(this.wave.x + this.wave.offset +  (i * this.wave.r), this.wave.y, this.wave.r, '#fff');
       }
 
-          // cycle through all entities and render to canvas
-          for (i = 0; i < this.entities.length; i += 1) {
-              this.entities[i].render();
+      for (i = 0, l = this.entities.length; i < l; i += 1) {
+        this.entities[i].render();
       }
 
-      // display scores
-      POP.draw.text('Hit: ' + this.score.hit, 20, 30, 14, '#fff');
-      POP.draw.text('Escaped: ' + this.score.escaped, 20, 50, 14, '#fff');
-      POP.draw.text('Accuracy: ' + this.score.accuracy + '%', 20, 70, 14, '#fff');
-
+      this.draw.text('Hit: ' + this.score.hit, 20, 30, 14, '#fff');
+      this.draw.text('Escaped: ' + this.score.escaped, 20, 50, 14, '#fff');
+      this.draw.text('Accuracy: ' + this.score.accuracy + '%', 20, 70, 14, '#fff');
   },
   loop: function() {
-      requestAnimFrame( this.loop.bind(this) );
-
+      requestAnimFrame(this.loop.bind(this));
       this.update();
       this.render();
   },
