@@ -173,11 +173,8 @@ POP.Draw = function(ctx) {
 };
 
 POP.Draw.prototype = {
-  clear: function() {
-    this.ctx.clearRect(0, 0, POP.WIDTH, POP.HEIGHT);
-  },
-  rect: function(x, y, w, h, col) {
-    this.ctx.fillStyle = col;
+  rect: function(x, y, w, h, color) {
+    this.ctx.fillStyle = color;
     this.ctx.fillRect(x, y, w, h);
   },
   circle: function(x, y, r, col) {
