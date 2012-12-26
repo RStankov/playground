@@ -160,7 +160,7 @@ var POP = {
       }
 
       for (i = 0, l = this.entities.length; i < l; i += 1) {
-        this.entities[i].render();
+        this.entities[i].renderTo(this.draw);
       }
 
       this.draw.text('Hit: ' + this.score.hit, 20, 30, 14, '#fff');
@@ -234,8 +234,8 @@ POP.Touch = function(x, y) {
     this.remove = (this.opacity < 0) ? true : false;
   };
 
-  this.render = function() {
-    POP.draw.circle(this.x, this.y, this.r, 'rgba(255,0,0,'+this.opacity+')');
+  this.renderTo = function(draw) {
+    draw.circle(this.x, this.y, this.r, 'rgba(255,0,0,'+this.opacity+')');
   };
 };
 
@@ -271,8 +271,8 @@ POP.Bubble = function() {
     }
   };
 
-  this.render = function() {
-      POP.draw.circle(this.x, this.y, this.r, 'rgba(255,255,255,1)');
+  this.renderTo = function(draw) {
+    draw.circle(this.x, this.y, this.r, 'rgba(255,255,255,1)');
   };
 };
 
@@ -316,8 +316,8 @@ POP.Particle = function(x, y,r, col) {
     }
   };
 
-  this.render = function() {
-      POP.draw.circle(this.x, this.y, this.r, this.col);
+  this.renderTo = function(draw) {
+    draw.circle(this.x, this.y, this.r, this.col);
   };
 };
 
