@@ -77,7 +77,6 @@
         var context = canvas.getContext('2d');
         var settleCanvas = document.createElement('canvas');
         var settleContext = context && settleCanvas.getContext('2d');
-        var canvasStyle = canvas.style;
         var activeFlakes = [];
         var snowflakesPerPixelPerSecond = 0.02;
         var assumedFps = 60;
@@ -153,11 +152,13 @@
           resizeCanvas();
 
           // style the canvas
+          var canvasStyle = canvas.style;
+
           canvasStyle.position = 'fixed';
           canvasStyle.top = 0;
           canvasStyle.left = 0;
           canvasStyle.zIndex = 1138;
-          canvasStyle['pointerEvents'] = 'none';
+          canvasStyle.pointerEvents = 'none';
 
           settleCanvas.style.cssText = canvasStyle.cssText;
 
