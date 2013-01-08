@@ -56,6 +56,22 @@
         context.fill();
       };
 
+      Snowflake.Pool = function() {
+        this.pool = []
+      };
+
+      Snowflake.Pool.prototype.get = function(width) {
+        if (this.pool.length) {
+          return this.pool.pop().reset(width);
+        } else {
+          return new Snowflake(width);
+        }
+      };
+
+      Snowflake.Pool.prototype.add = function(flakes) {
+        this.pool.push.apply(this.pool, flakes);
+      };
+
       (function() {
         var canvas = document.createElement('canvas');
         var context = canvas.getContext('2d');
@@ -67,7 +83,7 @@
         var assumedFps = 60;
         var delta = snowflakesPerPixelPerSecond / assumedFps;
         var settlePoint;
-        var snowflakePool = [];
+        var snowflakePool = new Snowflake.Pool();
 
         function resizeCanvas() {
           var html = document.documentElement;
@@ -106,12 +122,7 @@
 
           // add new flake?
           while ( flakesThisFrame-- ) {
-            if (snowflakePool.length) {
-              activeFlakes.push( snowflakePool.pop().reset(canvas.width) );
-            }
-            else {
-              activeFlakes.push( new Snowflake(canvas.width) );
-            }
+            activeFlakes.push(snowflakePool.get(canvas.width));
           }
 
           var i = activeFlakes.length;
@@ -124,7 +135,7 @@
 
             // splice flake if it's now out of rendering zone
             if (flake.y >= canvas.height || flake.y >= settlePoint[Math.floor(flake.x)]) {
-              snowflakePool.push.apply(snowflakePool, activeFlakes.splice(i, 1));
+              snowflakePool.add(activeFlakes.splice(i, 1));
               // this flake effects our settle points
               if (flake.alpha > 0.8) {
                 updateSettlePoints(flake);
