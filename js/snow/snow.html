@@ -67,6 +67,7 @@
         var activeFlakes = [];
         var snowflakesPerPixelPerSecond = 0.02;
         var assumedFps = 60;
+        var delta = snowflakesPerPixelPerSecond / assumedFps;
         var settlePoint;
         var snowflakePool = [];
 
@@ -98,7 +99,7 @@
 
         var flakesToCreate = 0;
         function frame() {
-          flakesToCreate += (snowflakesPerPixelPerSecond / assumedFps) * canvas.width;
+          flakesToCreate += delta * canvas.width;
           var flakesThisFrame = Math.floor(flakesToCreate);
           flakesToCreate -= flakesThisFrame;
 
