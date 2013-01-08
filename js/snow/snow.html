@@ -93,6 +93,10 @@
         }
 
         function updateSettlePoints(flake) {
+          if (flake.alpha < 0.8) {
+            return;
+          }
+
           var size = flake.size * 0.8; // reduce coral effect
           var xStart = Math.floor(flake.x - size);
           var range = size * 2;
@@ -136,10 +140,7 @@
             // splice flake if it's now out of rendering zone
             if (flake.y >= canvas.height || flake.y >= settlePoint[Math.floor(flake.x)]) {
               snowflakePool.add(activeFlakes.splice(i, 1));
-              // this flake effects our settle points
-              if (flake.alpha > 0.8) {
-                updateSettlePoints(flake);
-              }
+              updateSettlePoints(flake);
               flake.drawTo(settleContext);
             } else {
               flake.drawTo(context);
