@@ -8,173 +8,177 @@
     <title>Test</title>
   </head>
   <body>
-  <script>
-    (function() {
-      var requestAnimationFrame = window.requestAnimationFrame   ||
-                                  window.webkitRequestAnimationFrame ||
-                                  window.mozRequestAnimationFrame    ||
-                                  function(func) { setTimeout(func, 17); };
-
-      function Snowflake(maxX) {
-        this.reset(maxX);
-      }
-
-      Snowflake.prototype.tick = function() {
-        var sidePhase = this.sidePhase += this.sideVel;
-        this.y += this.vel;
-        this.x = this.midX + Math.sin(sidePhase) * this.sideAmp;
-      };
-
-      Snowflake.prototype.reset = function(maxX) {
-        var rand = Math.random();
-        var chanceOfLargeSnowflake = 0.15;
-        var sizeRand = rand < chanceOfLargeSnowflake ? Math.random() * 0.9 + 0.1 : Math.random() * 0.1;
-
-        this.size  = sizeRand * 20 + 2.5;
-        this.vel   = sizeRand * 4 + 1;
-        this.alpha = (1 - sizeRand * 0.9);
-
-        // random x position
-        this.midX = Math.random() * maxX;
-        this.x    = 0;
-        this.y    = -this.size;
-
-        // side-to-side movement
-        this.sidePhase = 0;
-        this.sideAmp   = sizeRand * 40;
-        this.sideVel   = Math.random() * 0.05;
-
-        return this;
-      };
-
-      var PIx2 = Math.PI*2;
-      Snowflake.prototype.drawTo = function(context) {
-        context.fillStyle='rgba(255, 255, 255, ' + this.alpha + ')';
-        context.beginPath();
-        context.arc(this.x, this.y, this.size, 0, PIx2, true);
-        context.closePath();
-        context.fill();
-      };
-
-      Snowflake.Pool = function() {
-        this.pool = []
-      };
-
-      Snowflake.Pool.prototype.get = function(width) {
-        if (this.pool.length) {
-          return this.pool.pop().reset(width);
-        } else {
-          return new Snowflake(width);
-        }
-      };
-
-      Snowflake.Pool.prototype.add = function(flakes) {
-        this.pool.push.apply(this.pool, flakes);
-      };
-
+    <script>
       (function() {
-        var canvas = document.createElement('canvas');
-        var context = canvas.getContext('2d');
-        var settleCanvas = document.createElement('canvas');
-        var settleContext = context && settleCanvas.getContext('2d');
-        var activeFlakes = [];
-        var snowflakesPerPixelPerSecond = 0.02;
-        var assumedFps = 60;
-        var delta = snowflakesPerPixelPerSecond / assumedFps;
-        var settlePoint;
-        var snowflakePool = new Snowflake.Pool();
+        var requestAnimationFrame = window.requestAnimationFrame   ||
+                                    window.webkitRequestAnimationFrame ||
+                                    window.mozRequestAnimationFrame    ||
+                                    function(func) { setTimeout(func, 17); };
 
-        function resizeCanvas() {
+        function Snowflake(maxX) {
+          this.reset(maxX);
+        }
+
+        Snowflake.prototype.tick = function() {
+          var sidePhase = this.sidePhase += this.sideVel;
+          this.y += this.vel;
+          this.x = this.midX + Math.sin(sidePhase) * this.sideAmp;
+        };
+
+        Snowflake.prototype.reset = function(maxX) {
+          var rand = Math.random();
+          var chanceOfLargeSnowflake = 0.15;
+          var sizeRand = rand < chanceOfLargeSnowflake ? Math.random() * 0.9 + 0.1 : Math.random() * 0.1;
+
+          this.size  = sizeRand * 20 + 2.5;
+          this.vel   = sizeRand * 4 + 1;
+          this.alpha = (1 - sizeRand * 0.9);
+
+          // random x position
+          this.midX = Math.random() * maxX;
+          this.x    = 0;
+          this.y    = -this.size;
+
+          // side-to-side movement
+          this.sidePhase = 0;
+          this.sideAmp   = sizeRand * 40;
+          this.sideVel   = Math.random() * 0.05;
+
+          return this;
+        };
+
+        var PIx2 = Math.PI*2;
+        Snowflake.prototype.drawTo = function(context) {
+          context.fillStyle='rgba(255, 255, 255, ' + this.alpha + ')';
+          context.beginPath();
+          context.arc(this.x, this.y, this.size, 0, PIx2, true);
+          context.closePath();
+          context.fill();
+        };
+
+        Snowflake.Pool = function() {
+          this.pool = []
+        };
+
+        Snowflake.Pool.prototype.get = function(width) {
+          if (this.pool.length) {
+            return this.pool.pop().reset(width);
+          } else {
+            return new Snowflake(width);
+          }
+        };
+
+        Snowflake.Pool.prototype.add = function(flakes) {
+          this.pool.push.apply(this.pool, flakes);
+        };
+
+        Snowflake.Scene = function() {
+          this.canvas         = document.createElement('canvas');
+          this.context        = this.canvas.getContext('2d');
+          this.settleCanvas   = document.createElement('canvas');
+          this.settleContext  = this.settleCanvas.getContext('2d');
+          this.activeFlakes   = [];
+          this.snowflakePool  = new Snowflake.Pool();
+          this.flakesToCreate = 0;
+          this.settlePoint;
+
+          var snowflakesPerPixelPerSecond = 0.02;
+          var assumedFps = 60;
+          this.delta = snowflakesPerPixelPerSecond / assumedFps;
+        };
+
+        Snowflake.Scene.prototype.play = function() {
+            this.resize();
+
+            var canvasStyle = this.canvas.style;
+
+            canvasStyle.position = 'fixed';
+            canvasStyle.top = 0;
+            canvasStyle.left = 0;
+            canvasStyle.zIndex = 1138;
+            canvasStyle.pointerEvents = 'none';
+
+            this.settleCanvas.style.cssText = canvasStyle.cssText;
+
+            window.addEventListener('resize', function() { this.resize(); }.bind(this), false);
+
+            document.body.appendChild(this.canvas);
+            document.body.appendChild(this.settleCanvas);
+
+            this.scheduleNextFrame();
+        };
+
+        Snowflake.Scene.prototype.scheduleNextFrame = function() {
+          requestAnimationFrame(this.frame.bind(this));
+        };
+
+        Snowflake.Scene.prototype.resize = function() {
           var html = document.documentElement;
-          settlePoint = Array(html.clientWidth);
-          settleCanvas.width = canvas.width = html.clientWidth;
-          settleCanvas.height = canvas.height = html.clientHeight;
-        }
 
-        function updateSettlePoints(flake) {
-          if (flake.alpha < 0.8) {
-            return;
-          }
+          this.settlePoint = Array(html.clientWidth);
+          this.settleCanvas.width = this.canvas.width = html.clientWidth;
+          this.settleCanvas.height = this.canvas.height = html.clientHeight;
+        };
 
-          var size = flake.size * 0.8; // reduce coral effect
-          var xStart = Math.floor(flake.x - size);
-          var range = size * 2;
-          var newY;
+        Snowflake.Scene.prototype.updateSettlePoints = function(flake) {
+            if (flake.alpha < 0.8) {
+              return;
+            }
 
-          if (xStart < 0) {
-            range += xStart;
-            xStart = 0;
-          }
-          else if (xStart + range > settlePoint.length) {
-            range -= xStart + range - settlePoint.length;
-          }
+            var size = flake.size * 0.8; // reduce coral effect
+            var xStart = Math.floor(flake.x - size);
+            var range = size * 2;
+            var newY;
 
-          for (var i = 0; i < range; i++) {
-            newY = flake.y - (size * Math.cos( (i/range) * Math.PI - (Math.PI/2) ));
-            settlePoint[i + xStart] = Math.min(settlePoint[i + xStart] || Infinity, newY);
-          }
-        }
+            if (xStart < 0) {
+              range += xStart;
+              xStart = 0;
+            }
+            else if (xStart + range > this.settlePoint.length) {
+              range -= xStart + range - this.settlePoint.length;
+            }
 
-        var flakesToCreate = 0;
-        function frame() {
-          flakesToCreate += delta * canvas.width;
-          var flakesThisFrame = Math.floor(flakesToCreate);
-          flakesToCreate -= flakesThisFrame;
+            for (var i = 0; i < range; i++) {
+              newY = flake.y - (size * Math.cos( (i/range) * Math.PI - (Math.PI/2) ));
+              this.settlePoint[i + xStart] = Math.min(this.settlePoint[i + xStart] || Infinity, newY);
+            }
+        };
 
-          context.clearRect(0, 0, canvas.width, canvas.height);
+        Snowflake.Scene.prototype.frame = function() {
+          this.flakesToCreate += this.delta * this.canvas.width;
+          var flakesThisFrame = Math.floor(this.flakesToCreate);
+          this.flakesToCreate -= flakesThisFrame;
+
+
+          this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
           // add new flake?
-          while ( flakesThisFrame-- ) {
-            activeFlakes.push(snowflakePool.get(canvas.width));
+          while (flakesThisFrame-- ) {
+            this.activeFlakes.push(this.snowflakePool.get(this.canvas.width));
           }
 
-          var i = activeFlakes.length;
+          var i = this.activeFlakes.length;
           var flake;
 
           // for each flake...
           while (i--) {
-            flake = activeFlakes[i];
+            flake = this.activeFlakes[i];
             flake.tick();
 
             // splice flake if it's now out of rendering zone
-            if (flake.y >= canvas.height || flake.y >= settlePoint[Math.floor(flake.x)]) {
-              snowflakePool.add(activeFlakes.splice(i, 1));
-              updateSettlePoints(flake);
-              flake.drawTo(settleContext);
+            if (flake.y >= this.canvas.height || flake.y >= this.settlePoint[Math.floor(flake.x)]) {
+              this.snowflakePool.add(this.activeFlakes.splice(i, 1));
+              this.updateSettlePoints(flake);
+              flake.drawTo(this.settleContext);
             } else {
-              flake.drawTo(context);
+              flake.drawTo(this.context);
             }
           }
-          requestAnimationFrame(frame);
-        }
+          this.scheduleNextFrame();
+        };
 
-        if (context) {
-          resizeCanvas();
-
-          // style the canvas
-          var canvasStyle = canvas.style;
-
-          canvasStyle.position = 'fixed';
-          canvasStyle.top = 0;
-          canvasStyle.left = 0;
-          canvasStyle.zIndex = 1138;
-          canvasStyle.pointerEvents = 'none';
-
-          settleCanvas.style.cssText = canvasStyle.cssText;
-
-          // watch out for resizes
-          window.addEventListener('resize', function() {
-            resizeCanvas();
-          }, false);
-
-          // add it to the page & start animating
-          document.body.appendChild(canvas);
-          document.body.appendChild(settleCanvas);
-          requestAnimationFrame(frame);
-        }
+        new Snowflake.Scene().play();
       })();
-
-    })();
     </script>
   </body>
 </html>
