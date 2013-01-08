@@ -63,7 +63,6 @@
         var settleCanvas = document.createElement('canvas');
         var settleContext = context && settleCanvas.getContext('2d');
         var canvasStyle = canvas.style;
-        var settleCanvasStyle = settleCanvas.style;
         var windowResized;
         var activeFlakes = [];
         var snowflakesPerPixelPerSecond = 0.02;
@@ -155,7 +154,7 @@
           canvasStyle.zIndex = 1138;
           canvasStyle['pointerEvents'] = 'none';
 
-          settleCanvasStyle.cssText = canvasStyle.cssText;
+          settleCanvas.style.cssText = canvasStyle.cssText;
 
           // watch out for resizes
           window.addEventListener('resize', function() {
