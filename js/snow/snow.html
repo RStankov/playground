@@ -47,6 +47,15 @@
         return this;
       };
 
+      var PIx2 = Math.PI*2;
+      Snowflake.prototype.drawTo = function(context) {
+        context.fillStyle='rgba(255, 255, 255, ' + this.alpha + ')';
+        context.beginPath();
+        context.arc(this.x, this.y, this.size, 0, PIx2, true);
+        context.closePath();
+        context.fill();
+      };
+
       (function() {
         var html = document.documentElement;
         var canvas = document.createElement('canvas');
@@ -58,7 +67,6 @@
         var windowResized;
         var activeFlakes = [];
         var snowflakesPerPixelPerSecond = 0.02;
-        var PIx2 = Math.PI*2;
         var assumedFps = 60;
         var settlePoint;
         var snowflakePool = [];
@@ -129,20 +137,10 @@
               if (flake.alpha > 0.8) {
                 updateSettlePoints(flake);
               }
-              settleContext.fillStyle='rgba(255, 255, 255, ' + flake.alpha + ')';
-              settleContext.beginPath();
-              settleContext.arc(flake.x, flake.y, flake.size, 0, PIx2, true);
-              settleContext.closePath();
-              settleContext.fill();
-              continue;
+              flake.drawTo(settleContext);
+            } else {
+              flake.drawTo(context);
             }
-
-            // render to canvas
-            context.fillStyle='rgba(255, 255, 255, ' + flake.alpha + ')';
-            context.beginPath();
-            context.arc(flake.x, flake.y, flake.size, 0, PIx2, true);
-            context.closePath();
-            context.fill();
           }
           requestAnimationFrame(frame);
         }
