@@ -62,7 +62,6 @@
         var settleCanvas = document.createElement('canvas');
         var settleContext = context && settleCanvas.getContext('2d');
         var canvasStyle = canvas.style;
-        var windowResized;
         var activeFlakes = [];
         var snowflakesPerPixelPerSecond = 0.02;
         var assumedFps = 60;
@@ -103,14 +102,7 @@
           var flakesThisFrame = Math.floor(flakesToCreate);
           flakesToCreate -= flakesThisFrame;
 
-          // clear canvas
-          if (windowResized) {
-            resizeCanvas();
-            windowResized = false;
-          }
-          else {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-          }
+          context.clearRect(0, 0, canvas.width, canvas.height);
 
           // add new flake?
           while ( flakesThisFrame-- ) {
@@ -159,7 +151,7 @@
 
           // watch out for resizes
           window.addEventListener('resize', function() {
-            windowResized = true;
+            resizeCanvas();
           }, false);
 
           // add it to the page & start animating
