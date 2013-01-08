@@ -11,11 +11,9 @@
   <script>
     (function() {
       var requestAnimationFrame = window.requestAnimationFrame   ||
-                              window.webkitRequestAnimationFrame ||
-                              window.mozRequestAnimationFrame    ||
-                              function(func) { setTimeout(func, 17); };
-
-      var html = document.documentElement;
+                                  window.webkitRequestAnimationFrame ||
+                                  window.mozRequestAnimationFrame    ||
+                                  function(func) { setTimeout(func, 17); };
 
       function Snowflake(maxX) {
         this.reset(maxX);
@@ -50,6 +48,7 @@
       };
 
       (function() {
+        var html = document.documentElement;
         var canvas = document.createElement('canvas');
         var context = canvas.getContext('2d');
         var settleCanvas = document.createElement('canvas');
