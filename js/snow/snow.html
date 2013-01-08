@@ -57,7 +57,6 @@
       };
 
       (function() {
-        var html = document.documentElement;
         var canvas = document.createElement('canvas');
         var context = canvas.getContext('2d');
         var settleCanvas = document.createElement('canvas');
@@ -72,6 +71,7 @@
         var snowflakePool = [];
 
         function resizeCanvas() {
+          var html = document.documentElement;
           settlePoint = Array(html.clientWidth);
           settleCanvas.width = canvas.width = html.clientWidth;
           settleCanvas.height = canvas.height = html.clientHeight;
