@@ -1,75 +1,57 @@
-app.factory('Resources', function($resource) {
-  return function(pluralName, actions) {
-    actions = actions || {}
-    actions['create'] = actions['create'] || {method: 'POST'};
-    actions['update'] = actions['update'] || {method: 'PATCH'};
+(function() {
+  function save(object, success, failure) {
+    if (object.$saving) { return 'already in saving mode'; }
+    object.$saving = true;
 
-    var Resources = $resource("/a/" + pluralName + "/:id/:action", {id: '@id'}, actions);
+    sucess  = success || angular.noop;
+    failure = failure || angular.noop;
 
-    Resources.save = function(object, success, failure) {
-      if (object.$saving) {
-        return 'already in saving mode';
+    var failureWrap = function(xhr) {
+      object.$saving = false;
+      if (xhr.status === 422) {
+        object.errors = xhr.data.errors;
+        failure(object, xhr.data.errors);
       }
-
-      failure = failure || function(object, errors) { return object.errors = errors; };
-
-      var failureWrap = function(xhr) {
-        object.$saving = false;
-        if (xhr.status === 422) {
-          failure(object, xhr.data.errors);
-        }
-      };
-
-      var successWrap = function(object) {
-        object.$saving = false;
-        success(object);
-      };
-
-      delete object.errors;
-
-      object.$saving = true;
-      return this[object.id ? 'update' : 'create'](object, successWrap, failureWrap);
     };
 
-    Resources.destroy = function(object, success, failure) {
-      return this["delete"]({id: object.id}, success, failure);
+    var successWrap = function(object) {
+      object.$saving = false;
+      success(object);
     };
 
-    return Resources;
-  };
-});
+    delete object.errors;
+    return this[object.id ? 'update' : 'create'](object, successWrap, failureWrap);
+  }
 
-app.factory('Resource', function($resource) {
-  return function(singularName, actions) {
-    actions = actions || {}
-    actions['update'] = actions['update'] || {method: 'PATCH'};
+  function destroy(object, success, failure) {
+    return this["delete"]({id: object.id}, success, failure);
+  }
 
-    var Resource = $resource("/a/" + singularName, {}, actions);
+  app.factory('Resources', function($resource) {
+    return function(pluralName, actions) {
+      actions = actions || {}
+      actions['create'] = actions['create'] || {method: 'POST'};
+      actions['update'] = actions['update'] || {method: 'PATCH'};
 
-    Resource.save = function(object, success, failure) {
-      if (object.$saving) {
-        return 'already in saving mode';
-      }
-      failure = failure || function(object, errors) { return object.errors = errors; };
+      var Resources = $resource("/a/" + pluralName + "/:id/:action", {id: '@id'}, actions);
 
-      var failureWrap = function(xhr) {
-        object.$saving = false;
-        if (xhr.status === 422) {
-          failure(object, xhr.data.errors);
-        }
-      };
+      Resources.save = save
+      Resources.destroy = destroy
 
-      var successWrap = function(object) {
-        object.$saving = false;
-        success(object);
-      };
-
-      delete object.errors;
-      object.$saving = true;
-
-      return this.update(object, successWrap, failureWrap);
+      return Resources;
     };
+  });
 
-    return Resource;
-  };
-});
+  app.factory('Resource', function($resource) {
+    return function(singularName, actions) {
+      actions = actions || {}
+      actions['update'] = actions['update'] || {method: 'PATCH'};
+
+      var Resource = $resource("/a/" + singularName, {}, actions);
+
+      Resource.save = save;
+
+      return Resource;
+    };
+  });
+})();
