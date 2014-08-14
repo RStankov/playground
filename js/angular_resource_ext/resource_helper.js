@@ -55,3 +55,42 @@
     };
   });
 })();
+
+(function(){
+  function transformRequest(resource) {
+    var formData = new FormData();
+    formData.append('_', '_');
+
+    for (var key in resource) {
+      var value = resource[key];
+      if (!angular.isArray(value)) {
+        formData.append(key, value);
+      } else {
+        if (value.length == 0) {
+          formData.append(key, "");
+        } else {
+          for (var i = 0, len = value.length; i < len; i += 1) {
+            formData.append("" + key + "[]", value[i]);
+          }
+        }
+      }
+    }
+
+    return formData;
+  }
+
+  app.factory('Upload', function(Resources) {
+    return Resources('uploads', {
+      create: {
+        method:            'POST',
+        headers:           {'Content-Type':  undefined},
+        transformRequest:  transformRequest
+      },
+      update: {
+        method:            'PATCH',
+        headers:           {'Content-Type':  undefined},
+        transformRequest:  transformRequest
+      }
+    });
+  });
+});
