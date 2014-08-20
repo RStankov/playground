@@ -102,19 +102,7 @@
 (function(){
   app.factory('Upload', function(Resources) {
     return Resources('uploads', {
-      fileUpload: true,
-      actions: {
-        create: {
-          method:            'POST',
-          headers:           {'Content-Type':  undefined},
-          transformRequest:  transformRequest
-        },
-        update: {
-          method:            'PATCH',
-          headers:           {'Content-Type':  undefined},
-          transformRequest:  transformRequest
-        }
-      }
+      fileUpload: true
     });
   });
 });
