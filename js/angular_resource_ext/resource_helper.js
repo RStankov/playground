@@ -27,37 +27,7 @@
     return this["delete"]({id: object.id}, success, failure);
   }
 
-  app.factory('Resources', function($resource) {
-    return function(pluralName, actions) {
-      actions = actions || {}
-      actions['create'] = actions['create'] || {method: 'POST'};
-      actions['update'] = actions['update'] || {method: 'PATCH'};
-
-      var Resources = $resource("/a/" + pluralName + "/:id/:action", {id: '@id'}, actions);
-
-      Resources.save = save
-      Resources.destroy = destroy
-
-      return Resources;
-    };
-  });
-
-  app.factory('Resource', function($resource) {
-    return function(singularName, actions) {
-      actions = actions || {}
-      actions['update'] = actions['update'] || {method: 'PATCH'};
-
-      var Resource = $resource("/a/" + singularName, {}, actions);
-
-      Resource.save = save;
-
-      return Resource;
-    };
-  });
-})();
-
-(function(){
-  function transformRequest(resource) {
+  function transformRequestWithFormData(resource) {
     var formData = new FormData();
     formData.append('_', '_');
 
@@ -79,17 +49,71 @@
     return formData;
   }
 
+  function enableFileUploadsOnActions(actions) {
+    for(var action in actions) {
+      if (actions[action].method != 'GET') {
+        actions[action].headers = {'Content-Type':  undefined};
+        actions[action].transformRequest = transformRequestWithFormData;
+      }
+    }
+  }
+
+  app.factory('Resources', function($resource) {
+    return function(pluralName, options) {
+      options = options || {}
+      actions = options.actions || {}
+
+      actions['create'] = actions['create'] || {method: 'POST'};
+      actions['update'] = actions['update'] || {method: 'PATCH'};
+
+      if (options.fileUpload) {
+        actions = enableFileUploadsOnActions(actions);
+      }
+
+      var Resources = $resource("/a/" + pluralName + "/:id/:action", {id: '@id'}, actions);
+
+      Resources.save = save
+      Resources.destroy = destroy
+
+      return Resources;
+    };
+  });
+
+  app.factory('Resource', function($resource) {
+    return function(singularName, options) {
+      options = options || {}
+      actions = options.actions || {}
+
+      actions['update'] = actions['update'] || {method: 'PATCH'};
+
+      if (options.fileUpload) {
+        actions = enableFileUploadsOnActions(actions);
+      }
+
+      var Resource = $resource("/a/" + singularName, {}, actions);
+
+      Resource.save = save;
+
+      return Resource;
+    };
+  });
+})();
+
+(function(){
   app.factory('Upload', function(Resources) {
     return Resources('uploads', {
-      create: {
-        method:            'POST',
-        headers:           {'Content-Type':  undefined},
-        transformRequest:  transformRequest
-      },
-      update: {
-        method:            'PATCH',
-        headers:           {'Content-Type':  undefined},
-        transformRequest:  transformRequest
+      fileUpload: true,
+      actions: {
+        create: {
+          method:            'POST',
+          headers:           {'Content-Type':  undefined},
+          transformRequest:  transformRequest
+        },
+        update: {
+          method:            'PATCH',
+          headers:           {'Content-Type':  undefined},
+          transformRequest:  transformRequest
+        }
       }
     });
   });
