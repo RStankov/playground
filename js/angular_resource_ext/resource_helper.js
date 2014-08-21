@@ -59,7 +59,7 @@
   }
 
   app.factory('Resources', function($resource) {
-    return function(pluralName, options) {
+    return function(name, options) {
       options = options || {}
       actions = options.actions || {}
 
@@ -70,7 +70,7 @@
         actions = enableFileUploadsOnActions(actions);
       }
 
-      var Resources = $resource("/a/" + pluralName + "/:id/:action", {id: '@id'}, actions);
+      var Resources = $resource("/a/" + name + "/:id/:action", {id: '@id'}, actions);
 
       Resources.save = save
       Resources.destroy = destroy
@@ -80,7 +80,7 @@
   });
 
   app.factory('Resource', function($resource) {
-    return function(singularName, options) {
+    return function(name, options) {
       options = options || {}
       actions = options.actions || {}
 
@@ -90,7 +90,7 @@
         actions = enableFileUploadsOnActions(actions);
       }
 
-      var Resource = $resource("/a/" + singularName, {}, actions);
+      var Resource = $resource("/a/" + name, {}, actions);
 
       Resource.save = save;
 
@@ -100,9 +100,10 @@
 })();
 
 (function(){
-  app.factory('Upload', function(Resources) {
-    return Resources('uploads', {
-      fileUpload: true
-    });
-  });
+  app.factory('Upload',  function(Resources) { return Resources('uploads', { fileUpload: true }); });
+  app.factory('Task',    function(Resources) { return Resources('articles/ironing', {actions: {done: {method: 'PATCH'}}}); });
+  app.factory('Product', function(Resources) { return Resources('reviews', {actions: {build: {method: 'GET', params: {action: 'new'}}}}); });
+  app.factory('Comment', function(Resources) { return Resources('comments'); });
+  app.factory('Profile', function(Resource)  { return Resource('password'); });
+  app.factory('Email',   function(Resource)  { return Resource('email'); });
 });
