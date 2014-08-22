@@ -1,15 +1,20 @@
 <!DOCTYPE html>
-<html ng-app>
+<html ng-app="TestApp">
   <head>
     <title>Test</title>
-  </head>
-  <body>
-    <h1 ng-bind="'Ready'"></h1>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular-resource.js"></script>
     <script>
-      var app = angular.module('ngResource');
+      var app = angular.module('TestApp', ['ngResource']);
     </script>
     <script src="resource_helper.js"></script>
+    <script>
+      app.controller('TestCtrl', function($scope, Resources, Resource) {
+
+      });
+    </script>
+  </head>
+  <body ng-controller="TestCtrl">
+    <h1 ng-bind="'Ready'"></h1>
   </body>
 </html>
