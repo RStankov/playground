@@ -23,10 +23,6 @@
     return this[object.id ? 'update' : 'create'](object, successWrap, failureWrap);
   }
 
-  function destroy(object, success, failure) {
-    return this["delete"]({id: object.id}, success, failure);
-  }
-
   function transformRequestWithFormData(resource) {
     var formData = new FormData();
     formData.append('_', '_');
@@ -51,7 +47,8 @@
 
   function enableFileUploadsOnActions(actions) {
     for(var action in actions) {
-      if (actions[action].method != 'GET') {
+      var method = actions[action].method;
+      if (method == 'POST' || method == 'PUT' || method == 'PATH') {
         actions[action].headers = {'Content-Type':  undefined};
         actions[action].transformRequest = transformRequestWithFormData;
       }
@@ -63,23 +60,26 @@
       options = options || {}
       actions = options.actions || {}
 
-      actions['create'] = actions['create'] || {method: 'POST'};
       actions['update'] = actions['update'] || {method: 'PATCH'};
+
+      if (!options.singular) {
+        actions['create'] = actions['create'] || {method: 'POST'};
+        actions['destroy'] = actions['create'] || {method: 'DELETE'};
+      }
 
       if (options.fileUpload) {
         actions = enableFileUploadsOnActions(actions);
       }
 
       if (options.singular) {
-        var Resource = $resource("/a/" + name, {}, actions);
+        var Resource = $resource("/a/" + name + ":action", {}, actions);
       } else {
-        var Resources = $resource("/a/" + name + "/:id/:action", {id: '@id'}, actions);
-        Resources.destroy = destroy
+        var Resource = $resource("/a/" + name + "/:id/:action", {id: '@id'}, actions);
       }
 
-      Resources.save = save
+      Resource.save = save
 
-      return Resources;
+      return Resource;
     };
   });
 })();
