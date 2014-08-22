@@ -10,7 +10,12 @@
     <script src="resource_helper.js"></script>
     <script>
       app.controller('TestCtrl', function($scope, Resources, Resource) {
-
+        Resources('uploads', { fileUpload: true });
+        Resources('articles/ironing', {actions: {done: {method: 'PATCH'}}});
+        Resources('reviews', {actions: {build: {method: 'GET', params: {action: 'new'}}}});
+        Resources('comments');
+        Resource('password');
+        Resource('email');
       });
     </script>
   </head>

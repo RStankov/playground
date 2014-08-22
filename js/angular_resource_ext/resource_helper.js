@@ -98,12 +98,3 @@
     };
   });
 })();
-
-(function(){
-  app.factory('Upload',  function(Resources) { return Resources('uploads', { fileUpload: true }); });
-  app.factory('Task',    function(Resources) { return Resources('articles/ironing', {actions: {done: {method: 'PATCH'}}}); });
-  app.factory('Product', function(Resources) { return Resources('reviews', {actions: {build: {method: 'GET', params: {action: 'new'}}}}); });
-  app.factory('Comment', function(Resources) { return Resources('comments'); });
-  app.factory('Profile', function(Resource)  { return Resource('password'); });
-  app.factory('Email',   function(Resource)  { return Resource('email'); });
-});
