@@ -70,31 +70,16 @@
         actions = enableFileUploadsOnActions(actions);
       }
 
-      var Resources = $resource("/a/" + name + "/:id/:action", {id: '@id'}, actions);
-
-      Resources.save = save
-      Resources.destroy = destroy
-
-      return Resources;
-    };
-  });
-
-  app.factory('Resource', function($resource) {
-    return function(name, options) {
-      options = options || {}
-      actions = options.actions || {}
-
-      actions['update'] = actions['update'] || {method: 'PATCH'};
-
-      if (options.fileUpload) {
-        actions = enableFileUploadsOnActions(actions);
+      if (options.singular) {
+        var Resource = $resource("/a/" + name, {}, actions);
+      } else {
+        var Resources = $resource("/a/" + name + "/:id/:action", {id: '@id'}, actions);
+        Resources.destroy = destroy
       }
 
-      var Resource = $resource("/a/" + name, {}, actions);
+      Resources.save = save
 
-      Resource.save = save;
-
-      return Resource;
+      return Resources;
     };
   });
 })();
