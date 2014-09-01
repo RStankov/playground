@@ -1,0 +1,28 @@
+{
+  "name": "TODO",
+  "version": "0.0.1",
+  "homepage": "TODO",
+  "authors": [
+    "Radoslav Stankov <rstankov@gmail.com>"
+  ],
+  "description": "TODO",
+  "main": "lib/module_name.js",
+  "keywords": [
+    "angular"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "angular": "*"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "mocha": "*"
+  },
+  "ignore": [
+    "tests",
+    "bower.json",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ]
+}
