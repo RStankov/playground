@@ -58,7 +58,8 @@
   app.factory('Resources', function($resource) {
     return function(name, options) {
       options = options || {}
-      actions = options.actions || {}
+
+      var actions = options.actions || {}
 
       actions['update'] = actions['update'] || {method: 'PATCH'};
 
