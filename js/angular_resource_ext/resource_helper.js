@@ -1,4 +1,6 @@
 (function() {
+  'use strict';
+
   function save(object, success, failure) {
     if (object.$saving) { return 'already in saving mode'; }
     object.$saving = true;
