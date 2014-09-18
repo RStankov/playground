@@ -25,6 +25,10 @@
     return this[object.id ? 'update' : 'create'](object, successWrap, failureWrap);
   }
 
+  function saveInstance(success, failure) {
+    return save(this, success, failure);
+  }
+
   function transformRequestWithFormData(resource) {
     var formData = new FormData();
     formData.append('_', '_');
@@ -80,7 +84,8 @@
         var Resource = $resource("/a/" + name + "/:id/:action", {id: '@id'}, actions);
       }
 
-      Resource.save = save
+      Resource.save = save;
+      Resource.prototype.$save = saveInstance;
 
       return Resource;
     };
