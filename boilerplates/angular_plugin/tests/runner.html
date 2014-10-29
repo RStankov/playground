@@ -7,14 +7,10 @@
     <script src="../bower_components/mocha/mocha.js"></script>
     <script src="../bower_components/chai/chai.js"></script>
 
-    <script>
-      mocha.setup('bdd');
-      chai.config.includeStack = false;
-      chai.config.showDiff = true;
-      expect = chai.expect;
-    </script>
+    <script src="test_helper.js"></script>
 
     <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/angular-mocks/angular-mocks.js"></script>
 
     <script src="../lib/module_name.js"></script>
     <script src="module_name_test.js"></script>
