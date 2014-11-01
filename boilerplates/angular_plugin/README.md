@@ -17,9 +17,18 @@ TODO
 
 ### Running the tests
 
-Install bower developer dependencies - ```bower install```.
+Install bower developer dependencies:
 
-Just open - ```test/runner.html```.
+```
+bower install
+npm install
+```
+
+Run test by:
+
+```
+grunt test
+```
 
 ### Contributing
 
