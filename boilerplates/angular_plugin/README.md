@@ -1,3 +1,6 @@
+`Build status`
+`Code Climate`
+
 TODO
 =====================
 
