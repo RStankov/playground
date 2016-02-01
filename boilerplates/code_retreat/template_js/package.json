@@ -1,0 +1,23 @@
+{
+	"name": "code-retreat-skeleton-js",
+	"version": "0.0.2",
+	"description": "Simple unit-testing skeleton for a code retreat, using ES6",
+	"keywords": ["code-retreat", "unit-testing", "skeleton", "primer"],
+	"author": "Nikolay Bachiyski <nb@nikolay.bg>",
+	"dependencies": {
+		"mocha": "*",
+		"chai": "*",
+		"lodash": "*",
+		"babel": "5.8.12",
+		"babel-core": "5.8.12",
+		"babel-runtime": "5.8.12"
+	},
+	"main": "index",
+	"engines": {
+		"node": "*"
+	},
+	"scripts": {
+		"test": "node_modules/mocha/bin/mocha -R spec --compilers js:babel/register index.js",
+		"reset": "git reset HEAD --hard && git clean -f -d"
+	}
+}
