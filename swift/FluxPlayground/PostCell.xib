@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="PostCell" customModule="TestPtoject" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T4i-8X-S6b">
+                        <rect key="frame" x="18" y="10" width="194" height="22"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4WE-FX-ZaW" customClass="PostVoteButton" customModule="TestPtoject" customModuleProvider="target">
+                        <rect key="frame" x="222" y="10" width="100" height="23"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="100" id="DvB-UA-CWg"/>
+                        </constraints>
+                        <state key="normal" title="N Votes">
+                            <color key="titleColor" red="0.17254901959999999" green="0.26274509800000001" blue="0.53333333329999999" alpha="1" colorSpace="calibratedRGB"/>
+                        </state>
+                        <state key="selected">
+                            <color key="titleColor" red="0.37254901959999998" green="0.81568627449999997" blue="0.4549019608" alpha="1" colorSpace="calibratedRGB"/>
+                        </state>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottomMargin" secondItem="T4i-8X-S6b" secondAttribute="bottom" constant="3" id="8I4-Fx-BXd"/>
+                    <constraint firstItem="T4i-8X-S6b" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="10" id="KdR-DB-vRB"/>
+                    <constraint firstItem="4WE-FX-ZaW" firstAttribute="leading" secondItem="T4i-8X-S6b" secondAttribute="trailing" constant="10" id="NnX-8L-YTd"/>
+                    <constraint firstItem="4WE-FX-ZaW" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" constant="10" id="Pre-AE-jeB"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="4WE-FX-ZaW" secondAttribute="bottom" constant="2" id="RWg-gM-bjN"/>
+                    <constraint firstItem="4WE-FX-ZaW" firstAttribute="leading" secondItem="T4i-8X-S6b" secondAttribute="trailing" constant="10" id="Y21-Ma-cgq"/>
+                    <constraint firstItem="T4i-8X-S6b" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="2" id="gAP-m5-dgh"/>
+                    <constraint firstItem="4WE-FX-ZaW" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="2" id="ora-p6-DVY"/>
+                </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="Y21-Ma-cgq"/>
+                    </mask>
+                </variation>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="titleLabel" destination="T4i-8X-S6b" id="05O-6L-e3q"/>
+                <outlet property="voteButton" destination="4WE-FX-ZaW" id="5Yo-x4-tAe"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+</document>
