@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+source "https://rubygems.org"
+
+git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+
+# gem "rails"
+
+# Added at 2017-08-18 18:37:33 +0300 by rstankov:
+gem "rspec", "~> 3.6"
