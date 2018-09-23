@@ -1,0 +1,65 @@
+#!/bin/bash
+
+set -e
+
+function install_ruby() {
+  brew install rbenv ruby-build
+  rbenv install "$(cat .ruby-version)"
+  eval "$(rbenv init -)"
+  rbenv rehash
+
+  echo "if which rbenv > /dev/null; then eval \"\$(rbenv init -)\"; fi" >> ~/.bash_profile
+}
+
+function install_bundler() {
+  gem install bundler
+
+  echo "Install bundler ✅"
+}
+
+function install_postgresql_libs() {
+  brew install postgresql
+
+  echo "Install postgresql ✅"
+}
+
+function main() {
+  local bin_dir="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+  local app_dir="$(dirname "$bin_dir")"
+  local num_cpu="$(nproc 2>/dev/null || sysctl hw.ncpu | awk '{print $2}')"
+
+  cd "$app_dir"
+
+  if ! which brew &> /dev/null; then
+    echo "Cant find 'brew', please install homebrew and re-run the script"
+    echo "See http://brew.sh/ for install instructions"
+    exit 1
+  fi
+
+  if ! which rvm &> /dev/null && ! which rbenv &> /dev/null; then
+    install_ruby
+  fi
+
+  if ! which bundle &> /dev/null; then
+    install_bundler
+  fi
+
+  if ! which pg_config &> /dev/null; then
+    install_postgresql_libs
+  fi
+
+  bundle install -j $(($num_cpu / 2))
+
+  echo "Starting docker image"
+  docker-compose up -d --no-recreate
+
+  echo "Creating database"
+  rails db:create
+  rails db:migrate
+  rails db:test:prepare
+
+  echo "Bootstrap successful."
+  echo ""
+}
+
+main

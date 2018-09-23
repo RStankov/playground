@@ -1,0 +1,29 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: tracking_pixel_development
+  host: 127.0.0.1
+  port: 5432
+  username: postgres
+  password: postgres
+  min_messages: WARNING
+  template: template0
+
+test:
+  <<: *default
+  database: tracking_pixel_test
+  host: 127.0.0.1
+  port: 5432
+  username: postgres
+  password: postgres
+  min_messages: WARNING
+  template: template0
+
+production:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
+
