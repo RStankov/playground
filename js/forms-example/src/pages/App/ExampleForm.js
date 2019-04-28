@@ -10,6 +10,12 @@ const LENGTH_OPTIONS = [
   { value: 45, label: '45 minutes' },
 ];
 
+const VIA_OPTIONS = [
+  { value: 'email', label: 'Email' },
+  { value: 'push', label: 'Push notification' },
+  { value: 'phone', label: 'Phone' },
+];
+
 export default function ExampleForm() {
   const state = React.useState({});
 
@@ -20,6 +26,12 @@ export default function ExampleForm() {
         <Field name="description" input="textarea" />
         <Field name="email" input="email" />
         <Field name="length" input="select" options={LENGTH_OPTIONS} />
+        <Field
+          name="notifyVia"
+          label="Notify me via"
+          input="radioGroup"
+          options={VIA_OPTIONS}
+        />
         <input type="submit" value="submit" />
         <Debug value={state[0]} />
       </form>
@@ -45,12 +57,30 @@ const INPUTS = {
       ))}
     </select>
   ),
+  radioGroup: ({ value: selectedValue, options, name, id, ...props }) => (
+    <ul>
+      {options.map(({ label, value }, i) => (
+        <li key={i}>
+          <label>
+            <input
+              type="radio"
+              name={name}
+              value={value}
+              checked={value === selectedValue}
+              {...props}
+            />
+            {label || value}
+          </label>
+        </li>
+      ))}
+    </ul>
+  ),
 };
 
 function Field({ name, label, input, ...inputProps }) {
   const [values, setValues] = React.useContext(FormContext);
 
-  const Input = INPUTS[input];
+  const Input = typeof input === 'function' ? input : INPUTS[input];
 
   return (
     <label>

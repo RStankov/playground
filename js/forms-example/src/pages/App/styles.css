@@ -18,3 +18,11 @@ label {
   display: block;
   margin-bottom: 20px;
 }
+
+label ul {
+  list-style: none;
+}
+
+label input[type='radio'] {
+  margin-right: 10px;
+}
