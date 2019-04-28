@@ -4,6 +4,12 @@ import { capitalize } from 'lodash';
 
 const FormContext = React.createContext([{}, function() {}]);
 
+const LENGTH_OPTIONS = [
+  { value: 15, label: '15 minutes' },
+  { value: 30, label: '30 minutes' },
+  { value: 45, label: '45 minutes' },
+];
+
 export default function ExampleForm() {
   const state = React.useState({});
 
@@ -13,6 +19,7 @@ export default function ExampleForm() {
         <Field name="title" />
         <Field name="description" input="textarea" />
         <Field name="email" input="email" />
+        <Field name="length" input="select" options={LENGTH_OPTIONS} />
         <input type="submit" value="submit" />
         <Debug value={state[0]} />
       </form>
@@ -25,13 +32,22 @@ function onSubmit(event) {
 }
 
 const INPUTS = {
-  textarea: 'textarea',
+  undefined: props => <input type="text" {...props} />,
   text: props => <input type="text" {...props} />,
   email: props => <input type="email" {...props} />,
-  undefined: props => <input type="text" {...props} />,
+  textarea: 'textarea',
+  select: ({ options, ...props }) => (
+    <select {...props}>
+      {options.map(({ label, value }, i) => (
+        <option key={i} value={value}>
+          {label || value}
+        </option>
+      ))}
+    </select>
+  ),
 };
 
-function Field({ name, label, input }) {
+function Field({ name, label, input, ...inputProps }) {
   const [values, setValues] = React.useContext(FormContext);
 
   const Input = INPUTS[input];
@@ -45,6 +61,7 @@ function Field({ name, label, input }) {
         }}
         name={name}
         value={values[name] || ''}
+        {...inputProps}
       />
     </label>
   );
