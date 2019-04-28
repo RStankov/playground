@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Debug from 'components/Debug';
-import { capitalize } from 'lodash';
+import Form from 'components/FormPlain';
 
 const LENGTH_OPTIONS = [
   { value: 15, label: '15 minutes' },
@@ -15,8 +15,6 @@ const VIA_OPTIONS = [
 ];
 
 export default function ExampleForm() {
-  const state = React.useState({});
-
   return (
     <Form>
       <Form.Field name="title" />
@@ -30,86 +28,9 @@ export default function ExampleForm() {
         options={VIA_OPTIONS}
       />
       <input type="submit" value="submit" />
+      <Form.WithValues>
+        {formValues => <Debug value={formValues} />}
+      </Form.WithValues>
     </Form>
   );
 }
-
-function onSubmit(event) {
-  event.preventDefault();
-}
-
-const FormContext = React.createContext([{}, function() {}]);
-
-function Form({ defaultValues, onSubmit, children }) {
-  const state = React.useState(defaultValues || {});
-
-  function onFormSubmit(event) {
-    event.preventDefault();
-    onSubmit && onSubmit(state[0]);
-  }
-
-  return (
-    <FormContext.Provider value={state}>
-      <form onSubmit={onSubmit}>
-        {children}
-        <Debug value={state[0]} />
-      </form>
-    </FormContext.Provider>
-  );
-}
-
-const INPUTS = {
-  undefined: props => <input type="text" {...props} />,
-  text: props => <input type="text" {...props} />,
-  email: props => <input type="email" {...props} />,
-  textarea: 'textarea',
-  select: ({ options, ...props }) => (
-    <select {...props}>
-      {options.map(({ label, value }, i) => (
-        <option key={i} value={value}>
-          {label || value}
-        </option>
-      ))}
-    </select>
-  ),
-  radioGroup: ({ value: selectedValue, options, name, id, ...props }) => (
-    <ul>
-      {options.map(({ label, value }, i) => (
-        <li key={i}>
-          <label>
-            <input
-              type="radio"
-              name={name}
-              value={value}
-              checked={value === selectedValue}
-              {...props}
-            />
-            {label || value}
-          </label>
-        </li>
-      ))}
-    </ul>
-  ),
-};
-
-function Field({ name, label, input, ...inputProps }) {
-  const [values, setValues] = React.useContext(FormContext);
-
-  const Input = typeof input === 'function' ? input : INPUTS[input];
-
-  return (
-    <label>
-      {label || capitalize(name)}:
-      <Input
-        onChange={({ target }) => {
-          setValues({ ...values, [name]: target.value });
-        }}
-        name={name}
-        value={values[name] || ''}
-        {...inputProps}
-      />
-    </label>
-  );
-}
-
-Form.Field = Field;
