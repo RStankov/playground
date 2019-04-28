@@ -2,8 +2,6 @@ import * as React from 'react';
 import Debug from 'components/Debug';
 import { capitalize } from 'lodash';
 
-const FormContext = React.createContext([{}, function() {}]);
-
 const LENGTH_OPTIONS = [
   { value: 15, label: '15 minutes' },
   { value: 30, label: '30 minutes' },
@@ -20,27 +18,44 @@ export default function ExampleForm() {
   const state = React.useState({});
 
   return (
-    <FormContext.Provider value={state}>
-      <form onSubmit={onSubmit}>
-        <Field name="title" />
-        <Field name="description" input="textarea" />
-        <Field name="email" input="email" />
-        <Field name="length" input="select" options={LENGTH_OPTIONS} />
-        <Field
-          name="notifyVia"
-          label="Notify me via"
-          input="radioGroup"
-          options={VIA_OPTIONS}
-        />
-        <input type="submit" value="submit" />
-        <Debug value={state[0]} />
-      </form>
-    </FormContext.Provider>
+    <Form>
+      <Form.Field name="title" />
+      <Form.Field name="description" input="textarea" />
+      <Form.Field name="email" input="email" />
+      <Form.Field name="length" input="select" options={LENGTH_OPTIONS} />
+      <Form.Field
+        name="notifyVia"
+        label="Notify me via"
+        input="radioGroup"
+        options={VIA_OPTIONS}
+      />
+      <input type="submit" value="submit" />
+    </Form>
   );
 }
 
 function onSubmit(event) {
   event.preventDefault();
+}
+
+const FormContext = React.createContext([{}, function() {}]);
+
+function Form({ defaultValues, onSubmit, children }) {
+  const state = React.useState(defaultValues || {});
+
+  function onFormSubmit(event) {
+    event.preventDefault();
+    onSubmit && onSubmit(state[0]);
+  }
+
+  return (
+    <FormContext.Provider value={state}>
+      <form onSubmit={onSubmit}>
+        {children}
+        <Debug value={state[0]} />
+      </form>
+    </FormContext.Provider>
+  );
 }
 
 const INPUTS = {
@@ -96,3 +111,5 @@ function Field({ name, label, input, ...inputProps }) {
     </label>
   );
 }
+
+Form.Field = Field;
