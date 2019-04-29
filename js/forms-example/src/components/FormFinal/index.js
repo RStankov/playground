@@ -14,47 +14,41 @@ export default function Form({ defaultValues, onSubmit, children }) {
   );
 }
 
-function Field({ name, label, input, ...inputProps }) {
-  const Input = typeof input === 'function' ? input : INPUTS[input];
+function FieldRow({ label, inputComponent, meta, input, ...inputProps }) {
+  const error = meta.error || meta.submitError;
+
+  const Input =
+    typeof inputComponent === 'function'
+      ? inputComponent
+      : INPUTS[inputComponent];
 
   return (
-    <FinalFormField name={name}>
-      {({ input, meta }) => {
-        const error = meta.error || meta.submitError;
-        return (
-          <label>
-            {label || capitalize(name)}:{error && <mark>{error}</mark>}
-            <div>
-              <Input {...input} {...inputProps} />
-            </div>
-          </label>
-        );
-      }}
-    </FinalFormField>
+    <label>
+      {label || capitalize(input.name)}:{error && <mark>{error}</mark>}
+      <div>
+        <Input {...input} {...inputProps} />
+      </div>
+    </label>
   );
 }
 
-function WithValues(props) {
-  return <FormSpy {...props} />;
-}
+Form.Field = ({ input, ...inputProps }) => (
+  <FinalFormField inputComponent={input} component={FieldRow} {...inputProps} />
+);
 
-function SubmitButton() {
-  return (
-    <FormSpy>
-      {(form: any) => (
-        <input
-          type="button"
-          disabled={form.submitting}
-          label={`Submit${form.submitting ? '...' : ''}`}
-        />
-      )}
-    </FormSpy>
-  );
-}
+Form.WithValues = FormSpy;
 
-Form.Field = Field;
-Form.WithValues = WithValues;
-Form.SubmitButton = SubmitButton;
+Form.SubmitButton = () => (
+  <FormSpy>
+    {(form: any) => (
+      <input
+        type="button"
+        disabled={form.submitting}
+        label={`Submit${form.submitting ? '...' : ''}`}
+      />
+    )}
+  </FormSpy>
+);
 
 const INPUTS = {
   undefined: props => <input type="text" {...props} />,
@@ -70,7 +64,14 @@ const INPUTS = {
       ))}
     </select>
   ),
-  radioGroup: ({ value: selectedValue, options, name, id, onChange, ...props }) => (
+  radioGroup: ({
+    value: selectedValue,
+    options,
+    name,
+    id,
+    onChange,
+    ...props
+  }) => (
     <ul>
       {options.map(({ label, value }, i) => (
         <li key={i}>
@@ -80,9 +81,7 @@ const INPUTS = {
               name={name}
               value={value}
               checked={value === selectedValue}
-              onChange={(e) => (
-                onChange({ target: { value: e.target.value } })
-              )}
+              onChange={e => onChange({ target: { value: e.target.value } })}
               {...props}
             />
             {label || value}
