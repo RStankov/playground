@@ -31,11 +31,12 @@ function FieldRow({
 }) {
   const error = meta.error || meta.submitError;
 
-  const Wrap = Input.noLabelWap ? 'div' : 'label';
+  const Wrap = Input.noLabelWrap ? 'div' : 'label';
 
   return (
     <Wrap>
-      {label || capitalize(input ? input.name : fields.name)}:{error && <mark>{error}</mark>}
+      {label || capitalize(input ? input.name : fields.name)}:
+      {error && <mark>{error}</mark>}
       <div>
         {fields ? (
           <Input fields={fields} {...inputProps} />
@@ -61,9 +62,9 @@ Form.Field = ({ input, ...inputProps }) => {
   );
 };
 
-Form.Input = ({type, ...props}) => (
+Form.Input = ({ type, ...props }) => (
   <FinalFormField component="input" type={type || 'text'} {...props} />
-)
+);
 
 Form.WithValues = FormSpy;
 
@@ -90,8 +91,6 @@ Form.Status = () => (
     )}
   </FormSpy>
 );
-
-
 const INPUTS = {
   undefined: props => <input type="text" {...props} />,
   text: props => <input type="text" {...props} />,
@@ -133,3 +132,5 @@ const INPUTS = {
     </ul>
   ),
 };
+
+INPUTS.radioGroup.noLabelWrap = true;
