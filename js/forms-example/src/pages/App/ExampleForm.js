@@ -25,9 +25,9 @@ export default function ExampleForm() {
       <Form.Field name="speakers" input={SpeakersInput} />
       <Form.SubmitButton />
       <Form.Status />
-      <Form.WithValues>
-        {formValues => <Debug value={formValues} />}
-      </Form.WithValues>
+      <Form.State>
+        {state => <Debug value={state} />}
+      </Form.State>
     </Form>
   );
 }

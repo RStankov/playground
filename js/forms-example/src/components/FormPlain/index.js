@@ -72,11 +72,11 @@ function Field({ name, label, input, ...inputProps }) {
   );
 }
 
-function WithValues({ children }) {
+function State({ children }) {
   const [values] = React.useContext(FormContext);
 
   return children(values);
 }
 
 Form.Field = Field;
-Form.WithValues = WithValues;
+Form.State = State;

@@ -66,7 +66,7 @@ Form.Input = ({ type, ...props }) => (
   <FinalFormField component="input" type={type || 'text'} {...props} />
 );
 
-Form.WithValues = FormSpy;
+Form.State = FormSpy;
 
 Form.SubmitButton = () => (
   <FormSpy>
