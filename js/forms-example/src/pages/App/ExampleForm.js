@@ -27,6 +27,7 @@ export default function ExampleForm() {
         input="radioGroup"
         options={VIA_OPTIONS}
       />
+      <Form.Field name="speakers" input={SpeakersInput} />
       <Form.SubmitButton />
       <Form.Status />
       <Form.WithValues>
@@ -36,7 +37,39 @@ export default function ExampleForm() {
   );
 }
 
+function SpeakersInput({ fields }) {
+  return (
+    <React.Fragment>
+      {fields.map((name, index) => (
+        <div key={name}>
+          {index + 1}:
+          <Form.Input
+            name={`${name}.firstName`}
+            placeholder="First Name"
+          />
+          <Form.Input
+            name={`${name}.lastName`}
+            placeholder="Last Name"
+          />
+          <span
+            onClick={() => fields.remove(index)}
+            style={{ cursor: 'pointer' }}>
+            x
+          </span>
+        </div>
+      ))}
+      <button type="button" onClick={() => fields.push(undefined)}>
+        Add Customer
+      </button>
+    </React.Fragment>
+  );
+}
+
+SpeakersInput.isArray = true;
+SpeakersInput.noLabelWrap = true;
+
 function onSubmit(values) {
+  console.log(values);
   const errors = {};
 
   if (!values.title) {

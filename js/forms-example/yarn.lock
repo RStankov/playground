@@ -3908,6 +3908,11 @@ fill-range@^4.0.0:
     repeat-string "^1.6.1"
     to-regex-range "^2.1.0"
 
+final-form-arrays@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/final-form-arrays/-/final-form-arrays-1.1.2.tgz#7e33eb2485419e6956310cec76a717167c88d85c"
+  integrity sha512-Pmq3MXI9zbSsY7WZ2eodWQAHpsw2/i5YkagzcCgqzRcSSHB8BD3yWi7YPSGTPXuG0ixcQe9VAYpQ+UEWcqf4zg==
+
 final-form@^4.12.0:
   version "4.12.0"
   resolved "https://registry.yarnpkg.com/final-form/-/final-form-4.12.0.tgz#1844e2a3bc9789d51115c76a94d0ea6a19e219c0"
@@ -7888,6 +7893,14 @@ react-error-overlay@^5.1.5:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-5.1.5.tgz#884530fd055476c764eaa8ab13b8ecf1f57bbf2c"
   integrity sha512-O9JRum1Zq/qCPFH5qVEvDDrVun8Jv9vbHtZXCR1EuRj9sKg1xJTlHxBzU6AkCzpvxRLuiY4OKImy3cDLQ+UTdg==
 
+react-final-form-arrays@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-final-form-arrays/-/react-final-form-arrays-2.0.3.tgz#938bd0d62741ab59c6a680968f79eac029e37333"
+  integrity sha512-iHGGAbOVsTlp/lhE6EUsqzhjPZSvcExLWE91Qx0remHOJvQ2wkxHe8HTA9KBlId8YJ1fkz6g417GTq/1IFnL9w==
+  dependencies:
+    "@babel/runtime" "^7.3.4"
+    react-lifecycles-compat "^3.0.4"
+
 react-final-form@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/react-final-form/-/react-final-form-4.1.0.tgz#4e1b513de164771b2b824f3fb9c0548014255971"
@@ -7899,6 +7912,11 @@ react-is@^16.8.1, react-is@^16.8.4:
   version "16.8.6"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.6.tgz#5bbc1e2d29141c9fbdfed456343fe2bc430a6a16"
   integrity sha512-aUk3bHfZ2bRSVFFbbeVS4i+lNPZr3/WM5jT2J5omUVV1zzcs1nAaf3l51ctA5FFvCRbhrH0bdAsRRQddFJZPtA==
+
+react-lifecycles-compat@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
+  integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
 react-scripts@3.0.0:
   version "3.0.0"
