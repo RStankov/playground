@@ -26,3 +26,12 @@ label ul {
 label input[type='radio'] {
   margin-right: 10px;
 }
+
+.grid {
+  display: flex;
+  flex-direction: row;
+
+}
+.grid > div {
+  flex: 1;
+}

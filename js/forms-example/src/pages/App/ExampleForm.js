@@ -17,17 +17,23 @@ const LEVELS = [
 export default function ExampleForm() {
   return (
     <Form onSubmit={onSubmit}>
-      <Form.Field name="title" />
-      <Form.Field name="description" input="textarea" />
-      <Form.Field name="email" input="email" />
-      <Form.Field name="length" input="select" options={LENGTHS} />
-      <Form.Field name="level" input="radioGroup" options={LEVELS} />
-      <Form.Field name="speakers" input={SpeakersInput} />
-      <Form.SubmitButton />
-      <Form.Status />
-      <Form.State>
-        {state => <Debug value={state} />}
-      </Form.State>
+      <div className="grid">
+        <div>
+          <Form.Field name="title" />
+          <Form.Field name="description" input="textarea" />
+          <Form.Field name="email" input="email" />
+          <Form.Field name="length" input="select" options={LENGTHS} />
+          <Form.Field name="level" input="radioGroup" options={LEVELS} />
+          <Form.Field name="speakers" input={SpeakersInput} />
+          <Form.SubmitButton />
+          <Form.Status />
+        </div>
+        <div>
+          <Form.State>
+            {state => <Debug value={state} />}
+          </Form.State>
+        </div>
+      </div>
     </Form>
   );
 }
