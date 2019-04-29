@@ -42,13 +42,26 @@ Form.SubmitButton = () => (
   <FormSpy>
     {(form: any) => (
       <input
-        type="button"
+        type="submit"
         disabled={form.submitting}
-        label={`Submit${form.submitting ? '...' : ''}`}
+        value={`Submit${form.submitting ? '...' : ''}`}
       />
     )}
   </FormSpy>
 );
+
+Form.Status = () => (
+  <FormSpy>
+    {(form: any) => (
+      <React.Fragment>
+        {form.submitSucceeded && '👌 Submitted'}
+        {form.submitting && '💾 Saving…'}
+        {form.submitFailed && '🙀 Oh-oh! There has been an error…'}
+      </React.Fragment>
+    )}
+  </FormSpy>
+
+)
 
 const INPUTS = {
   undefined: props => <input type="text" {...props} />,

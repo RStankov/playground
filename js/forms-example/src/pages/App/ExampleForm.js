@@ -27,7 +27,8 @@ export default function ExampleForm() {
         input="radioGroup"
         options={VIA_OPTIONS}
       />
-      <input type="submit" value="submit" />
+      <Form.SubmitButton />
+      <Form.Status />
       <Form.WithValues>
         {formValues => <Debug value={formValues} />}
       </Form.WithValues>
