@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Debug from 'components/Debug';
-import Form from 'components/FormPlain';
+import Form from 'components/FormFinal';
 
 const LENGTH_OPTIONS = [
   { value: 15, label: '15 minutes' },
@@ -16,7 +16,7 @@ const VIA_OPTIONS = [
 
 export default function ExampleForm() {
   return (
-    <Form>
+    <Form onSubmit={onSubmit}>
       <Form.Field name="title" />
       <Form.Field name="description" input="textarea" />
       <Form.Field name="email" input="email" />
@@ -33,4 +33,22 @@ export default function ExampleForm() {
       </Form.WithValues>
     </Form>
   );
+}
+
+function onSubmit(values) {
+  const errors = {};
+
+  if (!values.title) {
+    errors.title = 'required';
+  }
+
+  if (!values.description) {
+    errors.description = 'required';
+  }
+
+  if (!values.notifyVia) {
+    errors.notifyVia = 'required';
+  }
+
+  return errors;
 }
