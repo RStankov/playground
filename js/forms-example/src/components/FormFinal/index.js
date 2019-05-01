@@ -122,7 +122,7 @@ const INPUTS = {
               name={name}
               value={value}
               checked={value === selectedValue}
-              onChange={e => onChange({ target: { value: e.target.value } })}
+              onChange={() => onChange(value)}
               {...props}
             />
             {label || value}
