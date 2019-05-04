@@ -3,7 +3,7 @@ import Debug from 'components/Debug';
 import Form from 'components/FormFinalBootstrap';
 import SpeakersInput from './SpeakersInput';
 
-export default function Example() {
+export default function SubmitTalkForm() {
   const debug = window.location.search === '?debug';
   return (
       <Form onSubmit={onSubmit}>
@@ -13,8 +13,8 @@ export default function Example() {
               <div className="card-body">
                 <h1 className="card-title">Submit a talk</h1>
                 <Form.Field name="title" />
-                <Form.Field name="description" control="textarea" />
                 <Form.Field name="email" control="email" />
+                <Form.Field name="description" control="textarea" />
                 <Form.Field name="length" control="select" options={LENGTHS} />
                 <Form.Field name="level" control="radioGroup" options={LEVELS} />
                 <Form.Field name="speakers" control={SpeakersInput} />
