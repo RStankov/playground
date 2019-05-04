@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { capitalize } from 'lodash';
-import arrayMutators from 'final-form-arrays';
 import { FieldArray } from 'react-final-form-arrays';
 import * as FinalForm from 'react-final-form';
 

@@ -7,7 +7,7 @@ export default function SpeakersInput({ fields }) {
       {fields.map((name, index) => (
         <div className="form-row" key={name}>
           <div className="form-group mr-1">
-            <div span className="badge badge-secondary">
+            <div className="badge badge-secondary">
               {index + 1}
             </div>
           </div>

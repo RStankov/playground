@@ -1,5 +1,4 @@
 import React from 'react';
-import Debug from 'components/Debug';
 import Example from './Example';
 
 import 'bootstrap/dist/css/bootstrap.css';
