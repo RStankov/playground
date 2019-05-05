@@ -7,9 +7,7 @@ export default function SpeakersInput({ fields }) {
       {fields.map((name, index) => (
         <div className="form-row" key={name}>
           <div className="form-group mr-1">
-            <div className="badge badge-secondary">
-              {index + 1}
-            </div>
+            <div className="badge badge-secondary">{index + 1}</div>
           </div>
           <div className="form-group mr-1">
             <Form.Input
@@ -31,8 +29,7 @@ export default function SpeakersInput({ fields }) {
               onClick={e => {
                 e.preventDefault();
                 fields.remove(index);
-              }}
-              style={{ cursor: 'pointer' }}>
+              }}>
               remove
             </button>
           </div>
@@ -52,5 +49,3 @@ export default function SpeakersInput({ fields }) {
 }
 
 SpeakersInput.isArray = true;
-SpeakersInput.noLabelWrap = true;
-

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { capitalize } from 'lodash';
 import { FieldArray } from 'react-final-form-arrays';
 import * as FinalForm from 'react-final-form';
+import { uniqueId } from 'lodash';
 
 function FieldRow({
   label,
@@ -9,22 +10,26 @@ function FieldRow({
   meta,
   input,
   fields,
+  id,
   ...inputProps
 }) {
   const error = meta.error || meta.submitError;
-  const Wrap = Control.noLabelWrap ? 'div' : 'label';
+  const name = input ? input.name : fields.name;
+
+  id = React.useMemo(() => id || uniqueId(`form-${name}-`), [id, name]);
+
   return (
-    <Wrap className="form-group d-block">
+    <div className="form-group d-block">
       <div className="form-label d-block">
-        {label || capitalize(input ? input.name : fields.name)}:
+        <label htmlFor={id}>{label || capitalize(name)}:</label>
         {error && <span className="text-danger float-right">{error}</span>}
       </div>
       {fields ? (
-        <Control fields={fields} {...inputProps} />
+        <Control fields={fields} id={id} {...inputProps} />
       ) : (
-        <Control {...input} {...inputProps} />
+        <Control id={id} {...input} {...inputProps} />
       )}
-    </Wrap>
+    </div>
   );
 }
 
@@ -32,14 +37,8 @@ export default function Field({ control, ...inputProps }) {
   control = typeof control === 'function' ? control : CONTROLS[control];
 
   const Field = control.isArray ? FieldArray : FinalForm.Field;
-  return (
-    <Field
-      control={control}
-      component={FieldRow}
-      {...inputProps}
-    />
-  );
-};
+  return <Field control={control} component={FieldRow} {...inputProps} />;
+}
 
 const CONTROLS = {
   undefined: props => <input type="text" className="form-control" {...props} />,
@@ -55,33 +54,24 @@ const CONTROLS = {
       ))}
     </select>
   ),
-  radioGroup: ({
-    value: selectedValue,
-    options,
-    name,
-    id,
-    onChange,
-    ...props
-  }) => (
+  radioGroup: ({ id: _id, value, options, name, onChange, ...props }) => (
     <ul className="pl-4">
-      {options.map(({ label, value }, i) => (
+      {options.map((option, i) => (
         <li key={i}>
           <label className="form-check-label">
             <input
               className="form-check-input"
               type="radio"
               name={name}
-              value={value}
-              checked={value === selectedValue}
-              onChange={() => onChange(value)}
+              value={option.value}
+              checked={option.value === value}
+              onChange={() => onChange(option.value)}
               {...props}
             />
-            {label || value}
+            {option.label || option.value}
           </label>
         </li>
       ))}
     </ul>
   ),
 };
-
-CONTROLS.radioGroup.noLabelWrap = true;
