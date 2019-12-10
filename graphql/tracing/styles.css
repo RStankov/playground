@@ -1,0 +1,82 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin: $spacing-large auto;
+  max-width: 1000px;
+  width: 100%;
+}
+
+.menu {
+  margin-right: $spacing-medium;
+  padding: $spacing-small;
+  border-radius: $radius;
+  border: 1px solid $line;
+}
+
+.table {
+  flex: 1;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  font-size: 12px;
+  padding-right: 25px;
+  color: $black;
+
+  &:hover {
+    background: rgba(100, 100, 100, 0.1);
+  }
+}
+
+.name {
+  width: 230px;
+  margin-right: $spacing-small;
+}
+
+.barContainer {
+  margin-top: 5px;
+  position: relative;
+  height: 10px;
+  width: 400px;
+  background: $background-grey;
+}
+
+.bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: $black;
+}
+
+.duration {
+  font-size: 10px;
+  color: $dark-grey;
+  margin-left: $spacing-medium;
+}
+
+.ioButton {
+  background: $black;
+  color: $white;
+  border-radius: 50%;
+  position: absolute;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  cursor: pointer;
+}
+
+ol {
+  margin: $spacing-small 0 $spacing-medium $spacing-medium;
+  padding: $spacing-small $spacing-small $spacing-large $spacing-large;
+  border-radius: $radius;
+  border: 1px solid $line;
+}
+
+.small {
+  font-size: 10px;
+  color: $dark-grey;
+}
