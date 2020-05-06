@@ -1,0 +1,3 @@
+https://www.npmjs.com/package/react
+https://cocoapods.org/pods/AFNetworking
+https://rubygems.org/gems/kaminari
