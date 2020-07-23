@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Test 1</title>
+  </head>
+  <body>
+    <ul id="ul"></ul>
+    <div style="border: 1px solid red">
+      <video id="video1" autoplay playsinline></video>
+    </div>
+    <div style="border: 1px solid green">
+      <video id="video2" autoplay playsinline></video>
+    </div>
+    <script>
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: false })
+        .then(stream => {
+          stream.getTracks().forEach(track => {
+            track.stop();
+          });
+
+          return navigator.mediaDevices.enumerateDevices();
+        })
+        .then(mediaDevices => {
+          document.getElementById('ul').innerHTML = mediaDevices
+            .map(
+              mediaDevice =>
+                `<li>${mediaDevice.kind} ${mediaDevice.label} - ${mediaDevice.deviceId}</li>`,
+            )
+            .join('');
+
+          mediaDevices.forEach((mediaDevice, i) => {
+            if (mediaDevice.kind === 'videoinput') {
+              setTimeout(() => {
+              navigator.mediaDevices
+                .getUserMedia({
+                  video: { deviceId: { exact: mediaDevice.deviceId } },
+                  audio: false,
+                })
+                .then(stream => {
+                  // alert(mediaDevice.label + ' ' + i);
+                  document.getElementById(`video${i}`).srcObject = stream;
+                })
+                .catch(error => {
+                  alert(error);
+                });
+
+              }, i * 1000)
+            }
+          });
+        })
+        .catch(error => {
+          alert(error);
+        });
+    </script>
+  </body>
+</html>

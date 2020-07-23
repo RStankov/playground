@@ -1,0 +1,5 @@
+yarn global add static-server
+yarn global add ngrok
+
+static-server
+ngrok http 9080
