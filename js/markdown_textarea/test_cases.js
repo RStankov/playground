@@ -14,7 +14,7 @@ test('insert char - cursor', {
   after: 'a|',
 });
 
-test('insert char - selection', {
+xtest('insert char - selection', {
   before: 'before|middle|after',
   action: { event: 'keypress', key: 'a' },
   after: 'beforea|after',
