@@ -1,4 +1,4 @@
-function setup(textarea) {
+function markdownTextarea(textarea) {
   ['keyup', 'keydown', 'keypres', 'input'].forEach((eventName) =>
     textarea.addEventListener(eventName, (e) => console.log(eventName, e)),
   );
