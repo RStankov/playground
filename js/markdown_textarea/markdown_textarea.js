@@ -1,41 +1,36 @@
 function setup(textarea) {
-  textarea.addEventListener('keyup', (e) => {
-    const position = textarea.selectionStart;
-    const value = textarea.value;
+  ['keyup', 'keydown', 'keypres', 'input'].forEach((eventName) =>
+    textarea.addEventListener(eventName, (e) => console.log(eventName, e)),
+  );
 
-    console.log(e.key);
+  textarea.addEventListener('keydown', (e) => {
+    // console.log(e.key, e);
 
-    if (e.key === 'Enter') {
-      const line = getLine(value, position - 1);
-      const space = getListItem(line) || getSpace(line);
+    if (e.key === 'Backspace') {
+      e.preventDefault();
 
-      textarea.value = insertAtPosition(value, space, position);
-      textarea.setSelectionRange(
-        position + space.length,
-        position + space.length,
-      );
-    } else if (e.key.length === 1) {
-      if (e.key !== '*' && e.key !== ' ') {
-        if (value[position - 2] === '*' && value[position - 3] === '*') {
-          textarea.value = insertAtPosition(value, '**', position);
-          textarea.setSelectionRange(position, position);
-        } else if (value[position - 2] === '*' && value[position - 3] !== ' ') {
-          textarea.value = insertAtPosition(value, '*', position);
-          textarea.setSelectionRange(position, position);
-        }
-      }
-    } else if (e.key === 'Backspace') {
-      // NOTE(rstankov): TODO
-      if (
-        value[position - 2] !== '*' &&
-        value[position - 1] === '*' &&
-        value[position] === '*' &&
-        value[position + 1] === '*'
-      ) {
-        textarea.value = removeAtPosition(value, position + 1);
+      let position = textarea.selectionStart;
+      const endPosition = textarea.selectionEnd;
+
+      let value = textarea.value;
+
+      if (position == endPosition) {
+        textarea.value = removeAtPosition(value, position - 1);
+        textarea.setSelectionRange(position - 1, position - 1);
+      } else {
+        textarea.value = value.slice(0, position) + value.slice(endPosition);
         textarea.setSelectionRange(position, position);
       }
 
+      // if (
+      //   value[position - 2] !== '*' &&
+      //   value[position - 1] === '*' &&
+      //   value[position] === '*' &&
+      //   value[position + 1] === '*'
+      // ) {
+      //   textarea.value = removeAtPosition(value, position + 1);
+      //   textarea.setSelectionRange(position, position);
+      // }
       // if (
       //   value[position - 1] !== '*' &&
       //   value[position] === '*' //&&
@@ -46,6 +41,49 @@ function setup(textarea) {
       // }
     }
   });
+
+  textarea.addEventListener('keypress', (e) => {
+    // console.log(e.key, e);
+
+    e.preventDefault();
+
+    let position = textarea.selectionStart;
+    const endPosition = textarea.selectionEnd;
+
+    let value = textarea.value;
+
+    if (position != endPosition) {
+      value = value.slice(0, position) + value.slice(endPosition);
+    }
+
+    if (e.key === 'Enter') {
+      value = insertAtPosition(value, '\n', position);
+      position += 1;
+
+      const line = getLine(value, position - 1);
+      const space = getListItem(line) || getSpace(line);
+
+      textarea.value = insertAtPosition(value, space, position);
+      textarea.setSelectionRange(
+        position + space.length,
+        position + space.length,
+      );
+    } else if (e.key.length === 1) {
+      textarea.value = insertAtPosition(value, e.key, position);
+      textarea.setSelectionRange(position + 1, position + 1);
+
+      // if (e.key !== '*' && e.key !== ' ') {
+      //   if (value[position - 2] === '*' && value[position - 3] === '*') {
+      //     textarea.value = insertAtPosition(value, '**', position);
+      //     textarea.setSelectionRange(position, position);
+      //   } else if (value[position - 2] === '*' && value[position - 3] !== ' ') {
+      //     textarea.value = insertAtPosition(value, '*', position);
+      //     textarea.setSelectionRange(position, position);
+      //   }
+      // }
+    }
+  });
+
   // TODO complete task
   // textarea.addEventListener('click', (e) => {
   //   console.log(textarea.selectionStart);

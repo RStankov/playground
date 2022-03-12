@@ -1,0 +1,29 @@
+Features
+
+    - insert char
+[x]   - cursor
+[x]   - selection
+      - auto closes
+[  ]    - *
+[  ]    - **
+[  ]    - []
+[  ]    - ()
+    - backspace
+[x]   - cursor
+[x]   - selection
+    - enter
+[x]   - cursor
+[x]   - selection
+[x]   - after "- "
+[x]   - after "* "
+[x]   - after "- [ ]"
+[x]   - after "- [*]"
+[x]   - keeps indent
+
+Learnings
+
+- `position` / `endPosition`
+- backspace event doesn't trigger `keypress`
+- `keypress` / `keydown` can be canceled
+- cmd + something doesn't trigger `keypress`
+- changing `textarea.value doesn't trigger `input` / `onChange`
